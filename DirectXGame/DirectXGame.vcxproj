@@ -45,13 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\json;$(SolutionDir)External\DirectXTex\include;$(SolutionDir)External\imgui\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)External\DirectXTex\lib\$(Configuration);$(SolutionDir)External\imgui\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)External\json;$(SolutionDir)External\DirectXTex\include;$(SolutionDir)External\imgui\include;$(SolutionDir)External\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)External\DirectXTex\lib\$(Configuration);$(SolutionDir)External\imgui\lib\$(Configuration);$(SolutionDir)External\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\json;$(SolutionDir)External\DirectXTex\include;$(SolutionDir)External\imgui\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)External\DirectXTex\lib\$(Configuration);$(SolutionDir)External\imgui\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)External\json;$(SolutionDir)External\DirectXTex\include;$(SolutionDir)External\imgui\include;$(SolutionDir)External\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)External\DirectXTex\lib\$(Configuration);$(SolutionDir)External\imgui\lib\$(Configuration);$(SolutionDir)External\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -59,15 +59,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Code\2d;$(ProjectDir)Code\3d;$(ProjectDir)Code\win;$(ProjectDir)Code\audio;$(ProjectDir)Code\math;$(ProjectDir)Code\postEffect;$(ProjectDir)Code\game;$(ProjectDir)Code\input;$(ProjectDir)Code\json;$(ProjectDir)Code\scene</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Code\2d;$(ProjectDir)Code\3d;$(ProjectDir)Code\win;$(ProjectDir)Code\audio;$(ProjectDir)Code\math;$(ProjectDir)Code\postEffect;$(ProjectDir)Code\game;$(ProjectDir)Code\input;$(ProjectDir)Code\json;$(ProjectDir)Code\scene;$(ProjectDir)Code\fbx</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;imgui.lib;libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -78,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Code\2d;$(ProjectDir)Code\3d;$(ProjectDir)Code\win;$(ProjectDir)Code\audio;$(ProjectDir)Code\math;$(ProjectDir)Code\postEffect;$(ProjectDir)Code\game;$(ProjectDir)Code\input;$(ProjectDir)Code\json;$(ProjectDir)Code\scene</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Code\2d;$(ProjectDir)Code\3d;$(ProjectDir)Code\win;$(ProjectDir)Code\audio;$(ProjectDir)Code\math;$(ProjectDir)Code\postEffect;$(ProjectDir)Code\game;$(ProjectDir)Code\input;$(ProjectDir)Code\json;$(ProjectDir)Code\scene;$(ProjectDir)Code\fbx</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -88,8 +89,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;imgui.lib;libfbxsdk-mt.lib;libxml2-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -99,6 +101,9 @@
     <ClCompile Include="Code\3d\Object3d.cpp" />
     <ClCompile Include="Code\3d\Particle.cpp" />
     <ClCompile Include="Code\audio\Audio.cpp" />
+    <ClCompile Include="Code\fbx\FbxLoader.cpp" />
+    <ClCompile Include="Code\fbx\FbxModel.cpp" />
+    <ClCompile Include="Code\fbx\FbxObject3d.cpp" />
     <ClCompile Include="Code\game\Bullet.cpp" />
     <ClCompile Include="Code\game\Camera.cpp" />
     <ClCompile Include="Code\game\Collision.cpp" />
@@ -135,6 +140,9 @@
     <ClInclude Include="Code\3d\Object3d.h" />
     <ClInclude Include="Code\3d\Particle.h" />
     <ClInclude Include="Code\audio\Audio.h" />
+    <ClInclude Include="Code\fbx\FbxLoader.h" />
+    <ClInclude Include="Code\fbx\FbxModel.h" />
+    <ClInclude Include="Code\fbx\FbxObject3d.h" />
     <ClInclude Include="Code\game\Bullet.h" />
     <ClInclude Include="Code\game\Camera.h" />
     <ClInclude Include="Code\game\Collision.h" />

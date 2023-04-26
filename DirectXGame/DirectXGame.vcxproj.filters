@@ -76,6 +76,12 @@
     <Filter Include="ヘッダーファイル\scene">
       <UniqueIdentifier>{3733f71d-46d5-442b-8f09-d84ced7c9531}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソースファイル\fbx">
+      <UniqueIdentifier>{e908ab26-c80a-4c8d-a1ac-c9b6ad543968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\fbx">
+      <UniqueIdentifier>{3fe37ce3-207e-4e6f-96ec-aa81e8acb72e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\win\main.cpp">
@@ -179,6 +185,15 @@
     </ClCompile>
     <ClCompile Include="Code\math\Operator.cpp">
       <Filter>ソースファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\fbx\FbxLoader.cpp">
+      <Filter>ソースファイル\fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\fbx\FbxModel.cpp">
+      <Filter>ソースファイル\fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\fbx\FbxObject3d.cpp">
+      <Filter>ソースファイル\fbx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +304,15 @@
     </ClInclude>
     <ClInclude Include="Code\math\Operator.h">
       <Filter>ヘッダーファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\fbx\FbxLoader.h">
+      <Filter>ヘッダーファイル\fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\fbx\FbxModel.h">
+      <Filter>ヘッダーファイル\fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\fbx\FbxObject3d.h">
+      <Filter>ヘッダーファイル\fbx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
