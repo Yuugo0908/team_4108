@@ -4,14 +4,6 @@
 
 void TitleScene::Initialize() {
 
-	// タイトル画像読み込み
-	if (!Image2d::LoadTexture(titleNum, L"Resources/title.png"))
-	{
-		assert(0);
-	}
-	title = Image2d::Create(titleNum, { 0.0f,0.0f });
-	title->SetSize({ 1280.0f,720.0f });
-
 	if (!Image2d::LoadTexture(fadeNum, L"Resources/fade.png"))
 	{
 		assert(0);
@@ -19,14 +11,6 @@ void TitleScene::Initialize() {
 	fadeTex = Image2d::Create(fadeNum, { 0.0f,0.0f });
 	fadeTex->SetSize({ 1280.0f,720.0f });
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
-
-	if (!Image2d::LoadTexture(expNum, L"Resources/Operation_Explanation.png"))
-	{
-		assert(0);
-	}
-	explanation = Image2d::Create(expNum, { 0.0f,0.0f });
-	explanation->SetSize({ 1280.0f,720.0f });
-	explanation->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 
 	if (!Image2d::LoadTexture(backNum, L"Resources/backGround.png"))
 	{
@@ -39,9 +23,7 @@ void TitleScene::Initialize() {
 
 void TitleScene::Finalize()
 {
-	safe_delete(title);
 	safe_delete(fadeTex);
-	safe_delete(explanation);
 	safe_delete(backGround);
 }
 
@@ -59,7 +41,6 @@ void TitleScene::Update()
 		if (alpha >= 1.0f)
 		{
 			fadeIn = false;
-			explanation->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 			backGround->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 			{
 				SceneManager::GetInstance()->ChangeScene("Game");
@@ -98,7 +79,6 @@ void TitleScene::Draw()
 
 	// 前景画像の描画
 
-	title->Draw();
 	fadeTex->Draw();
 
 	// デバッグテキストの描画

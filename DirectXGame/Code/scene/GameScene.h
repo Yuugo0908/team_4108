@@ -83,9 +83,6 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Object3d>> jsonObject{};
 
 	// 画像
-	Image2d* HPText = nullptr;
-	Image2d* PlayerHPBar = nullptr;
-	Image2d* PlayerHPGauge = nullptr;
 	Image2d* fadeTex = nullptr;
 	float alpha = 1.0f;
 

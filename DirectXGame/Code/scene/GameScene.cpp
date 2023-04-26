@@ -19,8 +19,8 @@ void GameScene::Initialize()
 	// パーティクル生成
 	effectBox = Particle::Create(L"Resources/effectBox.png");
 
-	enemy->ModelInit();
-	rope->Initialize();
+	//enemy->ModelInit();
+	//rope->Initialize();
 
 	// ライトの生成
 	light = Light::Create();
