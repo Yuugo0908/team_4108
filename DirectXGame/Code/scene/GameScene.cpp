@@ -2,6 +2,7 @@
 #include <imgui.h>
 #include <cassert>
 #include "SceneManager.h"
+#include <Random.h>
 
 void GameScene::Initialize()
 {
@@ -18,7 +19,9 @@ void GameScene::Initialize()
 
 	// パーティクル生成
 	effectBox = Particle::Create(L"Resources/effectBox.png");
-	
+	// 着地時のパーティクル
+	jumpEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
+
 	//enemy->ModelInit();
 	//rope->Initialize();
 
@@ -52,6 +55,20 @@ void GameScene::Update()
 {
 	skydomeObj->Update();
 	player->Update();
+
+	if (player->GetOnGrounding() == true)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			XMFLOAT3 pos = player->GetObj()->GetPosition();
+			pos.y -= 0.8f * player->GetObj()->GetScale().y;
+			XMFLOAT3 vel = { 0, 0, 0 };
+			XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(0, 100) - 50) / 500, static_cast<float>(Random::GetRanNum(0, 10)) / 500, 0 };
+			XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
+			XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+			jumpEffect->Add(10, pos, vel, acc, 0.0f, 1.0f, startColor, endColor);
+		}
+	}
 }
 
 void GameScene::Draw()
@@ -79,6 +96,8 @@ void GameScene::Draw()
 
 	skydomeObj->Draw();
 	player->GetObj().get()->Draw();
+	jumpEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
+
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
 #pragma endregion 3Dオブジェクト描画

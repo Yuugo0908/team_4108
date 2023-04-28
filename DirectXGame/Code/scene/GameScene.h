@@ -94,6 +94,8 @@ private: // メンバ変数
 	Particle* effectCircle2 = nullptr;
 	Particle* effectTarget = nullptr;
 	Particle* effectAvoid = nullptr;
+	// 着地時のパーティクル
+	std::unique_ptr<Particle> jumpEffect = nullptr;
 
 	//player
 	

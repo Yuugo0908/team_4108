@@ -41,8 +41,6 @@ private: // ƒƒ“ƒo•Ï”
 	Image2d* fadeTex = nullptr;
 	Image2d* backGround = nullptr;
 
-	std::unique_ptr<Particle> jumpEffect = nullptr;
-
 	float alpha = 0.0f;
 	bool fadeIn = false;
 	bool expFlag = false;

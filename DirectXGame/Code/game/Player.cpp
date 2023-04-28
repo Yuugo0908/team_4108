@@ -78,6 +78,8 @@ void Player::GravityProcess()
 
 void Player::GroundCollisionProcess()
 {
+	oldOnGround = onGround;
+
 	if (pPos.y > 0.0f) return;
 
 	pPos.y = 0.0f;

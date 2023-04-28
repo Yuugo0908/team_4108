@@ -22,6 +22,7 @@ public: // メンバ関数
 	//Geter
 	bool& GetOnGround() { return onGround; }
 	float& GetmoveY() { return moveY; }
+
 private:
 	/// <summary>
 	/// 移動処理
@@ -39,6 +40,16 @@ private:
 	/// 地面衝突判定処理
 	/// </summary>
 	void GroundCollisionProcess();
+
+public:
+	/// <summary>
+	/// 地面に接した瞬間か
+	/// </summary>
+	/// <returns>成否</returns>
+	bool GetOnGrounding()
+	{
+		return onGround == true && onGround != oldOnGround;
+	}
 
 private: // メンバ変数
 
@@ -60,5 +71,6 @@ private: // メンバ変数
 	XMFLOAT3 move = {}; //移動量
 	float moveY = 0.0f; //ジャンプ及び重力
 	bool onGround = false;
+	bool oldOnGround = false;
 };
 
