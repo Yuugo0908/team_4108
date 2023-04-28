@@ -43,11 +43,14 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 		Recursive(object, levelData);
 	}
 
+	// モデルの読み込み
 	levelData->stageModel = levelData->stageModel->CreateFromObject("stage");
 	levelData->skydomeModel = levelData->skydomeModel->CreateFromObject("skydome");
 	levelData->boxModel = levelData->boxModel->CreateFromObject("box");
 	levelData->wallModel = levelData->wallModel->CreateFromObject("wall");
 	levelData->poleModel = levelData->poleModel->CreateFromObject("pole");
+
+	// fileNameを元に、使用するモデルを決める
 	levelData->models.insert(std::make_pair("stage", levelData->stageModel));
 	levelData->models.insert(std::make_pair("skydome", levelData->skydomeModel));
 	levelData->models.insert(std::make_pair("box", levelData->boxModel));
@@ -114,6 +117,12 @@ void LevelLoader::Recursive(nlohmann::json& object, LevelData* levelData)
 			objectData.size.m128_f32[1] = (float)collider["size"][1];
 			objectData.size.m128_f32[2] = (float)collider["size"][2];
 			objectData.size.m128_f32[3] = 0.0f;
+		}
+
+		// オブジェクトタイプの読み込み
+		if (object.contains("obj_type"))
+		{
+			objectData.objType = object["obj_type"];
 		}
 	}
 }
