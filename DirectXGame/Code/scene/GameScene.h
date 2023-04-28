@@ -58,7 +58,6 @@ private: // メンバ変数
 	Light* light = nullptr;
 
 	Rope* rope = nullptr;
-	Player* player = nullptr;
 	Enemy* enemy = nullptr;
 	// 複数生成用リスト
 	std::list<std::unique_ptr<Enemy>> enemys;
@@ -95,4 +94,12 @@ private: // メンバ変数
 	Particle* effectCircle2 = nullptr;
 	Particle* effectTarget = nullptr;
 	Particle* effectAvoid = nullptr;
+
+	//player
+	
+	
+	Player* player = nullptr;
+	//skydome
+	std::unique_ptr<Object3d> skydomeObj = nullptr;
+	Model* skydomeModel = nullptr;
 };

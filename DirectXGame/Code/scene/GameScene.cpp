@@ -18,7 +18,7 @@ void GameScene::Initialize()
 
 	// パーティクル生成
 	effectBox = Particle::Create(L"Resources/effectBox.png");
-
+	
 	//enemy->ModelInit();
 	//rope->Initialize();
 
@@ -33,6 +33,13 @@ void GameScene::Initialize()
 
 	// マウスカーソルを非表示
 	ShowCursor(false);
+
+	skydomeModel = skydomeModel->CreateFromObject("skydome");
+	skydomeObj = Object3d::Create();
+	skydomeObj->SetModel(skydomeModel);
+
+	player = new Player;
+	player->Initialize({ 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f});
 }
 
 void GameScene::Finalize()
@@ -43,14 +50,18 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	// マウスの移動範囲の制限
-	//mouse->CursorLimit();
+	skydomeObj->Update();
+	player->Update();
 }
 
 void GameScene::Draw()
 {
-	//SetImgui();
-
+	ImGui::Begin("config1");//ウィンドウの名前
+	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
+	ImGui::Text("moveY: %f", player->GetmoveY());
+	ImGui::Checkbox("onGround", &player->GetOnGround());
+	ImGui::End();
 #pragma region 背景画像描画
 	// 背景画像描画前処理
 	Image2d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
@@ -66,7 +77,8 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
-
+	skydomeObj->Draw();
+	player->GetObj().get()->Draw();
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
 #pragma endregion 3Dオブジェクト描画
