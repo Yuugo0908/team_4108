@@ -156,6 +156,7 @@
     <ClInclude Include="Code\input\Mouse.h" />
     <ClInclude Include="Code\json\LevelLoader.h" />
     <ClInclude Include="Code\math\Operator.h" />
+    <ClInclude Include="Code\math\Random.h" />
     <ClInclude Include="Code\postEffect\MultiRT.h" />
     <ClInclude Include="Code\postEffect\MultiTex.h" />
     <ClInclude Include="Code\postEffect\PostEffect.h" />

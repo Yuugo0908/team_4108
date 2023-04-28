@@ -314,6 +314,9 @@
     <ClInclude Include="Code\fbx\FbxObject3d.h">
       <Filter>ヘッダーファイル\fbx</Filter>
     </ClInclude>
+    <ClInclude Include="Code\math\Random.h">
+      <Filter>ヘッダーファイル\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

@@ -10,6 +10,7 @@
 #include "Audio.h"
 #include "BaseScene.h"
 #include "SafeDelete.h"
+#include "Particle.h"
 
 class TitleScene : public BaseScene
 {
@@ -39,6 +40,8 @@ private: // ƒƒ“ƒo•Ï”
 	// ‰æ‘œ
 	Image2d* fadeTex = nullptr;
 	Image2d* backGround = nullptr;
+
+	std::unique_ptr<Particle> jumpEffect = nullptr;
 
 	float alpha = 0.0f;
 	bool fadeIn = false;

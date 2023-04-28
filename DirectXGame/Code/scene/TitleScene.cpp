@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include <cassert>
 #include "SceneManager.h"
+#include <Random.h>
 
 void TitleScene::Initialize() {
 
@@ -19,6 +20,8 @@ void TitleScene::Initialize() {
 	backGround = Image2d::Create(backNum, { 0.0f,0.0f });
 	backGround->SetSize({ 1280.0f,720.0f });
 	backGround->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	jumpEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
 }
 
 void TitleScene::Finalize()
@@ -47,6 +50,21 @@ void TitleScene::Update()
 			}
 		}
 	}
+
+	if (keyboard->PushKey(DIK_RETURN))
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			XMFLOAT3 pos = { 0, 0, 0 };
+			XMFLOAT3 vel = { 0, 0, 0 };
+			XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(0, 100) - 50) / 1000, static_cast<float>(Random::GetRanNum(0, 10)) / 1000, 0 };
+			float startScale = 0.0f;
+			float endScale = 0.8f;
+			XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
+			XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+			jumpEffect->Add(15, pos, vel, acc, startScale, endScale, startColor, endColor);
+		}
+	}
 }
 
 void TitleScene::Draw()
@@ -68,6 +86,7 @@ void TitleScene::Draw()
 	Object3d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブクジェクトの描画
+	jumpEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
@@ -78,7 +97,7 @@ void TitleScene::Draw()
 	Image2d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 前景画像の描画
-
+	
 	fadeTex->Draw();
 
 	// デバッグテキストの描画

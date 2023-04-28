@@ -139,6 +139,9 @@ void Particle::Draw(ID3D12GraphicsCommandList * cmdList)
 		return;
 	}
 
+	// 更新
+	Update();
+
 	// nullptrチェック
 	assert(cmdList);
 
