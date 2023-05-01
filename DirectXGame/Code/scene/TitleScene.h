@@ -40,6 +40,10 @@ private: // メンバ変数
 	// 画像
 	Image2d* fadeTex = nullptr;
 	Image2d* backGround = nullptr;
+	std::unique_ptr<Particle> takeOBJ = nullptr;
+
+	// 取得時のパーティクル
+	std::unique_ptr<Particle> takeEffect = nullptr;
 
 	float alpha = 0.0f;
 	bool fadeIn = false;
