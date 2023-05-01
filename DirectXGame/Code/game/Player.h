@@ -18,10 +18,6 @@ public: // メンバ関数
 	void Update();
 	// オブジェクト
 	const std::unique_ptr<Object3d>& GetObj() { return playerObj; }
-	
-	//Geter
-	bool& GetOnGround() { return onGround; }
-	float& GetmoveY() { return moveY; }
 
 private:
 	/// <summary>
@@ -42,6 +38,10 @@ private:
 	void GroundCollisionProcess();
 
 public:
+
+	//Geter
+	bool& GetOnGround() { return onGround; }
+	float& GetmoveY() { return moveY; }
 	/// <summary>
 	/// 地面に接した瞬間か
 	/// </summary>
