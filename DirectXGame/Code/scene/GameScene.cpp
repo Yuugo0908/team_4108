@@ -77,6 +77,8 @@ void GameScene::Draw()
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
 	ImGui::Text("moveY: %f", player->GetmoveY());
+	ImGui::Text("headPosX: %f", player->GetHeadPos().x);
+	ImGui::Text("headInjectPosX: %f", player->GetHeadInjectPos().x);
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::End();
 #pragma region 背景画像描画
@@ -96,6 +98,7 @@ void GameScene::Draw()
 
 	skydomeObj->Draw();
 	player->GetObj().get()->Draw();
+	player->GetHedObj().get()->Draw();
 	jumpEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
