@@ -59,7 +59,7 @@ void TitleScene::Update()
 		XMFLOAT3 pos = {};
 		XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
 		XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-		takeEffect->Add(5, pos, { 0, 0, 0 }, { 0, 0, 0 }, 1.0f, 0.0f, startColor, endColor);
+		takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 2.0f, 0.0f, startColor, endColor);
 	}
 }
 
