@@ -44,18 +44,10 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	}
 
 	// モデルの読み込み
-	levelData->stageModel = levelData->stageModel->CreateFromObject("stage");
-	levelData->skydomeModel = levelData->skydomeModel->CreateFromObject("skydome");
-	levelData->boxModel = levelData->boxModel->CreateFromObject("box");
-	levelData->wallModel = levelData->wallModel->CreateFromObject("wall");
-	levelData->poleModel = levelData->poleModel->CreateFromObject("pole");
+	levelData->planeModel = levelData->planeModel->CreateFromObject("plane");
 
 	// fileNameを元に、使用するモデルを決める
-	levelData->models.insert(std::make_pair("stage", levelData->stageModel));
-	levelData->models.insert(std::make_pair("skydome", levelData->skydomeModel));
-	levelData->models.insert(std::make_pair("box", levelData->boxModel));
-	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
-	levelData->models.insert(std::make_pair("pole", levelData->poleModel));
+	levelData->models.insert(std::make_pair("plane", levelData->planeModel));
 
 	return levelData;
 }
