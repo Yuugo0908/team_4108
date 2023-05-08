@@ -79,7 +79,8 @@ private: // メンバ変数
 	};
 
 	// jsonオブジェクト
-	std::vector<std::unique_ptr<Object3d>> jsonObject{};
+	std::vector<std::unique_ptr<Object3d>> mapObject{};
+	int mapNumber = 1;
 
 	// 画像
 	Image2d* fadeTex = nullptr;
@@ -98,9 +99,8 @@ private: // メンバ変数
 	std::unique_ptr<Particle> jumpEffect = nullptr;
 
 	//player
-	
-	
 	Player* player = nullptr;
+
 	//skydome
 	std::unique_ptr<Object3d> skydomeObj = nullptr;
 	Model* skydomeModel = nullptr;

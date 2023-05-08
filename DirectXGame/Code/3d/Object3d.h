@@ -90,9 +90,9 @@ public: // メンバ関数
 	// 色の設定
 	void SetColor(XMFLOAT4 color) { this->color = color; }
 	// オブジェクトのタイプ設定
-	void SetType(int type) { this->type = type; }
+	void SetType(std::string type) { this->type = type; }
 	// オブジェクトタイプの取得
-	const int& GetType() { return type; }
+	const std::string& GetType() { return type; }
 	// 描画フラグの設定
 	void SetDrawFlag(bool dFlag) { drawFlag = dFlag; }
 	// 描画フラグの取得
@@ -119,7 +119,7 @@ private: // メンバ変数
 	Object3d* parent = nullptr;
 	Model* model = nullptr;
 	// オブジェクトタイプ
-	int type = 0;
+	std::string type;
 	// コリジョンスケール
 	XMFLOAT3 collisionScale = {};
 	// 描画フラグ

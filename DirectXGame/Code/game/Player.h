@@ -8,20 +8,33 @@
 #include "Camera.h"
 #include "Particle.h"
 #include "DirectXCommon.h"
-
 class Player
 {
+public:
+	enum HeadState
+	{
+		STATE_NORMAL,
+		STATE_INJECTION,
+		STATE_BITE,
+		STATE_BACK
+	};
+
+	enum HeadInjectionState
+	{
+		STATE_NULL,
+		STATE_MOVE,
+		STATE_BITEHIT,
+		STATE_UNBITEHIT,
+	};
+
 public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
 	// 更新処理
-	void Update();
+	void Update(std::vector<std::unique_ptr<Object3d>> &mapObjects);
 	// オブジェクト
 	const std::unique_ptr<Object3d>& GetObj() { return playerObj; }
-	
-	//Geter
-	bool& GetOnGround() { return onGround; }
-	float& GetmoveY() { return moveY; }
+	const std::unique_ptr<Object3d>& GetHedObj() { return playerHedObj; }
 
 private:
 	/// <summary>
@@ -39,9 +52,51 @@ private:
 	/// <summary>
 	/// 地面衝突判定処理
 	/// </summary>
-	void GroundCollisionProcess();
+	void GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭射出処理
+	/// </summary>
+	void HeadInjectionProcess();
+	/// <summary>
+	/// 頭射出移動処理
+	/// </summary>
+	void HeadInjectionMoveProcess();
+	/// <summary>
+	/// 噛みつけるか判定
+	/// </summary>
+	void HeadBiteCollisionProcess();
+	/// <summary>
+	/// 頭戻る処理
+	/// </summary>
+	void HeadBackMoveProcess();
+	/// <summary>
+	/// 噛みつき処理
+	/// </summary>
+	void HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭更新処理
+	/// </summary>
+	void HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭当たり判定処理
+	/// </summary>
+	/// <returns>頭の当たり判定結果</returns>
+	HeadInjectionState HeadCollision(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭とブロックの当たり判定
+	/// </summary>
+	/// <returns>当たり判定</returns>
+	bool HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 
+	bool TimeCheck(float& time);
 public:
+
+	//Geter
+	bool& GetOnGround() { return onGround; }
+	float& GetmoveY() { return moveY; }
+	XMFLOAT3& GetHeadPos() { return hPos; }
+	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
+	float& GetBiteTimer() { return biteTimer; }
 	/// <summary>
 	/// 地面に接した瞬間か
 	/// </summary>
@@ -61,9 +116,16 @@ private: // メンバ変数
 	// モデル
 	Model* playerModel = nullptr;
 	std::unique_ptr<Object3d> playerObj = nullptr;
+	std::unique_ptr<Object3d> playerHedObj = nullptr;
 
 	// プレイヤー
-	XMFLOAT3 pPos = {};//座標
+	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f}; //向き
+	XMFLOAT3 objPos = {}; //描画専用体座標
+	XMFLOAT3 pPos = {};//体座標
+	XMFLOAT3 oldpPos = {};
+	XMFLOAT3 hPos = {};//頭座標
+	XMFLOAT3 headInjectDis = {}; //頭射出後位置
+	XMFLOAT3 headBackDis = {}; //頭戻り量
 	XMFLOAT3 pPosOld = {};
 	XMFLOAT3 pScale = {};//大きさ
 	XMFLOAT3 pRot = {};//回転
@@ -72,5 +134,8 @@ private: // メンバ変数
 	float moveY = 0.0f; //ジャンプ及び重力
 	bool onGround = false;
 	bool oldOnGround = false;
+	HeadState headState = STATE_NORMAL;
+	int hitMapObjNum = 0;
+	float biteTimer = 5.0f;
 };
 

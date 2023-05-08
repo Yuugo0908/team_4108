@@ -113,12 +113,12 @@ private: // メンバ変数
 	// 視点座標保存用
 	XMFLOAT3 saveEye = {};
 	// 視点座標
-	XMFLOAT3 eye = { 0, 5.0f, -15.0f };
+	XMFLOAT3 eye = { 0, 80.0f, -156.0f };
 	// 視点のY座標の最小と最大
 	const float eyeMin = 0.0f;
 	const float eyeMax = 20.0f;
 	// 注視点座標
-	XMFLOAT3 target = { 0, 0, 0 };
+	XMFLOAT3 target = { 0, 80, 0 };
 	// 上方向ベクトル
 	XMFLOAT3 up = { 0, 1, 0 };
 	// カメラと対象物までの距離
@@ -138,5 +138,4 @@ private: // メンバ変数
 	// 注視点から視点へのベクトルと、上方向ベクトル
 	XMVECTOR vTargetEye = {};
 	XMVECTOR vUp = {};
-
 };

@@ -35,26 +35,29 @@ void GameScene::Initialize()
 	//Bgm->PlayWave("Resources/BGM/bgm.wav", 255, 0.08f);
 
 	// マウスカーソルを非表示
-	ShowCursor(false);
+	//ShowCursor(false);
 
 	skydomeModel = skydomeModel->CreateFromObject("skydome");
 	skydomeObj = Object3d::Create();
 	skydomeObj->SetModel(skydomeModel);
+	skydomeObj->SetScale({7.0f, 5.0f, 5.0f});
 
 	player = new Player;
-	player->Initialize({ 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f});
+	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
+
+	jsonObjectInit("map1");
 }
 
 void GameScene::Finalize()
 {
 	// マウスカーソルを表示
-	ShowCursor(true);
+	//ShowCursor(true);
 }
 
 void GameScene::Update()
 {
 	skydomeObj->Update();
-	player->Update();
+	player->Update(mapObject);
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -69,6 +72,25 @@ void GameScene::Update()
 			jumpEffect->Add(10, pos, vel, acc, 0.0f, 1.0f, startColor, endColor);
 		}
 	}
+
+	if (keyboard->TriggerKey(DIK_Z))
+	{
+		mapObject.erase(mapObject.begin(), mapObject.end());
+		levelData = nullptr;
+
+		if (mapNumber == 1)
+		{
+			mapNumber = 2;
+			jsonObjectInit("map2");
+		}
+		else if (mapNumber == 2)
+		{
+			mapNumber = 1;
+			jsonObjectInit("map1");
+		}
+	}
+
+	jsonObjectUpdate();
 }
 
 void GameScene::Draw()
@@ -77,6 +99,9 @@ void GameScene::Draw()
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
 	ImGui::Text("moveY: %f", player->GetmoveY());
+	ImGui::Text("headPosX: %f", player->GetHeadPos().x);
+	ImGui::Text("headInjectPosX: %f", player->GetHeadInjectPos().x);
+	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::End();
 #pragma region 背景画像描画
@@ -94,8 +119,19 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
+	// 3Dオブジェクト描画
 	skydomeObj->Draw();
 	player->GetObj().get()->Draw();
+	player->GetHedObj().get()->Draw();
+
+	// マップオブジェクト描画
+	for (auto& object : mapObject)
+	{
+		object->Draw();
+	}
+
+	// パーティクル描画
+	// パーティクルの描画を先にするとエラーが発生するので注意(原因不明)
 	jumpEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
@@ -121,52 +157,6 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 	// レベルデータからオブジェクトを生成、配置
 	for (LevelData::ObjectData& objectData : levelData->objects)
 	{
-		if (objectData.fileName == "player")
-		{
-			// 座標
-			XMFLOAT3 pos;
-			XMStoreFloat3(&pos, objectData.trans);
-			// 大きさ
-			XMFLOAT3 scale;
-			XMStoreFloat3(&scale, objectData.scale);
-			// 当たり判定
-			XMFLOAT3 size;
-			XMStoreFloat3(&size, objectData.size);
-
-			// プレイヤーを生成
-			player->Initialize(pos, scale);
-			//pPos = player->GetObj()->GetPosition();
-			player->GetObj()->SetCollisionScale(size);
-			// カメラの設定
-			camera->Reset();
-			//camera->SetTarget(pPos);
-			camera->Update();
-			continue;
-		}
-
-		if (objectData.fileName == "enemy")
-		{
-			// 座標
-			XMFLOAT3 pos;
-			XMStoreFloat3(&pos, objectData.trans);
-			// 大きさ
-			XMFLOAT3 scale;
-			XMStoreFloat3(&scale, objectData.scale);
-			// 当たり判定
-			XMFLOAT3 size;
-			XMStoreFloat3(&size, objectData.size);
-
-			// エネミーを生成
-			std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>();
-			newEnemy->Initialize(player);
-			newEnemy->GetObj()->SetPosition(pos);
-			newEnemy->GetObj()->SetScale(scale);
-			newEnemy->GetObj()->SetCollisionScale(size);
-			enemys.push_back(std::move(newEnemy));
-			//enemyCount++;
-			continue;
-		}
-
 		// 3Dオブジェクトを生成
 		std::unique_ptr<Object3d> newObject = Object3d::Create();
 
@@ -200,37 +190,27 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		XMStoreFloat3(&colScale, objectData.size);
 		newObject->SetCollisionScale(colScale);
 
-		if (objectData.fileName == "stage")
-		{
-			newObject->SetType(stage_);
-		}
-		else if (objectData.fileName == "box")
-		{
-			newObject->SetType(box_);
-		}
-		else if (objectData.fileName == "wall")
-		{
-			newObject->SetType(wall_);
-		}
-		else if (objectData.fileName == "pole")
-		{
-			newObject->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
-			newObject->SetType(pole_);
-		}
-		else if (objectData.fileName == "skydome")
-		{
-			newObject->SetType(skydome_);
-		}
+		// オブジェクトのタイプをセット
+		newObject->SetType(objectData.objType);
 
 		// 配列に登録
-		jsonObject.push_back(std::move(newObject));
+		mapObject.push_back(std::move(newObject));
 	}
 }
 
 void GameScene::jsonObjectUpdate()
 {
-	for (auto& object : jsonObject)
+	for (auto& object : mapObject)
 	{
-		object->Update();
+		// オブジェクトごとに処理を変えて更新する
+		if (object->GetType() == "Ground")
+		{
+			object->Update();
+		}
+		// 嚙みつけるオブジェクトとして使ってもらえればと
+		else if (object->GetType() == "box")
+		{
+			object->Update();
+		}
 	}
 }
