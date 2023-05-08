@@ -43,7 +43,7 @@ void GameScene::Initialize()
 	skydomeObj->SetScale({7.0f, 5.0f, 5.0f});
 
 	player = new Player;
-	player->Initialize({ 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f});
+	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
 
 	jsonObjectInit("map1");
 }
@@ -57,7 +57,7 @@ void GameScene::Finalize()
 void GameScene::Update()
 {
 	skydomeObj->Update();
-	player->Update();
+	player->Update(mapObject);
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -101,6 +101,7 @@ void GameScene::Draw()
 	ImGui::Text("moveY: %f", player->GetmoveY());
 	ImGui::Text("headPosX: %f", player->GetHeadPos().x);
 	ImGui::Text("headInjectPosX: %f", player->GetHeadInjectPos().x);
+	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::End();
 #pragma region 背景画像描画

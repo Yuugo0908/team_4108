@@ -8,7 +8,6 @@
 #include "Camera.h"
 #include "Particle.h"
 #include "DirectXCommon.h"
-
 class Player
 {
 public:
@@ -20,11 +19,19 @@ public:
 		STATE_BACK
 	};
 
+	enum HeadInjectionState
+	{
+		STATE_NULL,
+		STATE_MOVE,
+		STATE_BITEHIT,
+		STATE_UNBITEHIT,
+	};
+
 public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
 	// 更新処理
-	void Update();
+	void Update(std::vector<std::unique_ptr<Object3d>> &mapObjects);
 	// オブジェクト
 	const std::unique_ptr<Object3d>& GetObj() { return playerObj; }
 	const std::unique_ptr<Object3d>& GetHedObj() { return playerHedObj; }
@@ -45,7 +52,7 @@ private:
 	/// <summary>
 	/// 地面衝突判定処理
 	/// </summary>
-	void GroundCollisionProcess();
+	void GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 	/// <summary>
 	/// 頭射出処理
 	/// </summary>
@@ -65,12 +72,23 @@ private:
 	/// <summary>
 	/// 噛みつき処理
 	/// </summary>
-	void HeadBiteProcess();
+	void HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 	/// <summary>
 	/// 頭更新処理
 	/// </summary>
-	void HeadUpdateProcess();
+	void HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭当たり判定処理
+	/// </summary>
+	/// <returns>頭の当たり判定結果</returns>
+	HeadInjectionState HeadCollision(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 頭とブロックの当たり判定
+	/// </summary>
+	/// <returns>当たり判定</returns>
+	bool HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 
+	bool TimeCheck(float& time);
 public:
 
 	//Geter
@@ -78,6 +96,7 @@ public:
 	float& GetmoveY() { return moveY; }
 	XMFLOAT3& GetHeadPos() { return hPos; }
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
+	float& GetBiteTimer() { return biteTimer; }
 	/// <summary>
 	/// 地面に接した瞬間か
 	/// </summary>
@@ -101,7 +120,9 @@ private: // メンバ変数
 
 	// プレイヤー
 	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f}; //向き
+	XMFLOAT3 objPos = {}; //描画専用体座標
 	XMFLOAT3 pPos = {};//体座標
+	XMFLOAT3 oldpPos = {};
 	XMFLOAT3 hPos = {};//頭座標
 	XMFLOAT3 headInjectDis = {}; //頭射出後位置
 	XMFLOAT3 headBackDis = {}; //頭戻り量
@@ -114,5 +135,7 @@ private: // メンバ変数
 	bool onGround = false;
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
+	int hitMapObjNum = 0;
+	float biteTimer = 5.0f;
 };
 
