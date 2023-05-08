@@ -33,16 +33,16 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	MoveProcess();
-	GravityProcess();
 	//ˆÚ“®’l‰ÁŽZ
-	oldpPos = pPos;
+	GravityProcess();
 	pPos = pPos + move;
 	hPos = hPos + move;
-	
 	GroundCollisionProcess(mapObjects);
+	
 
 	HeadUpdateProcess(mapObjects);
 
+	oldpPos = playerObj->GetPosition();
 	//OBJXVˆ—
 	playerObj->SetPosition(pPos);
 	playerObj->Update();
@@ -99,27 +99,21 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 {
 	oldOnGround = onGround;
 
-	if (pPos.y > 10.0f) return;
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(),
+			pPos, { 5.0f, 1.0f, 5.0f }, oldpPos) == true)
+		{
+			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
+			//hPos.y = mapObjects[i].get()->GetPosition().y + (mapObjects[i].get()->GetScale().z) + pScale.z;
+			move.y = 0.0f;
+			onGround = true;
+			moveY = 0.0f;
+			return;
+		}
+	}
 
-	//for (int i = 0; i < mapObjects.size(); i++)
-	//{
-	//	if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(),
-	//		pPos, { 2.5f, 2.5f, 2.5f }, oldpPos) == true)
-	//	{
-	//		pPos.y = mapObjects[i].get()->GetPosition().y + (mapObjects[i].get()->GetScale().y * 2) + pScale.y;
-	//		hPos.y = mapObjects[i].get()->GetPosition().y + (mapObjects[i].get()->GetScale().y * 2) + pScale.y;
-	//		onGround = true;
-	//		moveY = 0.0f;
-	//		return;
-	//	}
-	//}
-	
-	hPos.y = 10.0f;
-	pPos.y = 10.0f;
-	onGround = true;
-	moveY = 0.0f;
-	return;	
-
+	onGround = false;
 }
 
 void Player::HeadInjectionProcess()
