@@ -113,7 +113,7 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 		}
 	}
 
-	onGround = false;
+	//onGround = false;
 }
 
 void Player::HeadInjectionProcess()
@@ -242,7 +242,7 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<std::unique_ptr<Obj
 	if (HradBlockCollisionCheck(mapObjects) == true)
 	{
 		//“–‚½‚Á‚Ä‚¢‚éƒuƒƒbƒN‚ÍŠš‚Ý‚Â‚¯‚é‚©
-		if (mapObjects[hitMapObjNum].get()->GetType() == "Ground")
+		if (mapObjects[hitMapObjNum].get()->GetType() == "box")
 		{
 			return STATE_BITEHIT;
 		}
