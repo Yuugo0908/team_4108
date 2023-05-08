@@ -101,11 +101,9 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(),
-			pPos, { 5.0f, 1.0f, 5.0f }, oldpPos) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
 		{
 			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
-			//hPos.y = mapObjects[i].get()->GetPosition().y + (mapObjects[i].get()->GetScale().z) + pScale.z;
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;

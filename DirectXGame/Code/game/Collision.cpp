@@ -213,73 +213,17 @@ bool Collision::CollisionRayBox(const XMFLOAT3 startPos, const XMFLOAT3 endPos, 
 	return false;
 }
 
-bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, XMFLOAT3& pos, const XMFLOAT3 radius, XMFLOAT3 oldPos)
+bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, XMFLOAT3& pos, const XMFLOAT3 radius)
 {
-	//マップチップ
-	//X, Y
-	XMFLOAT3 mapPos = {};
-	//Radius
-	XMFLOAT3 mapRadius = {};
+	float lengthX = static_cast<float>(fabs(boxPos.x - pos.x));
+	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
 
-	//フラグ
-	bool hitFlag = false;
-
-	mapPos = boxPos;
-	mapRadius = boxRadius;
-
-	// 判定
-	float maxMapX = mapPos.x + mapRadius.x;
-	float minMapX = mapPos.x - mapRadius.x;
-	float maxMapY = mapPos.y + mapRadius.y;
-	float minMapY = mapPos.y - mapRadius.y;
-	float maxMapZ = mapPos.z + mapRadius.z;
-	float minMapZ = mapPos.z - mapRadius.z;
-
-	if ((pos.x <= maxMapX && pos.x >= minMapX) &&
-		(pos.y <= maxMapY && pos.y >= minMapY))
+	if (lengthX <= boxRadius.x + radius.x && lengthY <= boxRadius.z + radius.z)
 	{
-		if (maxMapZ + radius.z > pos.z && mapPos.z < oldPos.z)
-		{
-			pos.z = maxMapZ + radius.z;
-			hitFlag = true;
-		}
-		else if (minMapZ - radius.z < pos.z && mapPos.z > oldPos.z)
-		{
-			pos.z = minMapZ - radius.z;
-			hitFlag = true;
-		}
+		return true;
 	}
 
-	if ((pos.z <= maxMapZ && pos.z >= minMapZ) &&
-		(pos.y <= maxMapY && pos.y >= minMapY))
-	{
-		if (maxMapX + radius.x > pos.x && mapPos.x < oldPos.x)
-		{
-			pos.x = maxMapX + radius.x;
-			hitFlag = true;
-		}
-		else if (minMapX - radius.x < pos.x && mapPos.x > oldPos.x)
-		{
-			pos.x = minMapX - radius.x;
-			hitFlag = true;
-		}
-	}
-
-	if ((pos.x <= maxMapX && pos.x >= minMapX) &&
-		(pos.z <= maxMapZ && pos.z >= minMapZ))
-	{
-		if (maxMapY + radius.y > pos.y && mapPos.y < oldPos.y)
-		{
-			pos.y = maxMapY + radius.y;
-			hitFlag = true;
-		}
-		else if (minMapY - radius.y < pos.y && mapPos.y > oldPos.y)
-		{
-			pos.y = minMapY - radius.y;
-			hitFlag = true;
-		}
-	}
-	return hitFlag;
+	return false;
 }
 
 bool Collision::CollisionStage(const XMFLOAT3 stagePos, const XMFLOAT3 stageRadius, XMFLOAT3& pos, const XMFLOAT3 radius, XMFLOAT3 oldPos)

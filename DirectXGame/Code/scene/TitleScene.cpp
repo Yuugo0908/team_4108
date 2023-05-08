@@ -20,6 +20,11 @@ void TitleScene::Initialize() {
 	backGround = Image2d::Create(backNum, { 0.0f,0.0f });
 	backGround->SetSize({ 1280.0f,720.0f });
 	backGround->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	takeOBJ.reset(Particle::Create(L"Resources/effectCircle.png"));
+
+	// 取得時のパーティクル
+	takeEffect.reset(Particle::Create(L"Resources/effectCircle2.png"));
 }
 
 void TitleScene::Finalize()
@@ -48,6 +53,14 @@ void TitleScene::Update()
 			}
 		}
 	}
+
+	if (keyboard->TriggerKey(DIK_RETURN) == true)
+	{
+		XMFLOAT3 pos = {};
+		XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
+		XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+		takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 2.0f, 0.0f, startColor, endColor);
+	}
 }
 
 void TitleScene::Draw()
@@ -69,7 +82,9 @@ void TitleScene::Draw()
 	Object3d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブクジェクトの描画
-	
+	takeOBJ->Draw(DirectXCommon::GetInstance()->GetCommandList());
+
+	takeEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
