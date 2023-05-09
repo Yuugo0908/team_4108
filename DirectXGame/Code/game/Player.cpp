@@ -12,8 +12,7 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 	pPos = pos;
 	pScale = scale;
 	reSpawnPos = pos;
-	objPos = pPos;
-	objPos.y += pScale.z; //objモデル注意
+	hPos = pPos;
 
 	playerObj->SetPosition(pPos);
 	playerObj->SetScale(pScale);
@@ -38,7 +37,7 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	pPos = pPos + move;
 	hPos = hPos + move;
 	GroundCollisionProcess(mapObjects);
-	
+	BlockCollisionProcess(mapObjects);
 
 	HeadUpdateProcess(mapObjects);
 
@@ -60,13 +59,19 @@ void Player::MoveProcess()
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
+		bodyState = STATE_BODY_MOVE;
 		move.x += 1.0f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
+		bodyState = STATE_BODY_MOVE;
 		move.x -= 1.0f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
+	}
+	else
+	{
+		bodyState = STATE_BODY_NORMAL;
 	}
 
 	//ジャンプ処理
@@ -79,13 +84,16 @@ void Player::JumpProcess()
 
 	if (keyboard->TriggerKey(DIK_SPACE))
 	{
+		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
-		moveY = 2.25;
+		moveY = 1.50f;
 	}
 }
 
 void Player::GravityProcess()
 {
+	if (headState == STATE_INJECTION) return;
+
 	if (onGround != false) return;
 	//下向き加速度
 	const float fallAcc = -0.1f;
@@ -93,17 +101,30 @@ void Player::GravityProcess()
 	//加速
 	moveY = max(moveY + fallAcc, fallVYMin);
 	move.y = moveY;
+
+	if (moveY >= 0.0f)
+	{
+		bodyState = STATE_BODY_JUMP_UP;
+	}
+	else
+	{
+		bodyState = STATE_BODY_JUMP_DOWN;
+	}
+
 }
 
 void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	oldOnGround = onGround;
 
+	if (bodyState == STATE_BODY_JUMP_UP) return;
+
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
 		{
-			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
+  			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
+			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (hPos.y - pScale.z);
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;
@@ -111,7 +132,30 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 		}
 	}
 
-	//onGround = false;
+	onGround = false;
+}
+
+void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	//少数補正値
+	float correction = 0.01f;
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
+		{
+			if (move.x <= 0.0f)
+			{
+				pPos.x += (mapObjects[i].get()->GetPosition().x + mapObjects[i].get()->GetScale().x) - (pPos.x - pScale.x) + correction;
+				hPos.x += (mapObjects[i].get()->GetPosition().x + mapObjects[i].get()->GetScale().x) - (hPos.x - pScale.x) + correction;
+			}
+			else if(move.x > 0.0f)
+			{
+				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
+				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
+			}
+		}
+	}
 }
 
 void Player::HeadInjectionProcess()

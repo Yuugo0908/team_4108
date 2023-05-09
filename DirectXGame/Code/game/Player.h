@@ -11,6 +11,14 @@
 class Player
 {
 public:
+	enum BodyState
+	{
+		STATE_BODY_NORMAL,
+		STATE_BODY_JUMP_UP,
+		STATE_BODY_JUMP_DOWN,
+		STATE_BODY_MOVE
+	};
+
 	enum HeadState
 	{
 		STATE_NORMAL,
@@ -50,9 +58,14 @@ private:
 	/// </summary>
 	void GravityProcess();
 	/// <summary>
-	/// 地面衝突判定処理
+	/// 地面Y軸衝突判定処理
 	/// </summary>
 	void GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 地形ブロックX軸衝突処理
+	/// </summary>
+	/// <param name="mapObjects">マップのブロック</param>
+	void BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 	/// <summary>
 	/// 頭射出処理
 	/// </summary>
@@ -94,6 +107,7 @@ public:
 	//Geter
 	bool& GetOnGround() { return onGround; }
 	float& GetmoveY() { return moveY; }
+	XMFLOAT3& GetBodyPos() { return pPos; }
 	XMFLOAT3& GetHeadPos() { return hPos; }
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
 	float& GetBiteTimer() { return biteTimer; }
@@ -135,6 +149,7 @@ private: // メンバ変数
 	bool onGround = false;
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
+	BodyState bodyState = STATE_BODY_NORMAL;
 	int hitMapObjNum = 0;
 	float biteTimer = 5.0f;
 };
