@@ -28,7 +28,10 @@ struct LevelData
 	std::vector<ObjectData> objects;
 
 	// ƒ‚ƒfƒ‹ƒŠƒXƒg
-	Model* planeModel = nullptr;
+	Model* biteModel = nullptr;
+	Model* wallModel = nullptr;
+	Model* floorModel = nullptr;
+	Model* checkPointModel = nullptr;
 	std::map<std::string, Model*> models;
 };
 

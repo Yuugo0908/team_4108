@@ -212,5 +212,10 @@ void GameScene::jsonObjectUpdate()
 		{
 			object->Update();
 		}
+		// 触れるとステージリセット
+		else if (object->GetType() == "checkPoint")
+		{
+			object->Update();
+		}
 	}
 }

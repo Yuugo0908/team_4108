@@ -98,6 +98,11 @@ public: // メンバ関数
 	// 描画フラグの取得
 	const bool& GetDrawFlag() { return drawFlag; }
 
+	// かみつけるフラグの取得
+	const bool& GetBiteFlag() { return biteFlag; }
+	// 壊せるフラグの取得
+	const bool& GetBreakFlag() { return breakFlag; }
+
 	// レベルエディタ用 当たり判定スケール設定
 	void SetCollisionScale(XMFLOAT3 collisionScale) { this->collisionScale = collisionScale; }
 	// レベルエディタ用 当たり判定スケール取得
@@ -124,4 +129,8 @@ private: // メンバ変数
 	XMFLOAT3 collisionScale = {};
 	// 描画フラグ
 	bool drawFlag = true;
+	// かみつけるフラグ
+	bool biteFlag = false;
+	// 壊せるフラグ
+	bool breakFlag = false;
 };
