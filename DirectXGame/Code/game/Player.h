@@ -24,7 +24,8 @@ public:
 		STATE_NORMAL,
 		STATE_INJECTION,
 		STATE_BITE,
-		STATE_BACK
+		STATE_BACK,
+		STATE_INJECTIONLOCK
 	};
 
 	enum HeadInjectionState
@@ -145,6 +146,7 @@ private: // メンバ変数
 	XMFLOAT3 pRot = {};//回転
 	XMFLOAT3 reSpawnPos = {};
 	XMFLOAT3 move = {}; //移動量
+	XMFLOAT3 direction = {}; //向いている方向
 	float moveY = 0.0f; //ジャンプ及び重力
 	bool onGround = false;
 	bool oldOnGround = false;
@@ -152,5 +154,7 @@ private: // メンバ変数
 	BodyState bodyState = STATE_BODY_NORMAL;
 	int hitMapObjNum = 0;
 	float biteTimer = 5.0f;
+	float timeMax = 1.0f;
+	float moveTime = 1.0f;
 };
 
