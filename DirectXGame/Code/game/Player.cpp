@@ -36,8 +36,9 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	GravityProcess();
 	pPos = pPos + move;
 	hPos = hPos + move;
-	GroundCollisionProcess(mapObjects);
 	BlockCollisionProcess(mapObjects);
+	GroundCollisionProcess(mapObjects);
+	
 
 	HeadUpdateProcess(mapObjects);
 
@@ -86,7 +87,7 @@ void Player::JumpProcess()
 	{
 		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
-		moveY = 1.50f;
+		moveY = 2.75f;
 	}
 }
 
@@ -160,7 +161,7 @@ void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapOb
 
 void Player::HeadInjectionProcess()
 {
-	XMFLOAT3 hInjectDis = { 40.0f, 0.0f, 0.0f };
+	XMFLOAT3 hInjectDis = { 80.0f, 0.0f, 0.0f };
 	
 	if (keyboard->PushKey(DIK_RETURN))
 	{
@@ -172,7 +173,7 @@ void Player::HeadInjectionProcess()
 
 void Player::HeadInjectionMoveProcess()
 {
-	float disVal = 0.5f;
+	float disVal = 2.0f;
 
 	if (headInjectDis.x > 0.0f)
 	{
@@ -188,7 +189,7 @@ void Player::HeadInjectionMoveProcess()
 
 void Player::HeadBackMoveProcess()
 {
-	float disVal = 0.5f;
+	float disVal = 2.0f;
 
 	if (hPos.x < pPos.x)
 	{
