@@ -77,7 +77,7 @@ void Player::JumpProcess()
 {
 	if (onGround != true) return;
 
-	if (keyboard->TriggerKey(DIK_SPACE))
+	if (controller->GetPadState(Controller::State::A, Controller::Type::NONE) || keyboard->TriggerKey(DIK_SPACE))
 	{
 		onGround = false;
 		moveY = 2.25;
