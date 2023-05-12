@@ -13,8 +13,8 @@ void GameScene::Initialize()
 	{
 		assert(0);
 	}
-	fadeTex = Image2d::Create(fadeNum, { 0.0f,0.0f });
-	fadeTex->SetSize({ 1280.0f,720.0f });
+	fadeTex = Image2d::Create(fadeNum, { 0.0f, 0.0f });
+	fadeTex->SetSize({ 1280.0f, 720.0f });
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 
 	// パーティクル生成
