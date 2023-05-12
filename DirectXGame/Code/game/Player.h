@@ -39,6 +39,7 @@ public:
 	enum BodyCollsionState
 	{
 		BODYSTATE_NULL,
+		BODYSTATE_CEILING_COLISION,
 		BODYSTATE_X_COLISION,
 		BODYSTATE_Y_COLISION,
 		BODYSTATE_XY_COLISION
@@ -75,6 +76,11 @@ private:
 	/// </summary>
 	/// <param name="mapObjects">マップのブロック</param>
 	void BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 天井に関してのブロック衝突判定
+	/// </summary>
+	/// <param name="mapObjects">マップのブロック</param>
+	void CeilingBlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 	/// <summary>
 	/// 頭射出処理
 	/// </summary>

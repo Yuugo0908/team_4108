@@ -43,7 +43,9 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	GravityProcess();
 	pPos = pPos + move;
 	hPos = hPos + move;
+	
 	BlockCollisionProcess(mapObjects);
+	CeilingBlockCollisionProcess(mapObjects);
 	GroundCollisionProcess(mapObjects);
 	
 
@@ -138,13 +140,12 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
 		{
 			//X軸方向で当たり判定が発生したブロックは処理をしない
-			if (bodyColState == BODYSTATE_X_COLISION && i == colisionBlockNum)
-			{
-				continue;
-			}
+			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
+			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
+			
 
-  			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().x) - (pPos.y - pScale.z);
-			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().x) - (hPos.y - pScale.z);
+  			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().y) - (pPos.y - pScale.z);
+			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().y) - (hPos.y - pScale.z);
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;
@@ -171,7 +172,7 @@ void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapOb
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
-			colisionBlockNum = i;
+ 			colisionBlockNum = i;
 
 			if (move.x <= 0.0f)
 			{
@@ -183,6 +184,27 @@ void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapOb
 				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
 				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
 			}
+			return;
+		}
+	}
+}
+
+void Player::CeilingBlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	//少数補正値
+	float correction = 0.1f;
+	if (bodyState == STATE_BODY_NORMAL || bodyState == STATE_BODY_MOVE) return;
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
+		{
+			if (pPos.y > mapObjects[i].get()->GetPosition().y) continue;
+
+			bodyColState = BODYSTATE_CEILING_COLISION;
+
+			pPos.y -= (pPos.y + pScale.z) - (mapObjects[i].get()->GetPosition().y - mapObjects[i].get()->GetScale().y);
+			hPos.y -= (hPos.y + pScale.z) - (mapObjects[i].get()->GetPosition().y - mapObjects[i].get()->GetScale().y);
 		}
 	}
 }
