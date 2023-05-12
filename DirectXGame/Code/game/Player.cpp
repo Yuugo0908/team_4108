@@ -12,8 +12,7 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 	pPos = pos;
 	pScale = scale;
 	reSpawnPos = pos;
-	objPos = pPos;
-	objPos.y += pScale.z; //objモデル注意
+	hPos = pPos;
 
 	playerObj->SetPosition(pPos);
 	playerObj->SetScale(pScale);
@@ -37,6 +36,7 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	GravityProcess();
 	pPos = pPos + move;
 	hPos = hPos + move;
+	BlockCollisionProcess(mapObjects);
 	GroundCollisionProcess(mapObjects);
 	
 
@@ -56,17 +56,25 @@ void Player::MoveProcess()
 	//移動値初期化
 	move = {};
 
-	if (headState != STATE_NORMAL) return;
+	if (headState == STATE_INJECTION) return;
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
+		bodyState = STATE_BODY_MOVE;
 		move.x += 1.0f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
+		direction.x = 1.0f;
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
+		bodyState = STATE_BODY_MOVE;
 		move.x -= 1.0f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
+		direction.x = -1.0f;
+	}
+	else
+	{
+		bodyState = STATE_BODY_NORMAL;
 	}
 
 	//ジャンプ処理
@@ -79,13 +87,16 @@ void Player::JumpProcess()
 
 	if (controller->GetPadState(Controller::State::A, Controller::Type::NONE) || keyboard->TriggerKey(DIK_SPACE))
 	{
+		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
-		moveY = 2.25;
+		moveY = 2.75f;
 	}
 }
 
 void Player::GravityProcess()
 {
+	if (headState == STATE_INJECTION) return;
+
 	if (onGround != false) return;
 	//下向き加速度
 	const float fallAcc = -0.1f;
@@ -93,20 +104,38 @@ void Player::GravityProcess()
 	//加速
 	moveY = max(moveY + fallAcc, fallVYMin);
 	move.y = moveY;
+
+	if (moveY >= 0.0f)
+	{
+		bodyState = STATE_BODY_JUMP_UP;
+	}
+	else
+	{
+		bodyState = STATE_BODY_JUMP_DOWN;
+	}
+
 }
 
 void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	oldOnGround = onGround;
 
+	if (bodyState == STATE_BODY_JUMP_UP) return;
+
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
 		{
-			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
+  			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
+			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (hPos.y - pScale.z);
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;
+
+			if (headState == STATE_INJECTIONLOCK)
+			{
+				headState = STATE_NORMAL;
+			}
 			return;
 		}
 	}
@@ -114,56 +143,69 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 	onGround = false;
 }
 
+void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	//少数補正値
+	float correction = 0.01f;
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
+		{
+			if (move.x <= 0.0f)
+			{
+				pPos.x += (mapObjects[i].get()->GetPosition().x + mapObjects[i].get()->GetScale().x) - (pPos.x - pScale.x) + correction;
+				hPos.x += (mapObjects[i].get()->GetPosition().x + mapObjects[i].get()->GetScale().x) - (hPos.x - pScale.x) + correction;
+			}
+			else if(move.x > 0.0f)
+			{
+				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
+				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i].get()->GetPosition().x - mapObjects[i].get()->GetScale().x) + correction;
+			}
+		}
+	}
+}
+
 void Player::HeadInjectionProcess()
 {
-	XMFLOAT3 hInjectDis = { 40.0f, 0.0f, 0.0f };
+	XMFLOAT3 hInjectDis = { 80.0f, 0.0f, 0.0f };
 	
 	if (keyboard->PushKey(DIK_RETURN))
 	{
-		headInjectDis = hInjectDis;
-		headBackDis = hInjectDis;
+		hInjectDis.x *= direction.x;
+		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
 	}
 }
 
 void Player::HeadInjectionMoveProcess()
 {
-	float disVal = 0.5f;
+	float time = timeMax - moveTime;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 
-	if (headInjectDis.x > 0.0f)
-	{
-		headInjectDis.x -= disVal;
-		hPos.x += pDirection.x * disVal;
-	}
-	else
+	if (TimeCheck(moveTime) == true)
 	{
 		//伸ばしきった時
+		moveTime = timeMax;
+		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
+
+	hPos = Easing::easeOut(pPos, headInjectDis, timeRate);
 }
 
 void Player::HeadBackMoveProcess()
 {
-	float disVal = 0.5f;
-
-	if (hPos.x < pPos.x)
+	float time = timeMax - moveTime;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+	
+	if (TimeCheck(moveTime) == true)
 	{
-		headBackDis.x = pPos.x - hPos.x;
-	}
-	else
-	{
-		headBackDis.x = hPos.x - pPos.x;
+		moveTime = timeMax;
+		headState = STATE_INJECTIONLOCK;
 	}
 
-	if (headBackDis.x > 0.0f)
-	{
-		headBackDis.x -= disVal;
-		hPos.x += -pDirection.x * disVal;
-	}
-	else
-	{
-		headState = STATE_NORMAL;
-	}
+	hPos = Easing::easeIn( headBackDis, pPos, timeRate);
 }
 
 void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
@@ -172,12 +214,14 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	////タイマー起動
 	if (TimeCheck(biteTimer) == true)
 	{
+		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
 
 	//噛み離す
 	if (keyboard->PushKey(DIK_P))
 	{
+		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
 
@@ -185,6 +229,7 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	if (keyboard->PushKey(DIK_O))
 	{
 		mapObjects.erase(mapObjects.begin() + hitMapObjNum);
+		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
 }
@@ -198,6 +243,7 @@ void Player::HeadBiteCollisionProcess()
 	}
 	else
 	{
+		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
 }
@@ -218,10 +264,14 @@ void Player::HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObject
 		{
 			biteTimer = 5.0f;
 			headState = STATE_BITE;
+			moveTime = timeMax;
 		}
 		else if (state == STATE_UNBITEHIT)
 		{
+			headBackDis = hPos;
 			headState = STATE_BACK;
+			moveY = 2.0f;
+			moveTime = timeMax;
 		}
 	}
 	else if (headState == STATE_BITE)
@@ -240,7 +290,7 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<std::unique_ptr<Obj
 	if (HradBlockCollisionCheck(mapObjects) == true)
 	{
 		//当たっているブロックは噛みつけるか
-		if (mapObjects[hitMapObjNum].get()->GetType() == "Ground")
+		if (mapObjects[hitMapObjNum].get()->GetType() == "box")
 		{
 			return STATE_BITEHIT;
 		}
@@ -260,7 +310,7 @@ bool Player::HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& map
 {
 	Collision::Sphere sphereA, sphereB;
 	sphereA.center = XMLoadFloat3(&hPos);
-	sphereA.radius = 2.0f;
+	sphereA.radius = 2.5f;
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		sphereB.center = XMLoadFloat3(&mapObjects[i].get()->GetPosition());

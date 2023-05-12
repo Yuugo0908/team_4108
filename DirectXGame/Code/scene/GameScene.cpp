@@ -99,8 +99,8 @@ void GameScene::Draw()
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
 	ImGui::Text("moveY: %f", player->GetmoveY());
-	ImGui::Text("headPosX: %f", player->GetHeadPos().x);
-	ImGui::Text("headInjectPosX: %f", player->GetHeadInjectPos().x);
+	ImGui::Text("bodyPosX: %f", player->GetBodyPos().y);
+	ImGui::Text("headPosX: %f", player->GetHeadPos().y);
 	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::End();
@@ -209,6 +209,11 @@ void GameScene::jsonObjectUpdate()
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->GetType() == "box")
+		{
+			object->Update();
+		}
+		// 触れるとステージリセット
+		else if (object->GetType() == "checkPoint")
 		{
 			object->Update();
 		}

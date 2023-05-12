@@ -44,10 +44,16 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	}
 
 	// モデルの読み込み
-	levelData->planeModel = levelData->planeModel->CreateFromObject("plane");
+	levelData->biteModel = levelData->biteModel->CreateFromObject("bite");
+	levelData->wallModel = levelData->wallModel->CreateFromObject("wall");
+	levelData->floorModel = levelData->floorModel->CreateFromObject("floor");
+	levelData->checkPointModel = levelData->checkPointModel->CreateFromObject("checkPoint");
 
 	// fileNameを元に、使用するモデルを決める
-	levelData->models.insert(std::make_pair("plane", levelData->planeModel));
+	levelData->models.insert(std::make_pair("bite", levelData->biteModel));
+	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
+	levelData->models.insert(std::make_pair("floor", levelData->floorModel));
+	levelData->models.insert(std::make_pair("checkPoint", levelData->checkPointModel));
 
 	return levelData;
 }
