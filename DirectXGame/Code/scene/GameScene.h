@@ -80,6 +80,8 @@ private: // メンバ変数
 
 	// jsonオブジェクト
 	std::vector<std::unique_ptr<Object3d>> mapObject{};
+	// 全マップデータのリスト
+	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
 	int mapNumber = 1;
 
 	// 画像

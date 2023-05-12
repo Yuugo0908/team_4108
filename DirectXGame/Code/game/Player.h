@@ -45,6 +45,15 @@ public:
 		BODYSTATE_XY_COLISION
 	};
 
+	enum LimitPos
+	{
+		NONE,
+		UP_LIMIT,
+		DOWN_LIMIT,
+		RIGHT_LIMIT,
+		LEFT_LIMIT
+	};
+
 public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
@@ -115,6 +124,10 @@ private:
 	/// </summary>
 	/// <returns>当たり判定</returns>
 	bool HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// マップ変更
+	/// </summary>
+	void MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 
 	bool TimeCheck(float& time);
 public:
@@ -134,6 +147,7 @@ public:
 	{
 		return onGround == true && onGround != oldOnGround;
 	}
+	bool& GetMapChange() { return mapChangeFlag; }
 
 private: // メンバ変数
 
@@ -172,5 +186,9 @@ private: // メンバ変数
 	float moveTime = 1.0f;
 	BodyCollsionState bodyColState = BODYSTATE_NULL;
 	int colisionBlockNum = 0;
+
+	LimitPos limitPos = NONE;
+	XMFLOAT3 checkPointPos = {};
+	bool mapChangeFlag = false;
 };
 

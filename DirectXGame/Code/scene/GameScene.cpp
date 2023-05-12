@@ -46,6 +46,9 @@ void GameScene::Initialize()
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
 
 	jsonObjectInit("map1");
+	jsonObjectInit("map2");
+	jsonObjectInit("map3");
+	jsonObjectInit("map4");
 }
 
 void GameScene::Finalize()
@@ -56,8 +59,35 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
+	bool flag = player->GetMapChange();
+	if (flag)
+	{
+		levelData = nullptr;
+
+		if (mapNumber == 1)
+		{
+			mapNumber = 2;
+		}
+		else if (mapNumber == 2)
+		{
+			mapNumber = 1;
+		}
+	}
+	else if (keyboard->TriggerKey(DIK_Z))
+	{
+		if (mapNumber == 1)
+		{
+			mapNumber = 2;
+		}
+		else if (mapNumber == 2)
+		{
+			mapNumber = 1;
+		}
+	}
+	jsonObjectUpdate();
+
 	skydomeObj->Update();
-	player->Update(mapObject);
+	player->Update(map[mapNumber]);
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -72,25 +102,6 @@ void GameScene::Update()
 			jumpEffect->Add(10, pos, vel, acc, 0.0f, 10.0f, startColor, endColor);
 		}
 	}
-
-	if (keyboard->TriggerKey(DIK_Z))
-	{
-		mapObject.erase(mapObject.begin(), mapObject.end());
-		levelData = nullptr;
-
-		if (mapNumber == 1)
-		{
-			mapNumber = 2;
-			jsonObjectInit("map2");
-		}
-		else if (mapNumber == 2)
-		{
-			mapNumber = 1;
-			jsonObjectInit("map1");
-		}
-	}
-
-	jsonObjectUpdate();
 }
 
 void GameScene::Draw()
@@ -125,7 +136,7 @@ void GameScene::Draw()
 	player->GetHedObj().get()->Draw();
 
 	// マップオブジェクト描画
-	for (auto& object : mapObject)
+	for (auto& object : map[mapNumber])
 	{
 		object->Draw();
 	}
@@ -196,26 +207,25 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		// 配列に登録
 		mapObject.push_back(std::move(newObject));
 	}
+	map.push_back(std::move(mapObject));
 }
 
 void GameScene::jsonObjectUpdate()
 {
-	for (auto& object : mapObject)
+	for (auto& object : map[mapNumber])
 	{
 		// オブジェクトごとに処理を変えて更新する
 		if (object->GetType() == "Ground")
 		{
-			object->Update();
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->GetType() == "box")
 		{
-			object->Update();
 		}
 		// 触れるとステージリセット
 		else if (object->GetType() == "checkPoint")
 		{
-			object->Update();
 		}
+		object->Update();
 	}
 }
