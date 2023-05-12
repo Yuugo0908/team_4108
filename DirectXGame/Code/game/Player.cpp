@@ -31,6 +31,13 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 
 void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
+	//デバック用テレポート
+	if (keyboard->PushKey(DIK_R))
+	{
+		pPos = { 0.0f, 10.0f, 0.0f };
+		hPos = { 0.0f, 10.0f, 0.0f };
+	}
+
 	MoveProcess();
 	//移動値加算
 	GravityProcess();
@@ -56,19 +63,23 @@ void Player::MoveProcess()
 	//移動値初期化
 	move = {};
 
+	//体当たり判定状態初期化
+	bodyColState = BODYSTATE_NULL;
+
 	if (headState == STATE_INJECTION) return;
+	if (headState == STATE_BITE) return;
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
 		bodyState = STATE_BODY_MOVE;
-		move.x += 1.0f;
+		move.x += 0.7f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
 		direction.x = 1.0f;
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
 		bodyState = STATE_BODY_MOVE;
-		move.x -= 1.0f;
+		move.x -= 0.7f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
 		direction.x = -1.0f;
 	}
@@ -126,13 +137,19 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
 		{
+			//X軸方向で当たり判定が発生したブロックは処理をしない
+			if (bodyColState == BODYSTATE_X_COLISION && i == colisionBlockNum)
+			{
+				continue;
+			}
+
   			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (pPos.y - pScale.z);
 			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().z) - (hPos.y - pScale.z);
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;
 
-			if (headState == STATE_INJECTIONLOCK)
+ 			if (headState == STATE_INJECTIONLOCK)
 			{
 				headState = STATE_NORMAL;
 			}
@@ -146,12 +163,16 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 void Player::BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	//少数補正値
-	float correction = 0.01f;
+	float correction = 0.1f;
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
 		{
+			//Y軸用当たり判定ブロック保持
+			bodyColState = BODYSTATE_X_COLISION;
+			colisionBlockNum = i;
+
 			if (move.x <= 0.0f)
 			{
 				pPos.x += (mapObjects[i].get()->GetPosition().x + mapObjects[i].get()->GetScale().x) - (pPos.x - pScale.x) + correction;

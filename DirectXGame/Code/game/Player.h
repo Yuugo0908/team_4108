@@ -36,6 +36,14 @@ public:
 		STATE_UNBITEHIT,
 	};
 
+	enum BodyCollsionState
+	{
+		BODYSTATE_NULL,
+		BODYSTATE_X_COLISION,
+		BODYSTATE_Y_COLISION,
+		BODYSTATE_XY_COLISION
+	};
+
 public: // ƒƒ“ƒoŠÖ”
 	//‰Šú‰»ˆ—
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
@@ -156,5 +164,7 @@ private: // ƒƒ“ƒo•Ï”
 	float biteTimer = 5.0f;
 	float timeMax = 1.0f;
 	float moveTime = 1.0f;
+	BodyCollsionState bodyColState = BODYSTATE_NULL;
+	int colisionBlockNum = 0;
 };
 
