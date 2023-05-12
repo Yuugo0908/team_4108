@@ -50,6 +50,17 @@ public: // メンバ関数
 	// jsonオブジェクトの更新
 	void jsonObjectUpdate();
 
+	/// <summary>
+	/// 着地時エフェクト
+	/// </summary>
+	/// <param name="num">パーティクル数</param>
+	void OnLandingEffect(int num);
+
+	/// <summary>
+	/// 取得時エフェクト
+	/// </summary>
+	void OnPickEffect();
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
@@ -95,8 +106,11 @@ private: // メンバ変数
 	Particle* effectCircle2 = nullptr;
 	Particle* effectTarget = nullptr;
 	Particle* effectAvoid = nullptr;
+
 	// 着地時のパーティクル
-	std::unique_ptr<Particle> jumpEffect = nullptr;
+	std::unique_ptr<Particle> landingEffect = nullptr;
+	// 取得時のパーティクル
+	std::unique_ptr<Particle> takeEffect = nullptr;
 
 	//player
 	Player* player = nullptr;

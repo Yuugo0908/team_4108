@@ -20,7 +20,9 @@ void GameScene::Initialize()
 	// パーティクル生成
 	effectBox = Particle::Create(L"Resources/effectBox.png");
 	// 着地時のパーティクル
-	jumpEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
+	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
+	// 取得時のパーティクル
+	takeEffect.reset(Particle::Create(L"Resources/effectCircle2.png"));
 
 	//enemy->ModelInit();
 	//rope->Initialize();
@@ -61,16 +63,7 @@ void GameScene::Update()
 
 	if (player->GetOnGrounding() == true)
 	{
-		for (int i = 0; i < 5; i++)
-		{
-			XMFLOAT3 pos = player->GetObj()->GetPosition();
-			pos.y -= 2.0f * player->GetObj()->GetScale().y;
-			XMFLOAT3 vel = { 0, 0, 0 };
-			XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(0, 100) - 50) / 100, static_cast<float>(Random::GetRanNum(0, 2)) / 100, 0 };
-			XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.05f };
-			XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-			jumpEffect->Add(10, pos, vel, acc, 0.0f, 10.0f, startColor, endColor);
-		}
+		OnLandingEffect(6);
 	}
 
 	if (keyboard->TriggerKey(DIK_Z))
@@ -132,7 +125,8 @@ void GameScene::Draw()
 
 	// パーティクル描画
 	// パーティクルの描画を先にするとエラーが発生するので注意(原因不明)
-	jumpEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
+	landingEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
+	takeEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
@@ -218,4 +212,30 @@ void GameScene::jsonObjectUpdate()
 			object->Update();
 		}
 	}
+}
+
+void GameScene::OnLandingEffect(int num)
+{
+	for (int i = 0; i < num; i++)
+	{
+		XMFLOAT3 pos = player->GetObj()->GetPosition();
+		pos.y -= 2.0f * player->GetObj()->GetScale().y;
+		XMFLOAT3 vel = { 0, 0, 0 };
+		XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(10, 50)) / 100, static_cast<float>(Random::GetRanNum(0, 3)) / 100, 0 };
+		if (i % 2 == 0)
+		{
+			acc.x = -acc.x;
+		}
+		XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.05f };
+		XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+		landingEffect->Add(10, pos, vel, acc, 0.0f, 10.0f, startColor, endColor);
+	}
+}
+
+void GameScene::OnPickEffect()
+{
+	XMFLOAT3 pos = player->GetObj()->GetPosition();
+	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
+	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+	takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 0.0f, startColor, endColor);
 }
