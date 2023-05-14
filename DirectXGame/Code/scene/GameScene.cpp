@@ -86,16 +86,7 @@ void GameScene::Update()
 
 	if (player->GetOnGrounding() == true)
 	{
-		for (int i = 0; i < 5; i++)
-		{
-			XMFLOAT3 pos = player->GetObj()->GetPosition();
-			pos.y -= 2.0f * player->GetObj()->GetScale().y;
-			XMFLOAT3 vel = { 0, 0, 0 };
-			XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(0, 100) - 50) / 100, static_cast<float>(Random::GetRanNum(0, 2)) / 100, 0 };
-			XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.05f };
-			XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-			jumpEffect->Add(10, pos, vel, acc, 0.0f, 10.0f, startColor, endColor);
-		}
+		OnLandingEffect(6);
 	}
 
 	if (keyboard->TriggerKey(DIK_RETURN))
@@ -145,6 +136,7 @@ void GameScene::Draw()
 	// パーティクルの描画を先にするとエラーが発生するので注意(原因不明)
 	landingEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 	takeEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
+	biteEffect->Draw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
@@ -259,10 +251,10 @@ void GameScene::OnPickEffect()
 
 void GameScene::OnBiteEffect()
 {
-	XMFLOAT3 pos = { 0, 0, 0 };
+	XMFLOAT3 pos = player->GetObj()->GetPosition();
 	XMFLOAT3 vel = { 0, 0, 0 };
 	XMFLOAT3 acc = { 0, 0, 0 };
 	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(10, pos, vel, acc, 10.0f, 10.0f, startColor, endColor);
+	biteEffect->Add(7, pos, vel, acc, 30.0f, 50.0f, startColor, endColor);
 }
