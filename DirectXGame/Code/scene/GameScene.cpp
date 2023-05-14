@@ -23,6 +23,8 @@ void GameScene::Initialize()
 	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
 	// 取得時のパーティクル
 	takeEffect.reset(Particle::Create(L"Resources/effectCircle2.png"));
+	// かみつき時のパーティクル
+	biteEffect.reset(Particle::Create(L"Resources/biteEffectAll.png"));
 
 	//enemy->ModelInit();
 	//rope->Initialize();
@@ -81,6 +83,11 @@ void GameScene::Update()
 			mapNumber = 1;
 			jsonObjectInit("map1");
 		}
+	}
+
+	if (keyboard->TriggerKey(DIK_RETURN))
+	{
+		OnBiteEffect();
 	}
 
 	jsonObjectUpdate();
@@ -238,4 +245,14 @@ void GameScene::OnPickEffect()
 	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 	takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 0.0f, startColor, endColor);
+}
+
+void GameScene::OnBiteEffect()
+{
+	XMFLOAT3 pos = { 0, 0, 0 };
+	XMFLOAT3 vel = { 0, 0, 0 };
+	XMFLOAT3 acc = { 0, 0, 0 };
+	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+	biteEffect->Add(10, pos, vel, acc, 10.0f, 10.0f, startColor, endColor);
 }

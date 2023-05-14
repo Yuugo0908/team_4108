@@ -61,6 +61,11 @@ public: // メンバ関数
 	/// </summary>
 	void OnPickEffect();
 
+	/// <summary>
+	/// かみつき時のパーティクル
+	/// </summary>
+	void OnBiteEffect();
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
@@ -111,6 +116,8 @@ private: // メンバ変数
 	std::unique_ptr<Particle> landingEffect = nullptr;
 	// 取得時のパーティクル
 	std::unique_ptr<Particle> takeEffect = nullptr;
+	// かみつき時のパーティクル
+	std::unique_ptr<Particle> biteEffect = nullptr;
 
 	//player
 	Player* player = nullptr;
