@@ -44,7 +44,7 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	//移動値加算
 	GravityProcess();
 	pPos = pPos + move;
-	hPos = hPos + move;
+	hPos = hPos + hmove;
 
 	if (mapChangeFlag == false)
 	{
@@ -68,6 +68,7 @@ void Player::MoveProcess()
 {
 	//移動値初期化
 	move = {};
+	hmove = {};
 
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
@@ -96,6 +97,8 @@ void Player::MoveProcess()
 
 	//ジャンプ処理
 	JumpProcess();
+
+	hmove.x = move.x;
 }
 
 void Player::JumpProcess()
@@ -114,12 +117,15 @@ void Player::GravityProcess()
 {
 	if (headState == STATE_INJECTION) return;
 
-	if (onGround != false) return;
+	
 	//下向き加速度
 	const float fallAcc = -0.1f;
 	const float fallVYMin = -2.0f;
 	//加速
 	moveY = max(moveY + fallAcc, fallVYMin);
+	
+	if (onGround != false) return;
+	
 	move.y = moveY;
 
 	if (moveY >= 0.0f)
@@ -129,6 +135,15 @@ void Player::GravityProcess()
 	else
 	{
 		bodyState = STATE_BODY_JUMP_DOWN;
+	}
+
+	if (headState != STATE_BITE)
+	{
+		hmove.y = move.y;
+	}
+	else
+	{
+		hmove.y = 0.0f;
 	}
 
 }
@@ -148,7 +163,12 @@ void Player::GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapO
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 
 			pPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().y) - (pPos.y - pScale.z);
-			hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().y) - (hPos.y - pScale.z);
+			
+			if (headState != STATE_BITE)
+			{
+				hPos.y += (mapObjects[i].get()->GetPosition().y + mapObjects[i].get()->GetScale().y) - (hPos.y - pScale.z);
+
+			}
 			move.y = 0.0f;
 			onGround = true;
 			moveY = 0.0f;
