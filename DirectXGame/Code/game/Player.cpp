@@ -49,6 +49,7 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	if (mapChangeFlag == false)
 	{
 		BlockCollisionProcess(mapObjects);
+		CeilingBlockCollisionProcess(mapObjects);
 		GroundCollisionProcess(mapObjects);
 	}
 
