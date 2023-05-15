@@ -66,7 +66,16 @@ void GameScene::Update()
 	bool flag = player->GetMapChange();
 	if (flag)
 	{
-		OnLandingEffect(6);
+		levelData = nullptr;
+
+		if (mapNumber == 1)
+		{
+			mapNumber = 2;
+		}
+		else if (mapNumber == 2)
+		{
+			mapNumber = 1;
+		}
 	}
 	else if (keyboard->TriggerKey(DIK_Z))
 	{
