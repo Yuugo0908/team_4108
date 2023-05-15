@@ -53,7 +53,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>
-	/// <param name="num">パーティクル数</param>
+	/// <param name="num">パーティクル数（偶数だとGood）</param>
 	void OnLandingEffect(int num);
 
 	/// <summary>
