@@ -91,7 +91,7 @@ void GameScene::Update()
 
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
-		OnBiteEffect();
+		OnBitingEffect();
 	}
 }
 
@@ -241,7 +241,7 @@ void GameScene::OnLandingEffect(int num)
 	}
 }
 
-void GameScene::OnPickEffect()
+void GameScene::OnPickingEffect()
 {
 	XMFLOAT3 pos = player->GetObj()->GetPosition();
 	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
@@ -249,12 +249,14 @@ void GameScene::OnPickEffect()
 	takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 0.0f, startColor, endColor);
 }
 
-void GameScene::OnBiteEffect()
+void GameScene::OnBitingEffect()
 {
 	XMFLOAT3 pos = player->GetObj()->GetPosition();
 	XMFLOAT3 vel = { 0, 0, 0 };
 	XMFLOAT3 acc = { 0, 0, 0 };
-	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 startColorA = { 0.9f, 0.4f, 0.5f, 0.5f };
+	XMFLOAT4 startColorB = { 0.7f, 0.7f, 0.4f, 0.5f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(7, pos, vel, acc, 30.0f, 50.0f, startColor, endColor);
+	biteEffect->Add(7, pos, vel, acc, 30.0f, 50.0f, startColorA, endColor);
+	biteEffect->Add(7, pos, vel, acc, 30.0f, 70.0f, startColorB, endColor);
 }

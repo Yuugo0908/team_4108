@@ -59,12 +59,12 @@ public: // メンバ関数
 	/// <summary>
 	/// 取得時エフェクト
 	/// </summary>
-	void OnPickEffect();
+	void OnPickingEffect();
 
 	/// <summary>
 	/// かみつき時のパーティクル
 	/// </summary>
-	void OnBiteEffect();
+	void OnBitingEffect();
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
