@@ -148,6 +148,7 @@ public:
 		return onGround == true && onGround != oldOnGround;
 	}
 	bool& GetMapChange() { return mapChangeFlag; }
+	bool& GetIsLonger() { return islonger; }
 
 private: // ƒƒ“ƒo•Ï”
 
@@ -186,6 +187,7 @@ private: // ƒƒ“ƒo•Ï”
 	float moveTime = 1.0f;
 	BodyCollsionState bodyColState = BODYSTATE_NULL;
 	int colisionBlockNum = 0;
+	bool islonger = false;
 
 	LimitPos limitPos = NONE;
 	XMFLOAT3 checkPointPos = {};

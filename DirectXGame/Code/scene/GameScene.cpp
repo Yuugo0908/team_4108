@@ -98,7 +98,7 @@ void GameScene::Update()
 		OnLandingEffect(6);
 	}
 
-	if (keyboard->TriggerKey(DIK_RETURN))
+	if (player->GetIsLonger() == true)
 	{
 		OnBitingEffect();
 	}
@@ -260,12 +260,12 @@ void GameScene::OnPickingEffect()
 
 void GameScene::OnBitingEffect()
 {
-	XMFLOAT3 pos = player->GetObj()->GetPosition();
+	XMFLOAT3 pos = player->GetHeadPos();
 	XMFLOAT3 vel = { 0, 0, 0 };
 	XMFLOAT3 acc = { 0, 0, 0 };
 	XMFLOAT4 startColorA = { 0.9f, 0.4f, 0.5f, 0.5f };
 	XMFLOAT4 startColorB = { 0.7f, 0.7f, 0.4f, 0.5f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(7, pos, vel, acc, 10.0f, 30.0f, startColorA, endColor);
-	biteEffect->Add(7, pos, vel, acc, 10.0f, 40.0f, startColorB, endColor);
+	biteEffect->Add(7, pos, vel, acc, 20.0f, 40.0f, startColorA, endColor);
+	biteEffect->Add(7, pos, vel, acc, 20.0f, 50.0f, startColorB, endColor);
 }

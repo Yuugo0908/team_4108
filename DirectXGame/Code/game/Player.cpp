@@ -229,12 +229,15 @@ void Player::HeadInjectionMoveProcess()
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 
+	islonger = false;
+
 	if (TimeCheck(moveTime) == true)
 	{
 		//伸ばしきった時
 		moveTime = timeMax;
 		headBackDis = hPos;
 		headState = STATE_BACK;
+		islonger = true;
 	}
 
 	hPos = Easing::easeOut(pPos, headInjectDis, timeRate);
