@@ -266,6 +266,6 @@ void GameScene::OnBitingEffect()
 	XMFLOAT4 startColorA = { 0.9f, 0.4f, 0.5f, 0.5f };
 	XMFLOAT4 startColorB = { 0.7f, 0.7f, 0.4f, 0.5f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(7, pos, vel, acc, 30.0f, 50.0f, startColorA, endColor);
-	biteEffect->Add(7, pos, vel, acc, 30.0f, 70.0f, startColorB, endColor);
+	biteEffect->Add(7, pos, vel, acc, 10.0f, 30.0f, startColorA, endColor);
+	biteEffect->Add(7, pos, vel, acc, 10.0f, 40.0f, startColorB, endColor);
 }
