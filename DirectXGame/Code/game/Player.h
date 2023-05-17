@@ -150,6 +150,7 @@ public:
 	}
 	bool& GetMapChange() { return mapChangeFlag; }
 	bool& GetIsLonger() { return islonger; }
+	bool& GetIsKey() { return isKey; }
 
 private: // ƒƒ“ƒo•Ï”
 
@@ -190,6 +191,7 @@ private: // ƒƒ“ƒo•Ï”
 	BodyCollsionState bodyColState = BODYSTATE_NULL;
 	int colisionBlockNum = 0;
 	bool islonger = false;
+	bool isKey = true;
 
 	LimitPos limitPos = NONE;
 	XMFLOAT3 checkPointPos = {};

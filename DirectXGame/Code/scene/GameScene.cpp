@@ -216,21 +216,47 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 
 void GameScene::jsonObjectUpdate()
 {
+	int index = 0;
+	int eraseIndex = 0;
 	for (auto& object : map[mapNumber])
 	{
 		// オブジェクトごとに処理を変えて更新する
 		if (object->GetType() == "Ground")
 		{
+
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->GetType() == "box")
 		{
+
 		}
 		// 触れるとステージリセット
 		else if (object->GetType() == "checkPoint")
 		{
+
+		}
+		// 鍵
+		else if (object->GetType() == "key")
+		{
+			if (player->GetIsKey() == true && IsCanOpenKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+			{
+				OnPickingEffect();
+				eraseIndex = index + 1;
+			}
+		}
+		// ドア
+		else if (object->GetType() == "door")
+		{
+
 		}
 		object->Update();
+
+		index++;
+	}
+
+	if (eraseIndex != 0)
+	{
+		map[mapNumber].erase(map[mapNumber].begin() + eraseIndex - 1);
 	}
 }
 
@@ -270,4 +296,18 @@ void GameScene::OnBitingEffect()
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 	biteEffect->Add(7, pos, vel, acc, 20.0f, 40.0f, startColorA, endColor);
 	biteEffect->Add(7, pos, vel, acc, 20.0f, 50.0f, startColorB, endColor);
+}
+
+bool GameScene::IsCanOpenKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius)
+{
+	// 誤差
+	float error = 0.1f;
+
+	// 一定の距離なら
+	if (GetLength(keyPos, playerPos) <= keyRadius + playerRadius + error)
+	{
+		return true;
+	}
+
+	return false;
 }

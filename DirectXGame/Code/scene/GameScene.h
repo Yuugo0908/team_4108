@@ -66,6 +66,16 @@ public: // メンバ関数
 	/// </summary>
 	void OnBitingEffect();
 
+	/// <summary>
+	/// 鍵を開けられるか
+	/// </summary>
+	/// <param name="keyPos">鍵穴の座標</param>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="keyRadius">鍵穴の横幅</param>
+	/// <param name="playerRadius">プレイヤーの横幅</param>
+	/// <returns></returns>
+	bool IsCanOpenKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius);
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
