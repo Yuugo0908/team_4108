@@ -53,6 +53,7 @@ void GameScene::Initialize()
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
+	jsonObjectInit("map5");
 }
 
 void GameScene::Finalize()
@@ -68,24 +69,24 @@ void GameScene::Update()
 	{
 		levelData = nullptr;
 
-		if (mapNumber == 1)
+		if (mapNumber == 3)
 		{
-			mapNumber = 2;
+			mapNumber = 4;
 		}
-		else if (mapNumber == 2)
+		else if (mapNumber == 4)
 		{
-			mapNumber = 1;
+			mapNumber = 3;
 		}
 	}
 	else if (keyboard->TriggerKey(DIK_Z))
 	{
-		if (mapNumber == 1)
+		if (mapNumber == 3)
 		{
-			mapNumber = 2;
+			mapNumber = 4;
 		}
-		else if (mapNumber == 2)
+		else if (mapNumber == 4)
 		{
-			mapNumber = 1;
+			mapNumber = 3;
 		}
 	}
 	jsonObjectUpdate();

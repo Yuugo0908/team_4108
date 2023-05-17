@@ -98,7 +98,7 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Object3d>> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
-	int mapNumber = 1;
+	int mapNumber = 3;
 
 	// 画像
 	Image2d* fadeTex = nullptr;
