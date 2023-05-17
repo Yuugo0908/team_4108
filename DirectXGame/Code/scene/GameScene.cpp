@@ -242,12 +242,17 @@ void GameScene::jsonObjectUpdate()
 			{
 				OnPickingEffect();
 				eraseIndex = index + 1;
+				isOpen = true;
 			}
 		}
 		// ドア
 		else if (object->GetType() == "door")
 		{
-
+			if (isOpen == true && eraseIndex == 0)
+			{
+				eraseIndex = index + 1;
+				isOpen = false;
+			}
 		}
 		object->Update();
 

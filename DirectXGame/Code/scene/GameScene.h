@@ -134,6 +134,9 @@ private: // メンバ変数
 	//player
 	Player* player = nullptr;
 
+	// 鍵を開けたか
+	bool isOpen = false;
+
 	//skydome
 	std::unique_ptr<Object3d> skydomeObj = nullptr;
 	Model* skydomeModel = nullptr;
