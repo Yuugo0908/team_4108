@@ -85,6 +85,10 @@ private: // 静的メンバ変数
 	std::vector<VertexPosNormalUv> vertices;
 	// 頂点インデックス配列
 	std::vector<unsigned short> indices;
+	// 正の頂点座標
+	XMFLOAT3 posiPos = {};
+	// 負の頂点座標
+	XMFLOAT3 negaPos = {};
 	// マテリアル
 	Material material;
 
@@ -97,11 +101,15 @@ private:// 静的メンバ関数
 	void CreateModel(const std::string& text);
 	//マテリアル読み込み
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
+	// 最大値と最小値の更新
+	void UpdatePosiNegaVertex(const XMFLOAT3& pos);
 
 public: // メンバ関数
 	bool Initialize(const std::string& text);
 	// 描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
+	inline const XMFLOAT3& GetPosiPos() { return posiPos; }
+	inline const XMFLOAT3& GetNegaPos() { return negaPos; }
 
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBufferB1; // 定数バッファ

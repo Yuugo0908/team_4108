@@ -160,6 +160,7 @@ void Model::CreateModel(const std::string& text)
 		assert(0);
 	}
 
+	bool first = true;
 	vector<XMFLOAT3> positions;  // 頂点座標
 	vector<XMFLOAT3> normals;    // 法線ベクトル
 	vector<XMFLOAT2> texcoords;  // テクスチャUV
@@ -194,6 +195,17 @@ void Model::CreateModel(const std::string& text)
 			line_stream >> position.z;
 			// 座標データに追加
 			positions.emplace_back(position);
+			if (first == false)
+			{
+				// 最大値と最小値の更新
+				UpdatePosiNegaVertex(position);
+			}
+			else
+			{
+				posiPos = position;
+				negaPos = position;
+				first = false;
+			}
 		}
 
 		// 先頭文字列がvtならテクスチャ
@@ -392,6 +404,40 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	}
 	// ファイルを閉じる
 	file.close();
+}
+
+void Model::UpdatePosiNegaVertex(const XMFLOAT3& pos)
+{
+	if (!(pos.x <= posiPos.x && pos.y <= posiPos.y && pos.z <= posiPos.z))
+	{
+		if (posiPos.x < pos.x)
+		{
+			posiPos.x = pos.x;
+		}
+		if (posiPos.y < pos.y)
+		{
+			posiPos.y = pos.y;
+		}
+		if (posiPos.z < pos.z)
+		{
+			posiPos.z = pos.z;
+		}
+	}
+	if (!(negaPos.x <= pos.x && negaPos.y <= pos.y && negaPos.z <= pos.z))
+	{
+		if (pos.x < negaPos.x)
+		{
+			negaPos.x = pos.x;
+		}
+		if (pos.y < negaPos.y)
+		{
+			negaPos.y = pos.y;
+		}
+		if (pos.z < negaPos.z)
+		{
+			negaPos.z = pos.z;
+		}
+	}
 }
 
 bool Model::InitializeDescriptorHeap()

@@ -108,6 +108,9 @@ public: // メンバ関数
 	// レベルエディタ用 当たり判定スケール取得
 	const XMFLOAT3& GetCollisionScale() { return collisionScale; }
 
+	inline const XMFLOAT3& GetPosiPos() { return model->GetPosiPos(); }
+	inline const XMFLOAT3& GetNegaPos() { return model->GetNegaPos(); }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBufferB0; // 定数バッファ
 	// 色
