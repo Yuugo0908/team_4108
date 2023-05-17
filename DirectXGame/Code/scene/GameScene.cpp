@@ -113,6 +113,7 @@ void GameScene::Draw()
 	ImGui::Text("bodyPosX: %f", player->GetBodyPos().y);
 	ImGui::Text("headPosX: %f", player->GetHeadPos().y);
 	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
+	ImGui::Text("GetHeadState: %d", player->GetHeadState());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::End();
 #pragma region 背景画像描画

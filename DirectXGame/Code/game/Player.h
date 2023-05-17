@@ -139,6 +139,7 @@ public:
 	XMFLOAT3& GetHeadPos() { return hPos; }
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
 	float& GetBiteTimer() { return biteTimer; }
+	HeadState& GetHeadState() { return headState; }
 	/// <summary>
 	/// 地面に接した瞬間か
 	/// </summary>
@@ -175,6 +176,7 @@ private: // メンバ変数
 	XMFLOAT3 pRot = {};//回転
 	XMFLOAT3 reSpawnPos = {};
 	XMFLOAT3 move = {}; //移動量
+	XMFLOAT3 hmove = {}; //頭の移動量
 	XMFLOAT3 direction = {}; //向いている方向
 	float moveY = 0.0f; //ジャンプ及び重力
 	bool onGround = false;
