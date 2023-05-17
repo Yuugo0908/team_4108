@@ -237,7 +237,7 @@ void GameScene::OnLandingEffect(int num)
 	for (int i = 0; i < num; i++)
 	{
 		XMFLOAT3 pos = player->GetObj()->GetPosition();
-		pos.y -= 2.0f * player->GetObj()->GetScale().y;
+		pos.y -= 1.0f * player->GetObj()->GetScale().y;
 		XMFLOAT3 vel = { 0, 0, 0 };
 		XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(10, 50)) / 100, static_cast<float>(Random::GetRanNum(0, 3)) / 100, 0 };
 		if (i % 2 == 0)
