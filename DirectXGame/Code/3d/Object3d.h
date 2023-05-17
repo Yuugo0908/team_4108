@@ -22,8 +22,10 @@ public: // サブクラス
 		XMMATRIX viewproj; // ビュープロジェクション行列
 		XMMATRIX world; // ワールド行列
 		XMFLOAT3 cameraPos; // カメラ座標(ワールド座標)
-		float a;
+		float pad;
 		XMFLOAT4 color;
+		XMFLOAT2 offset;
+		XMFLOAT2 tiring;
 	};
 
 public: // 静的メンバ関数
@@ -89,6 +91,12 @@ public: // メンバ関数
 	void SetModel(Model* model) { this->model = model; }
 	// 色の設定
 	void SetColor(XMFLOAT4 color) { this->color = color; }
+	// オフセット
+	const XMFLOAT2& GetOffset() { return offset; }
+	void SetOffset(XMFLOAT2 offset) { this->offset = offset; }
+	// タイリング
+	const XMFLOAT2& GetTiring() { return tiring; }
+	void SetTiring(XMFLOAT2 tiring) { this->tiring = tiring; }
 	// オブジェクトのタイプ設定
 	void SetType(std::string type) { this->type = type; }
 	// オブジェクトタイプの取得
@@ -121,6 +129,10 @@ private: // メンバ変数
 	XMFLOAT3 rotation = { 0,0,0 };
 	// ローカル座標
 	XMFLOAT3 position = { 0,0,0 };
+	// オフセット
+	XMFLOAT2 offset = { 1, 1 };
+	// タイリング
+	XMFLOAT2 tiring = { 1, 1 };
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	// 親オブジェクト

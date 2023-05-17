@@ -12,7 +12,7 @@ struct PSOutput
 float4 main(VSOutput input) : SV_TARGET
 {
 	//テクスチャマッピング
-	float4 texcolor = tex.Sample(smp, input.uv) * color;
+	float4 texcolor = tex.Sample(smp, input.uv * tiring + offset) * color;
 
 	//シェーディングによる色
 	float4 shadecolor;
