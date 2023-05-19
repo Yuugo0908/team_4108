@@ -123,11 +123,18 @@ private:
 	/// 頭とブロックの当たり判定
 	/// </summary>
 	/// <returns>当たり判定</returns>
-	bool HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	bool HeadBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+
+	bool BodyBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 	/// <summary>
 	/// マップ変更
 	/// </summary>
 	void MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 酸ブロックとの当たり判定
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void AcidProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 
 	bool TimeCheck(float& time);
 public:
@@ -183,7 +190,8 @@ private: // メンバ変数
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
 	BodyState bodyState = STATE_BODY_NORMAL;
-	int hitMapObjNum = 0;
+	int hitHeadMapObjNum = 0;
+	int hitbodyMapObjNum = 0;
 	float biteTimer = 5.0f;
 	float timeMax = 1.0f;
 	float moveTime = 1.0f;

@@ -46,6 +46,8 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	pPos = pPos + move;
 	hPos = hPos + hmove;
 
+	AcidProcess(mapObjects);
+
 	if (mapChangeFlag == false)
 	{
 		BlockCollisionProcess(mapObjects);
@@ -297,7 +299,7 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	//噛み壊す
 	if (keyboard->PushKey(DIK_O))
 	{
-		mapObjects.erase(mapObjects.begin() + hitMapObjNum);
+		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
@@ -356,10 +358,10 @@ void Player::HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObject
 Player::HeadInjectionState Player::HeadCollision(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	//ブロックとの当たり判定
-	if (HradBlockCollisionCheck(mapObjects) == true)
+	if (HeadBlockCollisionCheck(mapObjects) == true)
 	{
 		//当たっているブロックは噛みつけるか
-		if (mapObjects[hitMapObjNum].get()->GetType() == "box")
+		if (mapObjects[hitHeadMapObjNum].get()->GetType() == "box")
 		{
 			return STATE_BITEHIT;
 		}
@@ -375,7 +377,7 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<std::unique_ptr<Obj
 	}
 }
 
-bool Player::HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+bool Player::HeadBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
 	Collision::Sphere sphereA, sphereB;
 	sphereA.center = XMLoadFloat3(&hPos);
@@ -386,7 +388,21 @@ bool Player::HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& map
 		sphereB.radius = 2.5f;
 		if (Collision::CollisionSphere(sphereA, sphereB) == true)
 		{
-			hitMapObjNum = i;
+			hitHeadMapObjNum = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Player::BodyBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
+		{
+			hitbodyMapObjNum = i;
 			return true;
 		}
 	}
@@ -456,6 +472,20 @@ void Player::MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		pPos.x = 159.0f;
 		hPos = pPos;
 	}
+}
+
+void Player::AcidProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	if (BodyBlockCollisionCheck(mapObjects) == true)
+	{
+		//当たったブロックが酸ブロックか判定
+		if (mapObjects[hitbodyMapObjNum].get()->GetType() == "Acid")
+		{
+			pPos = { 0.0f, 10.0f, 0.0f };
+			hPos = { 0.0f, 10.0f, 0.0f };
+		}
+	}
+
 }
 
 bool Player::TimeCheck(float& time)

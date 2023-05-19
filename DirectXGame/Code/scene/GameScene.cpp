@@ -52,7 +52,7 @@ void GameScene::Initialize()
 	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
-	jsonObjectInit("map4");
+	jsonObjectInit("map4_1");
 	jsonObjectInit("map5");
 }
 
@@ -116,6 +116,7 @@ void GameScene::Draw()
 	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Text("GetHeadState: %d", player->GetHeadState());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
+	ImGui::Text("mapNum: %d", mapNumber);
 	ImGui::End();
 #pragma region 背景画像描画
 	// 背景画像描画前処理
