@@ -26,8 +26,7 @@ void GameScene::Initialize()
 	// かみつき時のパーティクル
 	biteEffect.reset(Particle::Create(L"Resources/biteEffectAll.png"));
 
-	//enemy->ModelInit();
-	//rope->Initialize();
+	CsvFile::CsvToVector(mapNumber, "test");
 
 	// ライトの生成
 	light = Light::Create();
@@ -64,35 +63,10 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	bool flag = player->GetMapChange();
-	if (flag)
-	{
-		levelData = nullptr;
-
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
-	else if (keyboard->TriggerKey(DIK_Z))
-	{
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
 	jsonObjectUpdate();
 
 	skydomeObj->Update();
-	player->Update(map[mapNumber]);
+	player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -138,7 +112,7 @@ void GameScene::Draw()
 	player->GetHedObj().get()->Draw();
 
 	// マップオブジェクト描画
-	for (auto& object : map[mapNumber])
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		object->Draw();
 	}
@@ -216,7 +190,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 
 void GameScene::jsonObjectUpdate()
 {
-	for (auto& object : map[mapNumber])
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
 		if (object->GetType() == "Ground")

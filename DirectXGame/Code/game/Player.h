@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Particle.h"
 #include "DirectXCommon.h"
+#include "CsvFile.h"
 class Player
 {
 public:

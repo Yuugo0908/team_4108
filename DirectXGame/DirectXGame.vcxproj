@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\2d\CsvFile.cpp" />
     <ClCompile Include="Code\2d\DebugText.cpp" />
     <ClCompile Include="Code\2d\Image2d.cpp" />
     <ClCompile Include="Code\3d\Model.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="Code\win\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\2d\CsvFile.h" />
     <ClInclude Include="Code\2d\DebugText.h" />
     <ClInclude Include="Code\2d\Image2d.h" />
     <ClInclude Include="Code\3d\Model.h" />

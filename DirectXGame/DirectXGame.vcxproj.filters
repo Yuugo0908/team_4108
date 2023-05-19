@@ -195,6 +195,9 @@
     <ClCompile Include="Code\fbx\FbxObject3d.cpp">
       <Filter>ソースファイル\fbx</Filter>
     </ClCompile>
+    <ClCompile Include="Code\2d\CsvFile.cpp">
+      <Filter>ソースファイル\2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\win\SafeDelete.h">
@@ -319,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="Code\math\Helper.h">
       <Filter>ソースファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\2d\CsvFile.h">
+      <Filter>ヘッダーファイル\2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

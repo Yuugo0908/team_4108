@@ -38,13 +38,14 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		hPos = { 0.0f, 10.0f, 0.0f };
 	}
 
-	MapChange(mapObjects);
 
 	MoveProcess();
 	//ˆÚ“®’l‰ÁŽZ
 	GravityProcess();
 	pPos = pPos + move;
 	hPos = hPos + hmove;
+
+	MapChange(mapObjects);
 
 	if (mapChangeFlag == false)
 	{
@@ -418,7 +419,7 @@ void Player::MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 			limitPos = UP_LIMIT;
 			mapChangeFlag = true;
 		}
-		else if (pPos.y <= -10.0f)
+		else if (pPos.y <= 0.0f)
 		{
 			limitPos = DOWN_LIMIT;
 		}
@@ -437,25 +438,31 @@ void Player::MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 
 	if (limitPos == UP_LIMIT)
 	{
-		pPos.y = 0.0f;
+		pPos.y = 1.0f;
 		hPos = pPos;
+		CsvFile::now_y--;
 	}
 	else if (limitPos == DOWN_LIMIT)
 	{
-		pPos = checkPointPos;
+		pPos.y = 159.0f;
 		hPos = pPos;
+		CsvFile::now_y++;
 	}
 
 	if (limitPos == RIGHT_LIMIT)
 	{
 		pPos.x = -159.0f;
 		hPos = pPos;
+		CsvFile::now_x++;
 	}
 	else if (limitPos == LEFT_LIMIT)
 	{
 		pPos.x = 159.0f;
 		hPos = pPos;
+		CsvFile::now_x--;
 	}
+
+
 }
 
 bool Player::TimeCheck(float& time)
