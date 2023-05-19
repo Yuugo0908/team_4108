@@ -53,28 +53,41 @@ public: // メンバ関数
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>
-	/// <param name="num">パーティクル数（偶数だとGood）</param>
-	void OnLandingEffect(int num);
+	/// <param name="num">発生数</param>
+	/// <param name="pPos">発生座標</param>
+	void OnLandingEffect(int num, const XMFLOAT3& pPos);
 
 	/// <summary>
 	/// 取得時エフェクト
 	/// </summary>
-	void OnPickingEffect();
+	/// <param name="pPos">発生座標</param>
+	void OnPickingEffect(const XMFLOAT3& pPos);
 
 	/// <summary>
 	/// かみつき時のパーティクル
 	/// </summary>
-	void OnBitingEffect();
+	/// <param name="pPos">発生座標</param>
+	void OnBitingEffect(const XMFLOAT3& pPos);
 
 	/// <summary>
-	/// 鍵を開けられるか
+	/// 鍵を取得できるか
 	/// </summary>
 	/// <param name="keyPos">鍵穴の座標</param>
 	/// <param name="playerPos">プレイヤーの座標</param>
 	/// <param name="keyRadius">鍵穴の横幅</param>
 	/// <param name="playerRadius">プレイヤーの横幅</param>
-	/// <returns></returns>
-	bool IsCanOpenKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius);
+	/// <returns>成否</returns>
+	bool IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius);
+
+	/// <summary>
+	/// ドアを開けられるか
+	/// </summary>
+	/// <param name="doorPos">ドアの座標</param>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="doorRadius">ドアの横幅</param>
+	/// <param name="playerRadius">プレイヤーの横幅</param>
+	/// <returns>成否</returns>
+	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
@@ -133,9 +146,6 @@ private: // メンバ変数
 
 	//player
 	Player* player = nullptr;
-
-	// 鍵を開けたか
-	bool isOpen = false;
 
 	//skydome
 	std::unique_ptr<Object3d> skydomeObj = nullptr;
