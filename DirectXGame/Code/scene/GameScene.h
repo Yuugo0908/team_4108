@@ -21,6 +21,7 @@
 #include "LevelLoader.h"
 #include "Particle.h"
 #include "BaseScene.h"
+#include "CsvFile.h"
 #include "SafeDelete.h"
 
 #include <stdlib.h>
@@ -121,10 +122,11 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Object3d>> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
-	int mapNumber = 3;
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
+	// マップ番号管理(csvファイル)
+	std::vector<std::vector<int>> mapNumber;
 
 	// 画像
 	Image2d* fadeTex = nullptr;

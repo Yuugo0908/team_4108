@@ -26,8 +26,7 @@ void GameScene::Initialize()
 	// かみつき時のパーティクル
 	biteEffect.reset(Particle::Create(L"Resources/biteEffectAll.png"));
 
-	//enemy->ModelInit();
-	//rope->Initialize();
+	CsvFile::CsvToVector(mapNumber, "test");
 
 	// ライトの生成
 	light = Light::Create();
@@ -64,35 +63,10 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	bool flag = player->GetMapChange();
-	if (flag)
-	{
-		levelData = nullptr;
-
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
-	else if (keyboard->TriggerKey(DIK_Z))
-	{
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
 	jsonObjectUpdate();
 
 	skydomeObj->Update();
-	player->Update(map[mapNumber]);
+	player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -140,7 +114,7 @@ void GameScene::Draw()
 	player->GetHedObj().get()->Draw();
 
 	// マップオブジェクト描画
-	for (auto& object : map[mapNumber])
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		object->Draw();
 	}
@@ -221,7 +195,7 @@ void GameScene::jsonObjectUpdate()
 	int index = 0;
 	int keyIndex = 0;
 	std::vector<int> doorIndex;
-	for (auto& object : map[mapNumber])
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
 		if (object->GetType() == "Ground")
@@ -234,13 +208,13 @@ void GameScene::jsonObjectUpdate()
 			XMFLOAT3 pos = object->GetPosition();
 			pos.y += gravity;
 			XMFLOAT3 pPos = player->GetBodyPos();
-			for (int i = 0; i < map[mapNumber].size(); i++)
+			for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
 			{
 				if (i == index) continue;
 
-				if (Collision::CollisionBoxToBox(map[mapNumber][i]->GetPosition(), map[mapNumber][i]->GetScale(), pos, object->GetScale()))
+				if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale(), pos, object->GetScale()))
 				{
-					pos.y += (map[mapNumber][i]->GetPosition().y + map[mapNumber][i]->GetScale().y) - (pos.y - object->GetScale().y);
+					pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale().y) - (pos.y - object->GetScale().y);
 					gravity = 0.0f;
 					break;
 				}
@@ -281,13 +255,13 @@ void GameScene::jsonObjectUpdate()
 
 	if (keyIndex != 0)
 	{
-		map[mapNumber].erase(map[mapNumber].begin() + keyIndex - 1);
+		map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + keyIndex - 1);
 	}
 	if (doorIndex.empty() == false)
 	{
 		for (const auto& m : doorIndex)
 		{
-			map[mapNumber].erase(map[mapNumber].begin() + m - 1);
+			map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + m - 1);
 		}
 	}
 }
