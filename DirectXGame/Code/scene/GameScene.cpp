@@ -183,7 +183,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		newObject->SetType(objectData.objType);
 
 		// タイプごとに移動先の座標を設定するかを決める
-		if (newObject->GetType() == "")
+		if (newObject->GetType() == "test")
 		{
 			XMFLOAT3 movePos;
 			XMStoreFloat3(&movePos, objectData.movePos);
@@ -214,7 +214,7 @@ void GameScene::jsonObjectUpdate()
 		{
 		}
 		// 移動するオブジェクトの更新
-		else if (object->GetType() == "")
+		else if (object->GetType() == "test")
 		{
 			XMFLOAT3 movePos = object->GetMovePos();
 		}

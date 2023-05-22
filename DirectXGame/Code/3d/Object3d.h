@@ -93,6 +93,10 @@ public: // メンバ関数
 	void SetType(std::string type) { this->type = type; }
 	// オブジェクトタイプの取得
 	const std::string& GetType() { return type; }
+	// 移動先の座標の設定
+	void SetMovePos(XMFLOAT3 movePos) { this->movePos = movePos; }
+	// 移動先の座標の取得
+	const XMFLOAT3& GetMovePos() { return movePos; }
 	// 描画フラグの設定
 	void SetDrawFlag(bool dFlag) { drawFlag = dFlag; }
 	// 描画フラグの取得
@@ -130,6 +134,8 @@ private: // メンバ変数
 	std::string type;
 	// コリジョンスケール
 	XMFLOAT3 collisionScale = {};
+	// 移動先の座標
+	XMFLOAT3 movePos = {};
 	// 描画フラグ
 	bool drawFlag = true;
 	// かみつけるフラグ
