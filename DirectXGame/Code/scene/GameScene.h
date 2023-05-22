@@ -122,6 +122,9 @@ private: // メンバ変数
 	// 全マップデータのリスト
 	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
 	int mapNumber = 3;
+	float gravity = 0.0f;
+	const float addGravity = -0.1f;
+	const float maxGravity = -2.0f;
 
 	// 画像
 	Image2d* fadeTex = nullptr;

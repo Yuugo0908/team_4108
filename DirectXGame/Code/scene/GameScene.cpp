@@ -231,7 +231,21 @@ void GameScene::jsonObjectUpdate()
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->GetType() == "box")
 		{
+			XMFLOAT3 pos = object->GetPosition();
+			pos.y += gravity;
+			XMFLOAT3 pPos = player->GetBodyPos();
+			for (int i = 0; i < map[mapNumber].size(); i++)
+			{
+				if (i == index) continue;
 
+				if (Collision::CollisionBoxToBox(map[mapNumber][i]->GetPosition(), map[mapNumber][i]->GetScale(), pos, object->GetScale()))
+				{
+					pos.y += (map[mapNumber][i]->GetPosition().y + map[mapNumber][i]->GetScale().y) - (pos.y - object->GetScale().y);
+					gravity = 0.0f;
+					break;
+				}
+			}
+			object->SetPosition(pos);
 		}
 		// 触れるとステージリセット
 		else if (object->GetType() == "checkPoint")
@@ -261,6 +275,8 @@ void GameScene::jsonObjectUpdate()
 		object->Update();
 
 		index++;
+		gravity += addGravity;
+		gravity = max(gravity, maxGravity);
 	}
 
 	if (keyIndex != 0)

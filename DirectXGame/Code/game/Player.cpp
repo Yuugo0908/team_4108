@@ -116,12 +116,12 @@ void Player::JumpProcess()
 void Player::GravityProcess()
 {
 	if (headState == STATE_INJECTION) return;
-
 	
-	//下向き加速度
+	// 下向き加速度
 	const float fallAcc = -0.1f;
 	const float fallVYMin = -2.0f;
-	//加速
+
+	// 加速
 	moveY = max(moveY + fallAcc, fallVYMin);
 	
 	if (onGround != false) return;
@@ -279,6 +279,7 @@ void Player::HeadBackMoveProcess()
 
 void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
+	islonger = false;
 
 	////タイマー起動
 	if (TimeCheck(biteTimer) == true)
@@ -300,6 +301,7 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		mapObjects.erase(mapObjects.begin() + hitMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
+		islonger = true;
 	}
 }
 
