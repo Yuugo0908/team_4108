@@ -122,5 +122,16 @@ void LevelLoader::Recursive(nlohmann::json& object, LevelData* levelData)
 		{
 			objectData.objType = object["obj_type"];
 		}
+
+		// ˆÚ“®æ‚ÌÀ•W‚ğ“Ç‚İ‚İ
+		if (object.contains("move_pos"))
+		{
+			nlohmann::json& move_pos = object["move_pos"];
+			// ˆÚ“®æ‚ÌÀ•W
+			objectData.movePos.m128_f32[0] = (float)move_pos["move_pos"][0];
+			objectData.movePos.m128_f32[1] = (float)move_pos["move_pos"][1];
+			objectData.movePos.m128_f32[2] = (float)move_pos["move_pos"][2];
+			objectData.movePos.m128_f32[3] = 0.0f;
+		}
 	}
 }
