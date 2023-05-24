@@ -307,6 +307,8 @@ void Object3d::Update()
 	constMap0->world = matWorld;
 	constMap0->cameraPos = cameraPos;
 	constMap0->color = color;
+	constMap0->offset = offset;
+	constMap0->tiring = tiring;
 	constBufferB0->Unmap(0, nullptr);
 }
 

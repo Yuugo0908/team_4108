@@ -23,6 +23,8 @@ struct LevelData
 		XMVECTOR center;
 		// コライダー大きさ
 		XMVECTOR size;
+		// 移動先の座標
+		XMVECTOR movePos;
 	};
 	// オブジェクト配列
 	std::vector<ObjectData> objects;

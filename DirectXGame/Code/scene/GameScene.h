@@ -21,6 +21,7 @@
 #include "LevelLoader.h"
 #include "Particle.h"
 #include "BaseScene.h"
+#include "CsvFile.h"
 #include "SafeDelete.h"
 
 #include <stdlib.h>
@@ -53,18 +54,41 @@ public: // メンバ関数
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>
-	/// <param name="num">パーティクル数（偶数だとGood）</param>
-	void OnLandingEffect(int num);
+	/// <param name="num">発生数</param>
+	/// <param name="pPos">発生座標</param>
+	void OnLandingEffect(int num, const XMFLOAT3& pPos);
 
 	/// <summary>
 	/// 取得時エフェクト
 	/// </summary>
-	void OnPickingEffect();
+	/// <param name="pPos">発生座標</param>
+	void OnPickingEffect(const XMFLOAT3& pPos);
 
 	/// <summary>
 	/// かみつき時のパーティクル
 	/// </summary>
-	void OnBitingEffect();
+	/// <param name="pPos">発生座標</param>
+	void OnBitingEffect(const XMFLOAT3& pPos);
+
+	/// <summary>
+	/// 鍵を取得できるか
+	/// </summary>
+	/// <param name="keyPos">鍵穴の座標</param>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="keyRadius">鍵穴の横幅</param>
+	/// <param name="playerRadius">プレイヤーの横幅</param>
+	/// <returns>成否</returns>
+	bool IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius);
+
+	/// <summary>
+	/// ドアを開けられるか
+	/// </summary>
+	/// <param name="doorPos">ドアの座標</param>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="doorRadius">ドアの横幅</param>
+	/// <param name="playerRadius">プレイヤーの横幅</param>
+	/// <returns>成否</returns>
+	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
@@ -98,7 +122,11 @@ private: // メンバ変数
 	std::vector<std::unique_ptr<Object3d>> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
-	int mapNumber = 3;
+	float gravity = 0.0f;
+	const float addGravity = -0.1f;
+	const float maxGravity = -2.0f;
+	// マップ番号管理(csvファイル)
+	std::vector<std::vector<int>> mapNumber;
 
 	// 画像
 	Image2d* fadeTex = nullptr;

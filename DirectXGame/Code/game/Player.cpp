@@ -38,7 +38,6 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		hPos = { 0.0f, 10.0f, 0.0f };
 	}
 
-	MapChange(mapObjects);
 
 	MoveProcess();
 	//移動値加算
@@ -47,6 +46,8 @@ void Player::Update(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 	hPos = hPos + hmove;
 
 	AcidProcess(mapObjects);
+
+	MapChange(mapObjects);
 
 	if (mapChangeFlag == false)
 	{
@@ -123,7 +124,8 @@ void Player::GravityProcess()
 	//下向き加速度
 	const float fallAcc = -0.1f;
 	const float fallVYMin = -2.0f;
-	//加速
+
+	// 加速
 	moveY = max(moveY + fallAcc, fallVYMin);
 	
 	if (onGround != false) return;
@@ -293,6 +295,7 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		CarryBlockProcess(mapObjects);
 		return;
 	}
+	islonger = false;
 
 
 	////タイマー起動
@@ -315,6 +318,7 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
+		islonger = true;
 	}
 }
 
@@ -457,7 +461,7 @@ void Player::MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 			limitPos = UP_LIMIT;
 			mapChangeFlag = true;
 		}
-		else if (pPos.y <= -10.0f)
+		else if (pPos.y <= 0.0f)
 		{
 			limitPos = DOWN_LIMIT;
 		}
@@ -476,24 +480,28 @@ void Player::MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 
 	if (limitPos == UP_LIMIT)
 	{
-		pPos.y = 0.0f;
+		pPos.y = 1.0f;
 		hPos = pPos;
+		CsvFile::now_y--;
 	}
 	else if (limitPos == DOWN_LIMIT)
 	{
-		pPos = checkPointPos;
+		pPos.y = 159.0f;
 		hPos = pPos;
+		CsvFile::now_y++;
 	}
 
 	if (limitPos == RIGHT_LIMIT)
 	{
 		pPos.x = -159.0f;
 		hPos = pPos;
+		CsvFile::now_x++;
 	}
 	else if (limitPos == LEFT_LIMIT)
 	{
 		pPos.x = 159.0f;
 		hPos = pPos;
+		CsvFile::now_x--;
 	}
 }
 

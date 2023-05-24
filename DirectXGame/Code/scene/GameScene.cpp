@@ -26,8 +26,7 @@ void GameScene::Initialize()
 	// かみつき時のパーティクル
 	biteEffect.reset(Particle::Create(L"Resources/biteEffectAll.png"));
 
-	//enemy->ModelInit();
-	//rope->Initialize();
+	CsvFile::CsvToVector(mapNumber, "test");
 
 	// ライトの生成
 	light = Light::Create();
@@ -64,44 +63,21 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	bool flag = player->GetMapChange();
-	if (flag)
-	{
-		levelData = nullptr;
-
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
-	else if (keyboard->TriggerKey(DIK_Z))
-	{
-		if (mapNumber == 3)
-		{
-			mapNumber = 4;
-		}
-		else if (mapNumber == 4)
-		{
-			mapNumber = 3;
-		}
-	}
 	jsonObjectUpdate();
 
 	skydomeObj->Update();
-	player->Update(map[mapNumber]);
+	player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
 
 	if (player->GetOnGrounding() == true)
 	{
-		OnLandingEffect(6);
+		XMFLOAT3 pos = player->GetBodyPos();
+		pos.y -= 1.0f * player->GetObj()->GetScale().y;
+		OnLandingEffect(6, pos);
 	}
 
 	if (player->GetIsLonger() == true)
 	{
-		OnBitingEffect();
+		OnBitingEffect(player->GetHeadPos());
 	}
 }
 
@@ -139,7 +115,7 @@ void GameScene::Draw()
 	player->GetHedObj().get()->Draw();
 
 	// マップオブジェクト描画
-	for (auto& object : map[mapNumber])
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		object->Draw();
 	}
@@ -209,6 +185,15 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		// オブジェクトのタイプをセット
 		newObject->SetType(objectData.objType);
 
+		// タイプごとに移動先の座標を設定するかを決める
+		if (newObject->GetType() == "test")
+		{
+			XMFLOAT3 movePos;
+			XMStoreFloat3(&movePos, objectData.movePos);
+			// 移動先の座標を設定(取得する際はゲッターを使う)
+			newObject->SetMovePos(movePos);
+		}
+
 		// 配列に登録
 		mapObject.push_back(std::move(newObject));
 	}
@@ -217,31 +202,90 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 
 void GameScene::jsonObjectUpdate()
 {
-	for (auto& object : map[mapNumber])
+	int index = 0;
+	int keyIndex = 0;
+	std::vector<int> doorIndex;
+	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
 		if (object->GetType() == "Ground")
 		{
+
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->GetType() == "box")
 		{
+			XMFLOAT3 pos = object->GetPosition();
+			pos.y += gravity;
+			XMFLOAT3 pPos = player->GetBodyPos();
+			for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
+			{
+				if (i == index) continue;
+
+				if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale(), pos, object->GetScale()))
+				{
+					pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale().y) - (pos.y - object->GetScale().y);
+					gravity = 0.0f;
+					break;
+				}
+			}
+			object->SetPosition(pos);
 		}
 		// 触れるとステージリセット
 		else if (object->GetType() == "checkPoint")
 		{
+
+		}
+		// 鍵
+		else if (object->GetType() == "key")
+		{
+			if (player->GetIsKey() == false && IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+			{
+				OnPickingEffect(object->GetPosition());
+				player->SetIKey(true);
+				keyIndex = index + 1;
+			}
+		}
+		// ドア
+		else if (object->GetType() == "door")
+		{
+			if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+			{
+				OnPickingEffect(object->GetPosition());
+				player->SetIKey(false);
+				doorIndex.emplace_back(index + 1);
+			}
+		}
+		// 移動するオブジェクトの更新
+		else if (object->GetType() == "test")
+		{
+			XMFLOAT3 movePos = object->GetMovePos();
 		}
 		object->Update();
+
+		index++;
+		gravity += addGravity;
+		gravity = max(gravity, maxGravity);
+	}
+
+	if (keyIndex != 0)
+	{
+		map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + keyIndex - 1);
+	}
+	if (doorIndex.empty() == false)
+	{
+		for (const auto& m : doorIndex)
+		{
+			map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + m - 1);
+		}
 	}
 }
 
-void GameScene::OnLandingEffect(int num)
+void GameScene::OnLandingEffect(int num, const XMFLOAT3& pPos)
 {
 	for (int i = 0; i < num; i++)
 	{
-		XMFLOAT3 pos = player->GetObj()->GetPosition();
-		pos.y -= 1.0f * player->GetObj()->GetScale().y;
-		XMFLOAT3 vel = { 0, 0, 0 };
+		XMFLOAT3 pos = pPos;
 		XMFLOAT3 acc = { static_cast<float>(Random::GetRanNum(10, 50)) / 100, static_cast<float>(Random::GetRanNum(0, 3)) / 100, 0 };
 		if (i % 2 == 0)
 		{
@@ -249,26 +293,52 @@ void GameScene::OnLandingEffect(int num)
 		}
 		XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.05f };
 		XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-		landingEffect->Add(10, pos, vel, acc, 0.0f, 10.0f, startColor, endColor);
+		landingEffect->Add(10, pos, { 0, 0, 0 }, acc, 0.0f, 10.0f, startColor, endColor);
 	}
 }
 
-void GameScene::OnPickingEffect()
+void GameScene::OnPickingEffect(const XMFLOAT3& pPos)
 {
-	XMFLOAT3 pos = player->GetObj()->GetPosition();
+	XMFLOAT3 pos = pPos;
 	XMFLOAT4 startColor = { 1.0f, 1.0f, 1.0f, 0.1f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 	takeEffect->Add(10, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 0.0f, startColor, endColor);
 }
 
-void GameScene::OnBitingEffect()
+void GameScene::OnBitingEffect(const XMFLOAT3& pPos)
 {
-	XMFLOAT3 pos = player->GetHeadPos();
-	XMFLOAT3 vel = { 0, 0, 0 };
-	XMFLOAT3 acc = { 0, 0, 0 };
+	XMFLOAT3 pos = pPos;
 	XMFLOAT4 startColorA = { 0.9f, 0.4f, 0.5f, 0.5f };
 	XMFLOAT4 startColorB = { 0.7f, 0.7f, 0.4f, 0.5f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(7, pos, vel, acc, 20.0f, 40.0f, startColorA, endColor);
-	biteEffect->Add(7, pos, vel, acc, 20.0f, 50.0f, startColorB, endColor);
+	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 40.0f, startColorA, endColor);
+	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 50.0f, startColorB, endColor);
+}
+
+bool GameScene::IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius)
+{
+	// 誤差
+	float error = 0.1f;
+
+	// 一定の距離なら
+	if (GetLength(keyPos, playerPos) <= keyRadius + playerRadius + error)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius)
+{
+	// 誤差
+	float error = 0.1f;
+
+	// 一定の距離なら
+	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
+	{
+		return true;
+	}
+
+	return false;
 }

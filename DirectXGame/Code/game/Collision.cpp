@@ -226,6 +226,20 @@ bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadiu
 	return false;
 }
 
+bool Collision::CollisionBoxToBox(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, XMFLOAT3& pos, const XMFLOAT3 radius)
+{
+	float lengthX = static_cast<float>(fabs(boxPos.x - pos.x));
+	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
+	float lengthZ = static_cast<float>(fabs(boxPos.z - pos.z));
+
+	if (lengthX <= boxRadius.x + radius.x && lengthY <= boxRadius.y + radius.y && lengthZ <= boxRadius.z + radius.z)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool Collision::CollisionStage(const XMFLOAT3 stagePos, const XMFLOAT3 stageRadius, XMFLOAT3& pos, const XMFLOAT3 radius, XMFLOAT3 oldPos)
 {
 	// ”»’è

@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Particle.h"
 #include "DirectXCommon.h"
+#include "CsvFile.h"
 class Player
 {
 public:
@@ -179,6 +180,8 @@ public:
 	}
 	bool& GetMapChange() { return mapChangeFlag; }
 	bool& GetIsLonger() { return islonger; }
+	bool& GetIsKey() { return isKey; }
+	void SetIKey(bool iskey) { this->isKey = iskey; }
 
 private: // ƒƒ“ƒo•Ï”
 
@@ -220,6 +223,7 @@ private: // ƒƒ“ƒo•Ï”
 	BodyCollsionState bodyColState = BODYSTATE_NULL;
 	int colisionBlockNum = 0;
 	bool islonger = false;
+	bool isKey = false;
 
 	LimitPos limitPos = NONE;
 	XMFLOAT3 checkPointPos = {};
