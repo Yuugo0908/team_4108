@@ -311,8 +311,8 @@ void GameScene::OnBitingEffect(const XMFLOAT3& pPos)
 	XMFLOAT4 startColorA = { 0.9f, 0.4f, 0.5f, 0.5f };
 	XMFLOAT4 startColorB = { 0.7f, 0.7f, 0.4f, 0.5f };
 	XMFLOAT4 endColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 40.0f, startColorA, endColor);
-	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 20.0f, 50.0f, startColorB, endColor);
+	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 15.0f, 35.0f, startColorA, endColor);
+	biteEffect->Add(7, pos, { 0, 0, 0 }, { 0, 0, 0 }, 15.0f, 45.0f, startColorB, endColor);
 }
 
 bool GameScene::IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius)
