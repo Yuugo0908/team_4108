@@ -259,13 +259,29 @@ void GameScene::jsonObjectUpdate()
 		// 移動するオブジェクトの更新
 		else if (object->GetType() == "test")
 		{
-			XMFLOAT3 movePos = object->GetMovePos();
+			
+
+			/*if (mapMove == false)
+			{
+				mapMove = true;
+			}
+			XMFLOAT3 movePos = Easing::lerp({ 0, 0, 0 }, object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
+			object->SetMovePos(movePos);*/
 		}
 		object->Update();
 
 		index++;
 		gravity += addGravity;
 		gravity = max(gravity, maxGravity);
+		if (mapMove == true)
+		{
+			mapMoveFrame++;
+			mapMoveFrame = min(mapMoveFrame, 60);
+		}
+		else
+		{
+			mapMoveFrame = 0;
+		}
 	}
 
 	if (keyIndex != 0)

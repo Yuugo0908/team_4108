@@ -118,6 +118,12 @@ private: // メンバ変数
 		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum,
 	};
 
+	struct MapData
+	{
+		Object3d* object;
+		XMFLOAT3 originPos = {};
+	};
+
 	// jsonオブジェクト
 	std::vector<std::unique_ptr<Object3d>> mapObject{};
 	// 全マップデータのリスト
@@ -125,6 +131,8 @@ private: // メンバ変数
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
+	int mapMoveFrame = 0;
+	bool mapMove = false;
 	// マップ番号管理(csvファイル)
 	std::vector<std::vector<int>> mapNumber;
 
