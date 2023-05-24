@@ -11,10 +11,7 @@
 #include "Operator.h"
 #include "Camera.h"
 #include "Audio.h"
-#include "Rope.h"
 #include "Player.h"
-#include "Enemy.h"
-#include "Bullet.h"
 #include "Collision.h"
 #include "Light.h"
 #include "Easing.h"
@@ -97,10 +94,7 @@ private: // メンバ変数
 	Camera* camera = Camera::GetInstance();
 	Light* light = nullptr;
 
-	Rope* rope = nullptr;
-	Enemy* enemy = nullptr;
 	// 複数生成用リスト
-	std::list<std::unique_ptr<Enemy>> enemys;
 	LevelData* levelData = nullptr;
 
 	enum Scene
@@ -125,9 +119,9 @@ private: // メンバ変数
 	};
 
 	// jsonオブジェクト
-	std::vector<std::unique_ptr<Object3d>> mapObject{};
+	std::vector<Object3d*> mapObject{};
 	// 全マップデータのリスト
-	std::vector<std::vector<std::unique_ptr<Object3d>>> map{};
+	std::vector<std::vector<Object3d*>> map{};
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
@@ -161,6 +155,6 @@ private: // メンバ変数
 	Player* player = nullptr;
 
 	//skydome
-	std::unique_ptr<Object3d> skydomeObj = nullptr;
+	Object3d* skydomeObj = nullptr;
 	Model* skydomeModel = nullptr;
 };

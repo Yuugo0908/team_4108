@@ -55,14 +55,21 @@ public:
 		LEFT_LIMIT
 	};
 
+	enum BiteBlockState
+	{
+		NOTBITE,
+		NORMAL,
+		NOTGRAVIT,
+	};
+
 public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
 	// 更新処理
-	void Update(std::vector<std::unique_ptr<Object3d>> &mapObjects);
+	void Update(std::vector<Object3d*> &mapObjects);
 	// オブジェクト
-	const std::unique_ptr<Object3d>& GetObj() { return playerObj; }
-	const std::unique_ptr<Object3d>& GetHedObj() { return playerHedObj; }
+	Object3d* GetObj() { return playerObj; }
+	Object3d* GetHedObj() { return playerHedObj; }
 
 private:
 	/// <summary>
@@ -80,17 +87,17 @@ private:
 	/// <summary>
 	/// 地面Y軸衝突判定処理
 	/// </summary>
-	void GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void GroundCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 地形ブロックX軸衝突処理
 	/// </summary>
 	/// <param name="mapObjects">マップのブロック</param>
-	void BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void BlockCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 天井に関してのブロック衝突判定
 	/// </summary>
 	/// <param name="mapObjects">マップのブロック</param>
-	void CeilingBlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭射出処理
 	/// </summary>
@@ -110,26 +117,48 @@ private:
 	/// <summary>
 	/// 噛みつき処理
 	/// </summary>
-	void HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void HeadBiteProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭更新処理
 	/// </summary>
-	void HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void HeadUpdateProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭当たり判定処理
 	/// </summary>
 	/// <returns>頭の当たり判定結果</returns>
-	HeadInjectionState HeadCollision(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	HeadInjectionState HeadCollision(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭とブロックの当たり判定
 	/// </summary>
 	/// <returns>当たり判定</returns>
-	bool HradBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	bool HeadBlockCollisionCheck(std::vector<Object3d*> &mapObjects);
+
+	bool BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// マップ変更
 	/// </summary>
-	void MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void MapChange(std::vector<Object3d*> &mapObjects);
+	/// <summary>
+	/// 酸ブロックとの当たり判定
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void AcidProcess(std::vector<Object3d*> &mapObjects);
+	/// <summary>
+	/// 引き寄せブロック処理
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void AttractBiteProcess(std::vector<Object3d*> &mapObjects);
 
+	/// <summary>
+	/// ブロック運び処理
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void CarryBlockProcess(std::vector<Object3d*> &mapObjects);
+	/// <summary>
+	/// 時間確認
+	/// </summary>
+	/// <param name="time"></param>
+	/// <returns></returns>
 	bool TimeCheck(float& time);
 public:
 
@@ -163,30 +192,31 @@ private: // メンバ変数
 
 	// モデル
 	Model* playerModel = nullptr;
-	std::unique_ptr<Object3d> playerObj = nullptr;
-	std::unique_ptr<Object3d> playerHedObj = nullptr;
+	Object3d* playerObj = nullptr;
+	Object3d* playerHedObj = nullptr;
 
 	// プレイヤー
-	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f}; //向き
-	XMFLOAT3 objPos = {}; //描画専用体座標
-	XMFLOAT3 pPos = {};//体座標
-	XMFLOAT3 oldpPos = {};
-	XMFLOAT3 hPos = {};//頭座標
-	XMFLOAT3 headInjectDis = {}; //頭射出後位置
-	XMFLOAT3 headBackDis = {}; //頭戻り量
-	XMFLOAT3 pPosOld = {};
-	XMFLOAT3 pScale = {};//大きさ
-	XMFLOAT3 pRot = {};//回転
-	XMFLOAT3 reSpawnPos = {};
-	XMFLOAT3 move = {}; //移動量
-	XMFLOAT3 hmove = {}; //頭の移動量
-	XMFLOAT3 direction = {}; //向いている方向
-	float moveY = 0.0f; //ジャンプ及び重力
+	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f};	//向き
+	XMFLOAT3 objPos = {};						//描画専用体座標
+	XMFLOAT3 pPos = {};							//体座標
+	XMFLOAT3 oldpPos = {};						//前フレームの体の位置
+	XMFLOAT3 hPos = {};							//頭座標
+	XMFLOAT3 headInjectDis = {};				//頭射出後位置
+	XMFLOAT3 headBackDis = {};					//頭戻り量
+	XMFLOAT3 pPosMovePrevious = {};				//体移動前の位置
+	XMFLOAT3 pScale = {};						//大きさ
+	XMFLOAT3 pRot = {};							//回転
+	XMFLOAT3 reSpawnPos = {};					//
+	XMFLOAT3 move = {};							//移動量
+	XMFLOAT3 hmove = {};						//頭の移動量
+	XMFLOAT3 direction = {};					//向いている方向
+	float moveY = 0.0f;							//ジャンプ及び重力
 	bool onGround = false;
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
 	BodyState bodyState = STATE_BODY_NORMAL;
-	int hitMapObjNum = 0;
+	int hitHeadMapObjNum = 0;
+	int hitbodyMapObjNum = 0;
 	float biteTimer = 5.0f;
 	float timeMax = 1.0f;
 	float moveTime = 1.0f;
@@ -198,5 +228,6 @@ private: // メンバ変数
 	LimitPos limitPos = NONE;
 	XMFLOAT3 checkPointPos = {};
 	bool mapChangeFlag = false;
+	BiteBlockState biteBlockState = NOTBITE;
 };
 

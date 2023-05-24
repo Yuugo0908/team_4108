@@ -51,8 +51,8 @@ void GameScene::Initialize()
 	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
-	jsonObjectInit("map4");
-	jsonObjectInit("map5");
+	jsonObjectInit("map4_1");
+	jsonObjectInit("map7");
 }
 
 void GameScene::Finalize()
@@ -85,13 +85,14 @@ void GameScene::Draw()
 {
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
+	ImGui::Text("PlayerY: %f", player->GetObj()->GetPosition().y);
 	ImGui::Text("moveY: %f", player->GetmoveY());
 	ImGui::Text("bodyPosX: %f", player->GetBodyPos().y);
 	ImGui::Text("headPosX: %f", player->GetHeadPos().y);
 	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Text("GetHeadState: %d", player->GetHeadState());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
+	ImGui::Text("mapNum: %d", mapNumber);
 	ImGui::End();
 #pragma region 背景画像描画
 	// 背景画像描画前処理
@@ -110,8 +111,8 @@ void GameScene::Draw()
 
 	// 3Dオブジェクト描画
 	skydomeObj->Draw();
-	player->GetObj().get()->Draw();
-	player->GetHedObj().get()->Draw();
+	player->GetObj()->Draw();
+	player->GetHedObj()->Draw();
 
 	// マップオブジェクト描画
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
@@ -150,7 +151,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 	for (LevelData::ObjectData& objectData : levelData->objects)
 	{
 		// 3Dオブジェクトを生成
-		std::unique_ptr<Object3d> newObject = Object3d::Create();
+		Object3d* newObject = Object3d::Create();
 
 		// ファイル名から登録済みモデルを検索
 		Model* model = nullptr;
