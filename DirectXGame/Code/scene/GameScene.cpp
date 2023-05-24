@@ -185,6 +185,15 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		// オブジェクトのタイプをセット
 		newObject->SetType(objectData.objType);
 
+		// タイプごとに移動先の座標を設定するかを決める
+		if (newObject->GetType() == "test")
+		{
+			XMFLOAT3 movePos;
+			XMStoreFloat3(&movePos, objectData.movePos);
+			// 移動先の座標を設定(取得する際はゲッターを使う)
+			newObject->SetMovePos(movePos);
+		}
+
 		// 配列に登録
 		mapObject.push_back(std::move(newObject));
 	}
@@ -246,6 +255,11 @@ void GameScene::jsonObjectUpdate()
 				player->SetIKey(false);
 				doorIndex.emplace_back(index + 1);
 			}
+		}
+		// 移動するオブジェクトの更新
+		else if (object->GetType() == "test")
+		{
+			XMFLOAT3 movePos = object->GetMovePos();
 		}
 		object->Update();
 
