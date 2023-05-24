@@ -135,6 +135,7 @@ void GameScene::Draw()
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(DirectXCommon::GetInstance()->GetCommandList());
+
 	// 画像描画後処理
 	Image2d::PostDraw();
 #pragma endregion 前景画像描画
