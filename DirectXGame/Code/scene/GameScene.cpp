@@ -53,7 +53,7 @@ void GameScene::Initialize()
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4_1");
-	jsonObjectInit("map5");
+	jsonObjectInit("map7");
 }
 
 void GameScene::Finalize()

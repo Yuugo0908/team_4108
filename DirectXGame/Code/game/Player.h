@@ -54,6 +54,13 @@ public:
 		LEFT_LIMIT
 	};
 
+	enum BiteBlockState
+	{
+		NOTBITE,
+		NORMAL,
+		NOTGRAVIT,
+	};
+
 public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
@@ -135,7 +142,22 @@ private:
 	/// </summary>
 	/// <param name="mapObjects"></param>
 	void AcidProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 引き寄せブロック処理
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void AttractBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
 
+	/// <summary>
+	/// ブロック運び処理
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void CarryBlockProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	/// <summary>
+	/// 時間確認
+	/// </summary>
+	/// <param name="time"></param>
+	/// <returns></returns>
 	bool TimeCheck(float& time);
 public:
 
@@ -171,21 +193,21 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> playerHedObj = nullptr;
 
 	// プレイヤー
-	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f}; //向き
-	XMFLOAT3 objPos = {}; //描画専用体座標
-	XMFLOAT3 pPos = {};//体座標
-	XMFLOAT3 oldpPos = {};
-	XMFLOAT3 hPos = {};//頭座標
-	XMFLOAT3 headInjectDis = {}; //頭射出後位置
-	XMFLOAT3 headBackDis = {}; //頭戻り量
-	XMFLOAT3 pPosOld = {};
-	XMFLOAT3 pScale = {};//大きさ
-	XMFLOAT3 pRot = {};//回転
-	XMFLOAT3 reSpawnPos = {};
-	XMFLOAT3 move = {}; //移動量
-	XMFLOAT3 hmove = {}; //頭の移動量
-	XMFLOAT3 direction = {}; //向いている方向
-	float moveY = 0.0f; //ジャンプ及び重力
+	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f};	//向き
+	XMFLOAT3 objPos = {};						//描画専用体座標
+	XMFLOAT3 pPos = {};							//体座標
+	XMFLOAT3 oldpPos = {};						//前フレームの体の位置
+	XMFLOAT3 hPos = {};							//頭座標
+	XMFLOAT3 headInjectDis = {};				//頭射出後位置
+	XMFLOAT3 headBackDis = {};					//頭戻り量
+	XMFLOAT3 pPosMovePrevious = {};				//体移動前の位置
+	XMFLOAT3 pScale = {};						//大きさ
+	XMFLOAT3 pRot = {};							//回転
+	XMFLOAT3 reSpawnPos = {};					//
+	XMFLOAT3 move = {};							//移動量
+	XMFLOAT3 hmove = {};						//頭の移動量
+	XMFLOAT3 direction = {};					//向いている方向
+	float moveY = 0.0f;							//ジャンプ及び重力
 	bool onGround = false;
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
@@ -202,5 +224,6 @@ private: // メンバ変数
 	LimitPos limitPos = NONE;
 	XMFLOAT3 checkPointPos = {};
 	bool mapChangeFlag = false;
+	BiteBlockState biteBlockState = NOTBITE;
 };
 

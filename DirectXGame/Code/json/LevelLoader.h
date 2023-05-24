@@ -32,6 +32,7 @@ struct LevelData
 	Model* wallModel = nullptr;
 	Model* floorModel = nullptr;
 	Model* checkPointModel = nullptr;
+	Model* movator = nullptr;
 	std::map<std::string, Model*> models;
 };
 

@@ -23,7 +23,7 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 	playerHedObj->SetPosition(hPos);
 	playerHedObj->SetScale(pScale);
 	playerHedObj->SetRotation({ 270.0f, 0.0f, 0.0f });
-	playerHedObj->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+	playerHedObj->SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
 	playerHedObj->Update();
 
 	return true;
@@ -118,7 +118,7 @@ void Player::JumpProcess()
 void Player::GravityProcess()
 {
 	if (headState == STATE_INJECTION) return;
-
+	if (headState == STATE_BITE && biteBlockState == NOTGRAVIT) return;
 	
 	//下向き加速度
 	const float fallAcc = -0.1f;
@@ -281,6 +281,19 @@ void Player::HeadBackMoveProcess()
 
 void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
+	//引き寄せられるブロックにかみついた場合
+	if (mapObjects[hitHeadMapObjNum].get()->GetType() == "Ground_MoveA")
+	{
+		AttractBiteProcess(mapObjects);
+		return;
+	}
+	else if (mapObjects[hitHeadMapObjNum].get()->GetType() == "Ground_Move")
+	{
+		biteBlockState = NOTGRAVIT;
+		CarryBlockProcess(mapObjects);
+		return;
+	}
+
 
 	////タイマー起動
 	if (TimeCheck(biteTimer) == true)
@@ -296,8 +309,8 @@ void Player::HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 		headState = STATE_BACK;
 	}
 
-	//噛み壊す
-	if (keyboard->PushKey(DIK_O))
+	//噛み壊せるブロックの場合壊す
+	if (keyboard->PushKey(DIK_O) && mapObjects[hitHeadMapObjNum].get()->GetType() == "box")
 	{
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
@@ -361,8 +374,18 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<std::unique_ptr<Obj
 	if (HeadBlockCollisionCheck(mapObjects) == true)
 	{
 		//当たっているブロックは噛みつけるか
-		if (mapObjects[hitHeadMapObjNum].get()->GetType() == "box")
+		if (mapObjects[hitHeadMapObjNum].get()->GetType() == "box")			//壊せるブロック
 		{
+			return STATE_BITEHIT;
+		}
+		else if (mapObjects[hitHeadMapObjNum].get()->GetType() == "Ground_MoveA")	//引き寄せられるブロック
+		{
+			pPosMovePrevious = pPos;
+			return STATE_BITEHIT;
+		}
+		else if (mapObjects[hitHeadMapObjNum].get()->GetType() == "Ground_Move")	//引っ張れるブロック
+		{
+			pPosMovePrevious = hPos;
 			return STATE_BITEHIT;
 		}
 		else
@@ -386,7 +409,7 @@ bool Player::HeadBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& map
 	{
 		sphereB.center = XMLoadFloat3(&mapObjects[i].get()->GetPosition());
 		sphereB.radius = 2.5f;
-		if (Collision::CollisionSphere(sphereA, sphereB) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
 		{
 			hitHeadMapObjNum = i;
 			return true;
@@ -485,6 +508,74 @@ void Player::AcidProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 			hPos = { 0.0f, 10.0f, 0.0f };
 		}
 	}
+
+}
+
+void Player::AttractBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+
+	static XMFLOAT3 oldPPos = {};
+	//頭の位置に体が引き寄せられる
+	float time = timeMax - moveTime;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+
+	if (TimeCheck(moveTime) == true)
+	{
+		//伸ばしきった時
+		pPos = oldPPos;
+		hPos = oldPPos;
+		moveY = 2.4f;
+		moveTime = timeMax;
+		headState = STATE_NORMAL;
+		return;
+	}
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i].get()->GetPosition(), mapObjects[i].get()->GetScale(), pPos, pScale) == true)
+		{
+			pPos = oldPPos;
+			hPos = oldPPos;
+			moveY = 2.4f;
+			moveTime = timeMax;
+			headState = STATE_NORMAL;
+			return;
+		}
+	}
+	
+	oldPPos = pPos;
+	pPos = Easing::easeOut(pPosMovePrevious, hPos, timeRate);
+	//頭の位置まで行ったら通常状態に戻る
+
+}
+
+void Player::CarryBlockProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
+{
+	//static XMFLOAT3 oldHPos = {};
+	////頭の位置に体が引き寄せられる
+	//float time = timeMax - moveTime;			//加算時間に変化
+	//float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+
+	//if (TimeCheck(moveTime) == true)
+	//{
+	//	//体の位置に戻った時
+	//	pPos = oldHPos;
+	//	hPos = oldHPos;
+	//	moveTime = timeMax;
+	//	headState = STATE_NORMAL;
+	//	biteBlockState = NOTBITE;
+	//	return;
+	//}
+
+	//oldHPos = hPos;
+	//hPos = Easing::easeOut(pPosMovePrevious, pPos, timeRate);
+
+	//XMFLOAT3 move = oldHPos - hPos;
+	////ブロック移動処理
+	//XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum].get()->GetPosition();
+	//mapPos = mapPos - move;
+	//mapObjects[hitHeadMapObjNum].get()->SetPosition(mapPos);
+	headState = STATE_BACK;
 
 }
 
