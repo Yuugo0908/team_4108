@@ -102,9 +102,6 @@
     <ClCompile Include="Code\game\Easing.cpp">
       <Filter>ソースファイル\game</Filter>
     </ClCompile>
-    <ClCompile Include="Code\game\Enemy.cpp">
-      <Filter>ソースファイル\game</Filter>
-    </ClCompile>
     <ClCompile Include="Code\game\Light.cpp">
       <Filter>ソースファイル\game</Filter>
     </ClCompile>
@@ -143,12 +140,6 @@
     </ClCompile>
     <ClCompile Include="Code\win\WinApp.cpp">
       <Filter>ソースファイル\win</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\game\Rope.cpp">
-      <Filter>ソースファイル\game</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\game\Bullet.cpp">
-      <Filter>ソースファイル\game</Filter>
     </ClCompile>
     <ClCompile Include="Code\json\LevelLoader.cpp">
       <Filter>ソースファイル\json</Filter>
@@ -230,9 +221,6 @@
     <ClInclude Include="Code\game\Easing.h">
       <Filter>ヘッダーファイル\game</Filter>
     </ClInclude>
-    <ClInclude Include="Code\game\Enemy.h">
-      <Filter>ヘッダーファイル\game</Filter>
-    </ClInclude>
     <ClInclude Include="Code\game\Light.h">
       <Filter>ヘッダーファイル\game</Filter>
     </ClInclude>
@@ -259,12 +247,6 @@
     </ClInclude>
     <ClInclude Include="Code\win\WinApp.h">
       <Filter>ヘッダーファイル\win</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\game\Rope.h">
-      <Filter>ヘッダーファイル\game</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\game\Bullet.h">
-      <Filter>ヘッダーファイル\game</Filter>
     </ClInclude>
     <ClInclude Include="Code\json\LevelLoader.h">
       <Filter>ヘッダーファイル\json</Filter>

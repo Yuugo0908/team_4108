@@ -58,7 +58,7 @@ void Object3d::PostDraw()
 	Object3d::cmdList = nullptr;
 }
 
-std::unique_ptr<Object3d> Object3d::Create()
+Object3d* Object3d::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
 	Object3d* object3d = new Object3d();
@@ -79,7 +79,7 @@ std::unique_ptr<Object3d> Object3d::Create()
 	float scale_val = 2;
 	object3d->scale = { scale_val, scale_val, scale_val };
 
-	return std::unique_ptr<Object3d>(object3d);
+	return object3d;
 }
 
 bool Object3d::CreateGraphicsPipeline()

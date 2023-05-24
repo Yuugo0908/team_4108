@@ -66,10 +66,10 @@ public: // メンバ関数
 	//初期化処理
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
 	// 更新処理
-	void Update(std::vector<std::unique_ptr<Object3d>> &mapObjects);
+	void Update(std::vector<Object3d*> &mapObjects);
 	// オブジェクト
-	const std::unique_ptr<Object3d>& GetObj() { return playerObj; }
-	const std::unique_ptr<Object3d>& GetHedObj() { return playerHedObj; }
+	Object3d* GetObj() { return playerObj; }
+	Object3d* GetHedObj() { return playerHedObj; }
 
 private:
 	/// <summary>
@@ -87,17 +87,17 @@ private:
 	/// <summary>
 	/// 地面Y軸衝突判定処理
 	/// </summary>
-	void GroundCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void GroundCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 地形ブロックX軸衝突処理
 	/// </summary>
 	/// <param name="mapObjects">マップのブロック</param>
-	void BlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void BlockCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 天井に関してのブロック衝突判定
 	/// </summary>
 	/// <param name="mapObjects">マップのブロック</param>
-	void CeilingBlockCollisionProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭射出処理
 	/// </summary>
@@ -117,43 +117,43 @@ private:
 	/// <summary>
 	/// 噛みつき処理
 	/// </summary>
-	void HeadBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void HeadBiteProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭更新処理
 	/// </summary>
-	void HeadUpdateProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void HeadUpdateProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭当たり判定処理
 	/// </summary>
 	/// <returns>頭の当たり判定結果</returns>
-	HeadInjectionState HeadCollision(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	HeadInjectionState HeadCollision(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 頭とブロックの当たり判定
 	/// </summary>
 	/// <returns>当たり判定</returns>
-	bool HeadBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	bool HeadBlockCollisionCheck(std::vector<Object3d*> &mapObjects);
 
-	bool BodyBlockCollisionCheck(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	bool BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// マップ変更
 	/// </summary>
-	void MapChange(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void MapChange(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 酸ブロックとの当たり判定
 	/// </summary>
 	/// <param name="mapObjects"></param>
-	void AcidProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void AcidProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 引き寄せブロック処理
 	/// </summary>
 	/// <param name="mapObjects"></param>
-	void AttractBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void AttractBiteProcess(std::vector<Object3d*> &mapObjects);
 
 	/// <summary>
 	/// ブロック運び処理
 	/// </summary>
 	/// <param name="mapObjects"></param>
-	void CarryBlockProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects);
+	void CarryBlockProcess(std::vector<Object3d*> &mapObjects);
 	/// <summary>
 	/// 時間確認
 	/// </summary>
@@ -192,8 +192,8 @@ private: // メンバ変数
 
 	// モデル
 	Model* playerModel = nullptr;
-	std::unique_ptr<Object3d> playerObj = nullptr;
-	std::unique_ptr<Object3d> playerHedObj = nullptr;
+	Object3d* playerObj = nullptr;
+	Object3d* playerHedObj = nullptr;
 
 	// プレイヤー
 	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f};	//向き

@@ -36,7 +36,7 @@ public: // 静的メンバ関数
 	// 描画後処理
 	static void PostDraw();
 	// 3Dオブジェクト生成
-	static std::unique_ptr<Object3d> Create();
+	static Object3d* Create();
 	// グラフィックパイプライン生成
 	static bool CreateGraphicsPipeline();
 	// ライトのセット

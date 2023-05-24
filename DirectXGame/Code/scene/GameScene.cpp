@@ -85,7 +85,7 @@ void GameScene::Draw()
 {
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("PlayerY: %f", player->GetObj().get()->GetPosition().y);
+	ImGui::Text("PlayerY: %f", player->GetObj()->GetPosition().y);
 	ImGui::Text("moveY: %f", player->GetmoveY());
 	ImGui::Text("bodyPosX: %f", player->GetBodyPos().y);
 	ImGui::Text("headPosX: %f", player->GetHeadPos().y);
@@ -111,8 +111,8 @@ void GameScene::Draw()
 
 	// 3Dオブジェクト描画
 	skydomeObj->Draw();
-	player->GetObj().get()->Draw();
-	player->GetHedObj().get()->Draw();
+	player->GetObj()->Draw();
+	player->GetHedObj()->Draw();
 
 	// マップオブジェクト描画
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
@@ -150,7 +150,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 	for (LevelData::ObjectData& objectData : levelData->objects)
 	{
 		// 3Dオブジェクトを生成
-		std::unique_ptr<Object3d> newObject = Object3d::Create();
+		Object3d* newObject = Object3d::Create();
 
 		// ファイル名から登録済みモデルを検索
 		Model* model = nullptr;
