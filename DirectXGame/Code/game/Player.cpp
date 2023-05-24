@@ -559,30 +559,30 @@ void Player::AttractBiteProcess(std::vector<std::unique_ptr<Object3d>>& mapObjec
 
 void Player::CarryBlockProcess(std::vector<std::unique_ptr<Object3d>>& mapObjects)
 {
-	//static XMFLOAT3 oldHPos = {};
-	////頭の位置に体が引き寄せられる
-	//float time = timeMax - moveTime;			//加算時間に変化
-	//float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+	static XMFLOAT3 oldHPos = {};
+	//頭の位置に体が引き寄せられる
+	float time = timeMax - moveTime;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 
-	//if (TimeCheck(moveTime) == true)
-	//{
-	//	//体の位置に戻った時
-	//	pPos = oldHPos;
-	//	hPos = oldHPos;
-	//	moveTime = timeMax;
-	//	headState = STATE_NORMAL;
-	//	biteBlockState = NOTBITE;
-	//	return;
-	//}
+	if (TimeCheck(moveTime) == true)
+	{
+		//体の位置に戻った時
+		pPos = oldHPos;
+		hPos = oldHPos;
+		moveTime = timeMax;
+		headState = STATE_NORMAL;
+		biteBlockState = NOTBITE;
+		return;
+	}
 
-	//oldHPos = hPos;
-	//hPos = Easing::easeOut(pPosMovePrevious, pPos, timeRate);
+	oldHPos = hPos;
+	hPos = Easing::easeOut(pPosMovePrevious, pPos, timeRate);
 
-	//XMFLOAT3 move = oldHPos - hPos;
-	////ブロック移動処理
-	//XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum].get()->GetPosition();
-	//mapPos = mapPos - move;
-	//mapObjects[hitHeadMapObjNum].get()->SetPosition(mapPos);
+	XMFLOAT3 move = oldHPos - hPos;
+	//ブロック移動処理
+	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum].get()->GetPosition();
+	mapPos = mapPos - move;
+	mapObjects[hitHeadMapObjNum].get()->SetPosition(mapPos);
 	headState = STATE_BACK;
 
 }
