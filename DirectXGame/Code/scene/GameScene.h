@@ -20,6 +20,7 @@
 #include "BaseScene.h"
 #include "CsvFile.h"
 #include "SafeDelete.h"
+#include "MapData.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -47,6 +48,14 @@ public: // メンバ関数
 	void jsonObjectInit(const std::string sceneName);
 	// jsonオブジェクトの更新
 	void jsonObjectUpdate();
+
+	// オブジェクトタイプごとの処理
+	void GroundTypeUpdate(int index, Object3d* object);
+	void BoxTypeUpdate(int index, Object3d* object);
+	void CheckPointTypeUpdate(int index, Object3d* object);
+	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
+	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
+	void TestTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos);
 
 	/// <summary>
 	/// 着地時エフェクト
@@ -113,12 +122,14 @@ private: // メンバ変数
 	};
 
 	// jsonオブジェクト
-	std::vector<Object3d*> mapObject{};
+	std::vector<MapData*> mapObject{};
 	// 全マップデータのリスト
-	std::vector<std::vector<Object3d*>> map{};
+	std::vector<std::vector<MapData*>> map{};
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
+	int mapMoveFrame = 0;
+	bool mapMove = false;
 	// マップ番号管理(csvファイル)
 	std::vector<std::vector<int>> mapNumber;
 
