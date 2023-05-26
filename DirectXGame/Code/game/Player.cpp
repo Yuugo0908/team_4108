@@ -542,7 +542,7 @@ void Player::AttractBiteProcess(std::vector<MapData*> &mapObjects)
 		return;
 	}
 
-	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->object->GetPosition(), mapObjects[hitHeadMapObjNum]->GetScale(), pPos, pScale) == true)
+	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->object->GetPosition(), mapObjects[hitHeadMapObjNum]->object->GetScale(), pPos, pScale) == true)
 	{
 		pPos = oldPPos;
 		hPos = oldPPos;
