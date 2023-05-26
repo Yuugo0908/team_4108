@@ -29,7 +29,7 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 	return true;
 }
 
-void Player::Update(std::vector<Object3d*> &mapObjects)
+void Player::Update(std::vector<MapData*> &mapObjects)
 {
 	//デバック用テレポート
 	if (keyboard->PushKey(DIK_R))
@@ -160,7 +160,7 @@ void Player::GravityProcess()
 
 }
 
-void Player::GroundCollisionProcess(std::vector<Object3d*> &mapObjects)
+void Player::GroundCollisionProcess(std::vector<MapData*> &mapObjects)
 {
 	oldOnGround = onGround;
 
@@ -168,17 +168,17 @@ void Player::GroundCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScale) == true)
 		{
 			//X軸方向で当たり判定が発生したブロックは処理をしない
 			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 
-			pPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (pPos.y - pScale.z);
+			pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.z);
 			
 			if (headState != STATE_BITE)
 			{
-				hPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (hPos.y - pScale.z);
+				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.z);
 
 			}
 			move.y = 0.0f;
@@ -196,7 +196,7 @@ void Player::GroundCollisionProcess(std::vector<Object3d*> &mapObjects)
 	onGround = false;
 }
 
-void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
+void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 {
 	if (headState == STATE_BITE) return;
 
@@ -205,7 +205,7 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
@@ -213,20 +213,20 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 			if (move.x <= 0.0f)
 			{
-				pPos.x += (mapObjects[i]->GetPosition().x + mapObjects[i]->GetScale().x) - (pPos.x - pScale.x) + correction;
-				hPos.x += (mapObjects[i]->GetPosition().x + mapObjects[i]->GetScale().x) - (hPos.x - pScale.x) + correction;
+				pPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (pPos.x - pScale.x) + correction;
+				hPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (hPos.x - pScale.x) + correction;
 			}
 			else if(move.x > 0.0f)
 			{
-				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i]->GetPosition().x - mapObjects[i]->GetScale().x) + correction;
-				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i]->GetPosition().x - mapObjects[i]->GetScale().x) + correction;
+				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
+				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
 			}
 			return;
 		}
 	}
 }
 
-void Player::CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects)
+void Player::CeilingBlockCollisionProcess(std::vector<MapData*> &mapObjects)
 {
 	if (headState == STATE_BITE) return;
 	
@@ -236,14 +236,14 @@ void Player::CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScale) == true)
 		{
-			if (pPos.y > mapObjects[i]->GetPosition().y) continue;
+			if (pPos.y > mapObjects[i]->object->GetPosition().y) continue;
 
 			bodyColState = BODYSTATE_CEILING_COLISION;
 
-			pPos.y -= (pPos.y + pScale.z) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
-			hPos.y -= (hPos.y + pScale.z) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
+			pPos.y -= (pPos.y + pScale.z) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
+			hPos.y -= (hPos.y + pScale.z) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
 		}
 	}
 }
@@ -293,15 +293,15 @@ void Player::HeadBackMoveProcess()
 	hPos = Easing::easeIn( headBackDis, pPos, timeRate);
 }
 
-void Player::HeadBiteProcess(std::vector<Object3d*> &mapObjects)
+void Player::HeadBiteProcess(std::vector<MapData*> &mapObjects)
 {
 	//引き寄せられるブロックにかみついた場合
-	if (mapObjects[hitHeadMapObjNum]->GetType() == "box_pull")
+	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")
 	{
 		AttractBiteProcess(mapObjects);
 		return;
 	}
-	else if (mapObjects[hitHeadMapObjNum]->GetType() == "Ground_Move")
+	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Ground_Move")
 	{
 		biteBlockState = NOTGRAVIT;
 		CarryBlockProcess(mapObjects);
@@ -325,7 +325,7 @@ void Player::HeadBiteProcess(std::vector<Object3d*> &mapObjects)
 	}
 
 	//噛み壊せるブロックの場合壊す
-	if (keyboard->PushKey(DIK_O) && mapObjects[hitHeadMapObjNum]->GetType() == "box")
+	if (keyboard->PushKey(DIK_O) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
@@ -348,7 +348,7 @@ void Player::HeadBiteCollisionProcess()
 	}
 }
 
-void Player::HeadUpdateProcess(std::vector<Object3d*> &mapObjects)
+void Player::HeadUpdateProcess(std::vector<MapData*> &mapObjects)
 {
 	if (headState == STATE_NORMAL)
 	{
@@ -384,22 +384,22 @@ void Player::HeadUpdateProcess(std::vector<Object3d*> &mapObjects)
 	}
 }
 
-Player::HeadInjectionState Player::HeadCollision(std::vector<Object3d*> &mapObjects)
+Player::HeadInjectionState Player::HeadCollision(std::vector<MapData*> &mapObjects)
 {
 	//ブロックとの当たり判定
 	if (HeadBlockCollisionCheck(mapObjects) == true)
 	{
 		//当たっているブロックは噛みつけるか
-		if (mapObjects[hitHeadMapObjNum]->GetType() == "box")			//壊せるブロック
+		if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box")			//壊せるブロック
 		{
 			return STATE_BITEHIT;
 		}
-		else if (mapObjects[hitHeadMapObjNum]->GetType() == "box_pull")	//引き寄せられるブロック
+		else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")	//引き寄せられるブロック
 		{
 			pPosMovePrevious = pPos;
 			return STATE_BITEHIT;
 		}
-		else if (mapObjects[hitHeadMapObjNum]->GetType() == "Ground_Move")	//引っ張れるブロック
+		else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Ground_Move")	//引っ張れるブロック
 		{
 			pPosMovePrevious = hPos;
 			return STATE_BITEHIT;
@@ -416,16 +416,16 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<Object3d*> &mapObje
 	}
 }
 
-bool Player::HeadBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
+bool Player::HeadBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 {
 	Collision::Sphere sphereA, sphereB;
 	sphereA.center = XMLoadFloat3(&hPos);
 	sphereA.radius = 2.5f;
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		sphereB.center = XMLoadFloat3(&mapObjects[i]->GetPosition());
+		sphereB.center = XMLoadFloat3(&mapObjects[i]->object->GetPosition());
 		sphereB.radius = 2.5f;
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
 		{
 			hitHeadMapObjNum = i;
 			return true;
@@ -435,11 +435,11 @@ bool Player::HeadBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
 	return false;
 }
 
-bool Player::BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
+bool Player::BodyBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 {
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScale) == true)
 		{
 			hitbodyMapObjNum = i;
 			return true;
@@ -449,8 +449,20 @@ bool Player::BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
 	return false;
 }
 
-void Player::MapChange(std::vector<Object3d*> &mapObjects)
+void Player::MapChange(std::vector<MapData*> &mapObjects)
 {
+<<<<<<< HEAD
+=======
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (mapObjects[i]->object->GetType() == "checkPoint")
+		{
+			checkPointPos = { mapObjects[i]->object->GetPosition().x, 20.0f, mapObjects[i]->object->GetPosition().z };
+			break;
+		}
+	}
+
+>>>>>>> master
 	if (limitPos != NONE)
 	{
 		CsvFile::map_change_flag = false;
@@ -509,12 +521,12 @@ void Player::MapChange(std::vector<Object3d*> &mapObjects)
 	}
 }
 
-void Player::AcidProcess(std::vector<Object3d*> &mapObjects)
+void Player::AcidProcess(std::vector<MapData*> &mapObjects)
 {
 	if (BodyBlockCollisionCheck(mapObjects) == true)
 	{
 		//当たったブロックが酸ブロックか判定
-		if (mapObjects[hitbodyMapObjNum]->GetType() == "Acid")
+		if (mapObjects[hitbodyMapObjNum]->object->GetType() == "Acid")
 		{
 			// チェックポイントに戻る
 			pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
@@ -523,6 +535,7 @@ void Player::AcidProcess(std::vector<Object3d*> &mapObjects)
 			CsvFile::now_y = CsvFile::check_y;
 		}
 	}
+<<<<<<< HEAD
 }
 
 void Player::CheckPointProcess(std::vector<Object3d*>& mapObjects)
@@ -554,9 +567,11 @@ void Player::CheckPointProcess(std::vector<Object3d*>& mapObjects)
 			}
 		}
 	}
+=======
+>>>>>>> master
 }
 
-void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
+void Player::AttractBiteProcess(std::vector<MapData*> &mapObjects)
 {
 
 	static XMFLOAT3 oldPPos = {};
@@ -576,7 +591,7 @@ void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
 		return;
 	}
 
-	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->GetPosition(), mapObjects[hitHeadMapObjNum]->GetScale(), pPos, pScale) == true)
+	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->object->GetPosition(), mapObjects[hitHeadMapObjNum]->object->GetScale(), pPos, pScale) == true)
 	{
 		pPos = oldPPos;
 		hPos = oldPPos;
@@ -592,7 +607,7 @@ void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
 
 }
 
-void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
+void Player::CarryBlockProcess(std::vector<MapData*> &mapObjects)
 {
 	static XMFLOAT3 oldHPos = {};
 	//体の位置に頭が引き寄せられる
@@ -615,10 +630,10 @@ void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
 
 	XMFLOAT3 move = oldHPos - hPos;
 	//ブロック移動処理
-	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum]->GetPosition();
+	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum]->object->GetPosition();
 	mapPos = mapPos - move;
-	mapObjects[hitHeadMapObjNum]->SetPosition(mapPos);
-	//headState = STATE_BACK;
+	mapObjects[hitHeadMapObjNum]->object->SetPosition(mapPos);
+	headState = STATE_BACK;
 
 }
 

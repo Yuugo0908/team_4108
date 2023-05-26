@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <SafeDelete.h>
 #include "Object3d.h"
 #include "CsvFile.h"
 
