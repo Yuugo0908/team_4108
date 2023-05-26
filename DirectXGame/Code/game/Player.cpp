@@ -560,7 +560,7 @@ void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
 void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
 {
 	static XMFLOAT3 oldHPos = {};
-	//頭の位置に体が引き寄せられる
+	//体の位置に頭が引き寄せられる
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 
@@ -583,7 +583,7 @@ void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
 	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum]->GetPosition();
 	mapPos = mapPos - move;
 	mapObjects[hitHeadMapObjNum]->SetPosition(mapPos);
-	headState = STATE_BACK;
+	//headState = STATE_BACK;
 
 }
 
