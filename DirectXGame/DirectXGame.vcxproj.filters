@@ -308,6 +308,9 @@
     <ClInclude Include="Code\2d\CsvFile.h">
       <Filter>ヘッダーファイル\2d</Filter>
     </ClInclude>
+    <ClInclude Include="Code\json\MapData.h">
+      <Filter>ヘッダーファイル\json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

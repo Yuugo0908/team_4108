@@ -20,6 +20,7 @@
 #include "BaseScene.h"
 #include "CsvFile.h"
 #include "SafeDelete.h"
+#include "MapData.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -112,16 +113,10 @@ private: // メンバ変数
 		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum,
 	};
 
-	struct MapData
-	{
-		Object3d* object;
-		XMFLOAT3 originPos = {};
-	};
-
 	// jsonオブジェクト
-	std::vector<Object3d*> mapObject{};
+	std::vector<MapData*> mapObject{};
 	// 全マップデータのリスト
-	std::vector<std::vector<Object3d*>> map{};
+	std::vector<std::vector<MapData*>> map{};
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;

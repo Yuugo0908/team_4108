@@ -117,7 +117,7 @@ void GameScene::Draw()
 	// マップオブジェクト描画
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
-		object->Draw();
+		object->object->Draw();
 	}
 
 	// パーティクル描画
@@ -196,9 +196,9 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		}
 
 		// 配列に登録
-		mapObject.push_back(std::move(newObject));
+		mapObject.push_back(new MapData(newObject, pos));
 	}
-	map.push_back(std::move(mapObject));
+	map.push_back(mapObject);
 }
 
 void GameScene::jsonObjectUpdate()
@@ -209,67 +209,65 @@ void GameScene::jsonObjectUpdate()
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
-		if (object->GetType() == "Ground")
+		if (object->object->GetType() == "Ground")
 		{
 
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
-		else if (object->GetType() == "box")
+		else if (object->object->GetType() == "box")
 		{
-			XMFLOAT3 pos = object->GetPosition();
+			XMFLOAT3 pos = object->object->GetPosition();
 			pos.y += gravity;
 			XMFLOAT3 pPos = player->GetBodyPos();
 			for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
 			{
 				if (i == index) continue;
 
-				if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale(), pos, object->GetScale()))
+				if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale(), pos, object->object->GetScale()))
 				{
-					pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale().y) - (pos.y - object->GetScale().y);
+					pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale().y) - (pos.y - object->object->GetScale().y);
 					gravity = 0.0f;
 					break;
 				}
 			}
-			object->SetPosition(pos);
+			object->object->SetPosition(pos);
 		}
 		// 触れるとステージリセット
-		else if (object->GetType() == "checkPoint")
+		else if (object->object->GetType() == "checkPoint")
 		{
 
 		}
 		// 鍵
-		else if (object->GetType() == "key")
+		else if (object->object->GetType() == "key")
 		{
-			if (player->GetIsKey() == false && IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+			if (player->GetIsKey() == false && IsCanGetKey(object->object->GetPosition(), player->GetBodyPos(), object->object->GetScale().x, player->GetObj()->GetScale().x))
 			{
-				OnPickingEffect(object->GetPosition());
+				OnPickingEffect(object->object->GetPosition());
 				player->SetIKey(true);
 				keyIndex = index + 1;
 			}
 		}
 		// ドア
-		else if (object->GetType() == "door")
+		else if (object->object->GetType() == "door")
 		{
-			if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+			if (player->GetIsKey() == true && IsCanOpenDoor(object->object->GetPosition(), player->GetBodyPos(), object->object->GetScale().x, player->GetObj()->GetScale().x))
 			{
-				OnPickingEffect(object->GetPosition());
+				OnPickingEffect(object->object->GetPosition());
 				player->SetIKey(false);
 				doorIndex.emplace_back(index + 1);
 			}
 		}
 		// 移動するオブジェクトの更新
-		else if (object->GetType() == "test")
+		else if (object->object->GetType() == "test")
 		{
-			
-
-			/*if (mapMove == false)
+			if (mapMove == false)
 			{
 				mapMove = true;
 			}
-			XMFLOAT3 movePos = Easing::lerp({ 0, 0, 0 }, object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
-			object->SetMovePos(movePos);*/
+			XMFLOAT3 movePos = Easing::lerp(object->originPos, object->object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
+			object->object->SetPosition(movePos);
 		}
-		object->Update();
+		object->object->Update();
 
 		index++;
 		gravity += addGravity;
