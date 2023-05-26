@@ -35,6 +35,7 @@ struct LevelData
 	Model* floorModel = nullptr;
 	Model* checkPointModel = nullptr;
 	Model* movator = nullptr;
+	Model* acid = nullptr;
 	std::map<std::string, Model*> models;
 };
 

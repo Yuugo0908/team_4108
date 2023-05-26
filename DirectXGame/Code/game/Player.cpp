@@ -34,8 +34,8 @@ void Player::Update(std::vector<Object3d*> &mapObjects)
 	//デバック用テレポート
 	if (keyboard->PushKey(DIK_R))
 	{
-		pPos = { 0.0f, 10.0f, 0.0f };
-		hPos = { 0.0f, 10.0f, 0.0f };
+		pPos = { -100.0f, 120.0f, 0.0f };
+		hPos = { -100.0f, 120.0f, 0.0f };
 	}
 
 
@@ -190,6 +190,8 @@ void Player::GroundCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 {
+	if (headState == STATE_BITE) return;
+
 	//少数補正値
 	float correction = 0.1f;
 
@@ -218,6 +220,8 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 void Player::CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 {
+	if (headState == STATE_BITE) return;
+	
 	//少数補正値
 	float correction = 0.1f;
 	if (bodyState == STATE_BODY_NORMAL || bodyState == STATE_BODY_MOVE) return;
@@ -284,7 +288,7 @@ void Player::HeadBackMoveProcess()
 void Player::HeadBiteProcess(std::vector<Object3d*> &mapObjects)
 {
 	//引き寄せられるブロックにかみついた場合
-	if (mapObjects[hitHeadMapObjNum]->GetType() == "Ground_MoveA")
+	if (mapObjects[hitHeadMapObjNum]->GetType() == "box_pull")
 	{
 		AttractBiteProcess(mapObjects);
 		return;
@@ -382,7 +386,7 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<Object3d*> &mapObje
 		{
 			return STATE_BITEHIT;
 		}
-		else if (mapObjects[hitHeadMapObjNum]->GetType() == "Ground_MoveA")	//引き寄せられるブロック
+		else if (mapObjects[hitHeadMapObjNum]->GetType() == "box_pull")	//引き寄せられるブロック
 		{
 			pPosMovePrevious = pPos;
 			return STATE_BITEHIT;
@@ -523,6 +527,7 @@ void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
 {
 
 	static XMFLOAT3 oldPPos = {};
+
 	//頭の位置に体が引き寄せられる
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
@@ -538,17 +543,14 @@ void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
 		return;
 	}
 
-	for (int i = 0; i < mapObjects.size(); i++)
+	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->GetPosition(), mapObjects[hitHeadMapObjNum]->GetScale(), pPos, pScale) == true)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
-		{
-			pPos = oldPPos;
-			hPos = oldPPos;
-			moveY = 2.4f;
-			moveTime = timeMax;
-			headState = STATE_NORMAL;
-			return;
-		}
+		pPos = oldPPos;
+		hPos = oldPPos;
+		moveY = 2.4f;
+		moveTime = timeMax;
+		headState = STATE_NORMAL;
+		return;
 	}
 	
 	oldPPos = pPos;

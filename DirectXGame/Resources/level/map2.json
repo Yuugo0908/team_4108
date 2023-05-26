@@ -651,46 +651,10 @@
         },
         {
             "type": "MESH",
-            "name": "平面.024",
-            "transform": {
-                "translation": [
-                    -135.0,
-                    0.0,
-                    -0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    5.0,
-                    5.0,
-                    1.0
-                ]
-            },
-            "file_name": "checkPoint",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            },
-            "obj_type": "checkPoint"
-        },
-        {
-            "type": "MESH",
             "name": "平面.023",
             "transform": {
                 "translation": [
-                    -145.0,
+                    -135.0,
                     0.0,
                     -0.0
                 ],
@@ -741,7 +705,7 @@
                     1.0
                 ]
             },
-            "file_name": "floor",
+            "file_name": "checkPoint",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -755,7 +719,7 @@
                     5.0
                 ]
             },
-            "obj_type": "Ground"
+            "obj_type": "checkPoint"
         },
         {
             "type": "MESH",
@@ -2096,6 +2060,42 @@
                 "translation": [
                     85.0,
                     60.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Ground"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.024",
+            "transform": {
+                "translation": [
+                    -145.0,
+                    0.0,
                     -0.0
                 ],
                 "rotation": [
