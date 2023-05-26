@@ -207,6 +207,7 @@ void GameScene::jsonObjectUpdate()
 	int index = 0;
 	int keyIndex = 0;
 	std::vector<int> doorIndex;
+	int num = 0;
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する

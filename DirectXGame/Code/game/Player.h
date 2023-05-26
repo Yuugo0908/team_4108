@@ -172,6 +172,9 @@ public:
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
 	float& GetBiteTimer() { return biteTimer; }
 	HeadState& GetHeadState() { return headState; }
+
+	bool GetNotGravityFlag();
+	int GetHeadHitMapNum() { return hitHeadMapObjNum; }
 	/// <summary>
 	/// ’n–Ê‚ÉÚ‚µ‚½uŠÔ‚©
 	/// </summary>

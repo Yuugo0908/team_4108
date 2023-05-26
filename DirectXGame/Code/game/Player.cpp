@@ -559,7 +559,7 @@ void Player::AttractBiteProcess(std::vector<MapData*> &mapObjects)
 void Player::CarryBlockProcess(std::vector<MapData*> &mapObjects)
 {
 	static XMFLOAT3 oldHPos = {};
-	//頭の位置に体が引き寄せられる
+	//体の位置に頭が引き寄せられる
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 
@@ -593,4 +593,11 @@ bool Player::TimeCheck(float& time)
 
 	if (time <= 0.0f) return true;
 	return false;
+}
+
+bool Player::GetNotGravityFlag()
+{
+	if (biteBlockState != NOTGRAVIT) return false;
+	if (headState != STATE_BITE) return false;
+	return true;
 }
