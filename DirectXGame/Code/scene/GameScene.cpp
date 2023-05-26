@@ -48,7 +48,7 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
 
-	jsonObjectInit("map1");
+	jsonObjectInit("map7");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4_1");
@@ -205,6 +205,7 @@ void GameScene::jsonObjectUpdate()
 	int index = 0;
 	int keyIndex = 0;
 	std::vector<int> doorIndex;
+	int num = 0;
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
@@ -231,6 +232,27 @@ void GameScene::jsonObjectUpdate()
 			}
 			object->SetPosition(pos);
 		}
+		//else if (object->GetType() == "Ground_Move") //引っ張れるブロックの処理(タイプネームは後で変更する)
+		//{
+		//	XMFLOAT3 pos = object->GetPosition();
+		//	if (player->GetNotGravityFlag() == false && player->GetHeadHitMapNum() == num)
+		//	{
+		//		pos.y += gravity;
+		//	}
+		//	XMFLOAT3 pPos = player->GetBodyPos();
+		//	for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
+		//	{
+		//		if (i == index) continue;
+
+		//		if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale(), pos, object->GetScale()))
+		//		{
+		//			pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->GetScale().y) - (pos.y - object->GetScale().y);
+		//			gravity = 0.0f;
+		//			break;
+		//		}
+		//	}
+		//	object->SetPosition(pos);
+		//}
 		// 触れるとステージリセット
 		else if (object->GetType() == "checkPoint")
 		{
@@ -266,6 +288,8 @@ void GameScene::jsonObjectUpdate()
 		index++;
 		gravity += addGravity;
 		gravity = max(gravity, maxGravity);
+
+		num++;
 	}
 
 	if (keyIndex != 0)

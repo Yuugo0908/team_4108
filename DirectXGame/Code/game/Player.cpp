@@ -595,3 +595,10 @@ bool Player::TimeCheck(float& time)
 	if (time <= 0.0f) return true;
 	return false;
 }
+
+bool Player::GetNotGravityFlag()
+{
+	if (biteBlockState != NOTGRAVIT) return false;
+	if (headState != STATE_BITE) return false;
+	return true;
+}
