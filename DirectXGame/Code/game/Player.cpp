@@ -16,13 +16,13 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 
 	playerObj->SetPosition(pPos);
 	playerObj->SetScale(pScale);
-	playerObj->SetRotation({ 270.0f, 0.0f, 0.0f });
+	playerObj->SetRotation({ 0.0f, 0.0f, 0.0f });
 	playerObj->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	playerObj->Update();
 
 	playerHedObj->SetPosition(hPos);
 	playerHedObj->SetScale(pScale);
-	playerHedObj->SetRotation({ 270.0f, 0.0f, 0.0f });
+	playerHedObj->SetRotation({ 0.0f, 0.0f, 0.0f });
 	playerHedObj->SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
 	playerHedObj->Update();
 
@@ -157,20 +157,22 @@ void Player::GroundCollisionProcess(std::vector<Object3d*> &mapObjects)
 	oldOnGround = onGround;
 
 	if (bodyState == STATE_BODY_JUMP_UP) return;
+	XMFLOAT3 groundPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
+	XMFLOAT3 groundSize = { pScale.x, (pScale.y / 2), pScale.z };
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), groundPos, groundSize) == true)
 		{
 			//X軸方向で当たり判定が発生したブロックは処理をしない
 			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 
-			pPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (pPos.y - pScale.z);
+			pPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (pPos.y - pScale.y);
 			
 			if (headState != STATE_BITE)
 			{
-				hPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (hPos.y - pScale.z);
+				hPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (hPos.y - pScale.y);
 
 			}
 			move.y = 0.0f;
@@ -197,7 +199,7 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, pScale.y, 1.0f}) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, 0.01f, pScale.z }) == true)
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
@@ -220,22 +222,24 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 void Player::CeilingBlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 {
-	if (headState == STATE_BITE) return;
-	
+	if (headState == STATE_BITE) return;	
 	//少数補正値
 	float correction = 0.1f;
 	if (bodyState == STATE_BODY_NORMAL || bodyState == STATE_BODY_MOVE) return;
 
+	XMFLOAT3 headPos = { pPos.x, pPos.y + (pScale.y / 2), pPos.z };
+	XMFLOAT3 headScale = { pScale.x, (pScale.y / 2), pScale.z};
+
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), headPos, headScale) == true)
 		{
 			if (pPos.y > mapObjects[i]->GetPosition().y) continue;
 
 			bodyColState = BODYSTATE_CEILING_COLISION;
 
-			pPos.y -= (pPos.y + pScale.z) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
-			hPos.y -= (hPos.y + pScale.z) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
+			pPos.y -= (pPos.y + pScale.y) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
+			hPos.y -= (hPos.y + pScale.y) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
 		}
 	}
 }
@@ -429,9 +433,11 @@ bool Player::HeadBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
 
 bool Player::BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
 {
+	XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
+
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScaleXHalf) == true)
 		{
 			hitbodyMapObjNum = i;
 			return true;

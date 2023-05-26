@@ -46,7 +46,7 @@ void GameScene::Initialize()
 	skydomeObj->SetScale({7.0f, 5.0f, 5.0f});
 
 	player = new Player;
-	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
+	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
 	jsonObjectInit("map1");
 	jsonObjectInit("map2");

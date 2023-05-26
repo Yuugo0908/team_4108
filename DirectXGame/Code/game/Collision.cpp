@@ -218,7 +218,7 @@ bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadiu
 	float lengthX = static_cast<float>(fabs(boxPos.x - pos.x));
 	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
 
-	if (lengthX <= boxRadius.x + radius.x && lengthY <= boxRadius.y + radius.z)
+	if (lengthX <= boxRadius.x + radius.x && lengthY <= boxRadius.y + radius.y)
 	{
 		return true;
 	}
