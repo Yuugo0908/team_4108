@@ -48,11 +48,11 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
 
-	jsonObjectInit("map4_1");
+	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
-	jsonObjectInit("map4_1");
-	jsonObjectInit("map7");
+	jsonObjectInit("map4");
+	jsonObjectInit("map5");
 }
 
 void GameScene::Finalize()
