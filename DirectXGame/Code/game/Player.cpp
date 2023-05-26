@@ -516,7 +516,6 @@ void Player::AcidProcess(std::vector<MapData*> &mapObjects)
 			hPos = { 0.0f, 10.0f, 0.0f };
 		}
 	}
-
 }
 
 void Player::AttractBiteProcess(std::vector<MapData*> &mapObjects)
