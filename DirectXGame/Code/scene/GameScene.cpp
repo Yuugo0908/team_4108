@@ -48,7 +48,7 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 1.0f, 5.0f});
 
-	jsonObjectInit("map1");
+	jsonObjectInit("map4_1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4_1");
@@ -63,10 +63,10 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	jsonObjectUpdate();
-
 	skydomeObj->Update();
 	player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
+
+	jsonObjectUpdate();
 
 	if (player->GetOnGrounding() == true)
 	{
@@ -199,6 +199,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		mapObject.push_back(new MapData(newObject, pos));
 	}
 	map.push_back(mapObject);
+	mapObject.erase(mapObject.begin(), mapObject.end());
 }
 
 void GameScene::jsonObjectUpdate()
