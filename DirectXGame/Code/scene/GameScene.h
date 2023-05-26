@@ -49,6 +49,14 @@ public: // メンバ関数
 	// jsonオブジェクトの更新
 	void jsonObjectUpdate();
 
+	// オブジェクトタイプごとの処理
+	void GroundTypeUpdate(int index, Object3d* object);
+	void BoxTypeUpdate(int index, Object3d* object);
+	void CheckPointTypeUpdate(int index, Object3d* object);
+	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
+	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
+	void TestTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos);
+
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>

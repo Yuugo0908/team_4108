@@ -212,61 +212,32 @@ void GameScene::jsonObjectUpdate()
 		// オブジェクトごとに処理を変えて更新する
 		if (object->object->GetType() == "Ground")
 		{
-
+			GroundTypeUpdate(index, object->object);
 		}
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->object->GetType() == "box")
 		{
-			XMFLOAT3 pos = object->object->GetPosition();
-			pos.y += gravity;
-			XMFLOAT3 pPos = player->GetBodyPos();
-			for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
-			{
-				if (i == index) continue;
-
-				if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale(), pos, object->object->GetScale()))
-				{
-					pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale().y) - (pos.y - object->object->GetScale().y);
-					gravity = 0.0f;
-					break;
-				}
-			}
-			object->object->SetPosition(pos);
+			BoxTypeUpdate(index, object->object);
 		}
 		// 触れるとステージリセット
 		else if (object->object->GetType() == "checkPoint")
 		{
-
+			CheckPointTypeUpdate(index, object->object);
 		}
 		// 鍵
 		else if (object->object->GetType() == "key")
 		{
-			if (player->GetIsKey() == false && IsCanGetKey(object->object->GetPosition(), player->GetBodyPos(), object->object->GetScale().x, player->GetObj()->GetScale().x))
-			{
-				OnPickingEffect(object->object->GetPosition());
-				player->SetIKey(true);
-				keyIndex = index + 1;
-			}
+			KeyTypeUpdate(keyIndex, index, object->object);
 		}
 		// ドア
 		else if (object->object->GetType() == "door")
 		{
-			if (player->GetIsKey() == true && IsCanOpenDoor(object->object->GetPosition(), player->GetBodyPos(), object->object->GetScale().x, player->GetObj()->GetScale().x))
-			{
-				OnPickingEffect(object->object->GetPosition());
-				player->SetIKey(false);
-				doorIndex.emplace_back(index + 1);
-			}
+			DoorTypeUpdate(doorIndex, index, object->object);
 		}
 		// 移動するオブジェクトの更新
 		else if (object->object->GetType() == "test")
 		{
-			if (mapMove == false)
-			{
-				mapMove = true;
-			}
-			XMFLOAT3 movePos = Easing::lerp(object->originPos, object->object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
-			object->object->SetPosition(movePos);
+			TestTypeUpdate(index, object->object, object->originPos);
 		}
 		object->object->Update();
 
@@ -295,6 +266,66 @@ void GameScene::jsonObjectUpdate()
 			map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + m - 1);
 		}
 	}
+}
+
+void GameScene::GroundTypeUpdate(int index, Object3d* object)
+{
+
+}
+
+void GameScene::BoxTypeUpdate(int index, Object3d* object)
+{
+	XMFLOAT3 pos = object->GetPosition();
+	pos.y += gravity;
+	XMFLOAT3 pPos = player->GetBodyPos();
+	for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
+	{
+		if (i == index) continue;
+
+		if (Collision::CollisionBoxToBox(map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition(), map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale(), pos, object->GetScale()))
+		{
+			pos.y += (map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetPosition().y + map[mapNumber[CsvFile::now_y][CsvFile::now_x]][i]->object->GetScale().y) - (pos.y - object->GetScale().y);
+			gravity = 0.0f;
+			break;
+		}
+	}
+	object->SetPosition(pos);
+}
+
+void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
+{
+
+}
+
+void GameScene::KeyTypeUpdate(int keyIndex, int index, Object3d* object)
+{
+	if (player->GetIsKey() == false && IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+	{
+		OnPickingEffect(object->GetPosition());
+		player->SetIKey(true);
+		keyIndex = index + 1;
+	}
+}
+
+void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object)
+{
+	if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+	{
+		OnPickingEffect(object->GetPosition());
+		player->SetIKey(false);
+		doorIndex.emplace_back(index + 1);
+	}
+}
+
+void GameScene::TestTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos)
+{
+	if (mapMove == false)
+	{
+		mapMove = true;
+	}
+
+	XMFLOAT3 movePos = Easing::lerp(originPos,object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
+	object->SetPosition(movePos);
 }
 
 void GameScene::OnLandingEffect(int num, const XMFLOAT3& pPos)
