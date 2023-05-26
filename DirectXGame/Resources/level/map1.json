@@ -79,7 +79,7 @@
             "transform": {
                 "translation": [
                     -155.0,
-                    160.0,
+                    170.0,
                     -0.0
                 ],
                 "rotation": [
@@ -1714,6 +1714,42 @@
                 ]
             },
             "file_name": "floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Ground"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.022",
+            "transform": {
+                "translation": [
+                    -155.0,
+                    160.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "wall",
             "collider": {
                 "type": "BOX",
                 "center": [

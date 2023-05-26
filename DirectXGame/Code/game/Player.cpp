@@ -317,7 +317,7 @@ void Player::HeadBiteProcess(std::vector<MapData*> &mapObjects)
 	}
 
 	//Šš‚Ý‰ó‚¹‚éƒuƒƒbƒN‚Ìê‡‰ó‚·
-	if (keyboard->PushKey(DIK_O) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
+	if (keyboard->PushKey(DIK_RETURN) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;

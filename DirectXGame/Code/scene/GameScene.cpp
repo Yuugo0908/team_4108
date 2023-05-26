@@ -207,7 +207,6 @@ void GameScene::jsonObjectUpdate()
 	int index = 0;
 	int keyIndex = 0;
 	std::vector<int> doorIndex;
-	int num = 0;
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
 		// オブジェクトごとに処理を変えて更新する
@@ -218,7 +217,7 @@ void GameScene::jsonObjectUpdate()
 		// 嚙みつけるオブジェクトとして使ってもらえればと
 		else if (object->object->GetType() == "box")
 		{
-			BoxTypeUpdate(index, object->object);
+			BoxTypeUpdate(index, object->object, object->gravity);
 		}
 		// 触れるとステージリセット
 		else if (object->object->GetType() == "checkPoint")
@@ -243,17 +242,6 @@ void GameScene::jsonObjectUpdate()
 		object->object->Update();
 
 		index++;
-		gravity += addGravity;
-		gravity = max(gravity, maxGravity);
-		if (mapMove == true)
-		{
-			mapMoveFrame++;
-			mapMoveFrame = min(mapMoveFrame, 60);
-		}
-		else
-		{
-			mapMoveFrame = 0;
-		}
 	}
 
 	if (keyIndex != 0)
@@ -274,10 +262,12 @@ void GameScene::GroundTypeUpdate(int index, Object3d* object)
 
 }
 
-void GameScene::BoxTypeUpdate(int index, Object3d* object)
+void GameScene::BoxTypeUpdate(int index, Object3d* object, float& gravity)
 {
 	XMFLOAT3 pos = object->GetPosition();
 	pos.y += gravity;
+	gravity += addGravity;
+	gravity = max(gravity, maxGravity);
 	XMFLOAT3 pPos = player->GetBodyPos();
 	for (int i = 0; i < map[mapNumber[CsvFile::now_y][CsvFile::now_x]].size(); i++)
 	{
@@ -323,10 +313,16 @@ void GameScene::TestTypeUpdate(int index, Object3d* object, const XMFLOAT3& orig
 	if (mapMove == false)
 	{
 		mapMove = true;
+		mapMoveFrame = 0;
 	}
+	else
+	{
+		XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
+		object->SetPosition(movePos);
 
-	XMFLOAT3 movePos = Easing::lerp(originPos,object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
-	object->SetPosition(movePos);
+		mapMoveFrame++;
+		mapMoveFrame = min(mapMoveFrame, 60);
+	}
 }
 
 void GameScene::OnLandingEffect(int num, const XMFLOAT3& pPos)

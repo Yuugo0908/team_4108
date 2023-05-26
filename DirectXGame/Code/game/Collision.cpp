@@ -232,7 +232,7 @@ bool Collision::CollisionBoxToBox(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadiu
 	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
 	float lengthZ = static_cast<float>(fabs(boxPos.z - pos.z));
 
-	if (lengthX <= boxRadius.x + radius.x && lengthY <= boxRadius.y + radius.y && lengthZ <= boxRadius.z + radius.z)
+	if (lengthX < boxRadius.x + radius.x && lengthY < boxRadius.y + radius.y && lengthZ < boxRadius.z + radius.z)
 	{
 		return true;
 	}

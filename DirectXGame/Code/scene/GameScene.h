@@ -51,7 +51,7 @@ public: // メンバ関数
 
 	// オブジェクトタイプごとの処理
 	void GroundTypeUpdate(int index, Object3d* object);
-	void BoxTypeUpdate(int index, Object3d* object);
+	void BoxTypeUpdate(int index, Object3d* object, float& gravity);
 	void CheckPointTypeUpdate(int index, Object3d* object);
 	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
@@ -125,7 +125,6 @@ private: // メンバ変数
 	std::vector<MapData*> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<MapData*>> map{};
-	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
 	int mapMoveFrame = 0;

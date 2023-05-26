@@ -5,8 +5,9 @@
 
 struct MapData
 {
-	Object3d* object;
+	Object3d* object = nullptr;
 	XMFLOAT3 originPos = {};
+	float gravity = 0.0f;
 
 	MapData(Object3d* object3d, const XMFLOAT3& position)
 	{
