@@ -162,17 +162,17 @@ void Player::GroundCollisionProcess(std::vector<MapData*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), groundPos, groundSize) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), groundPos, groundSize) == true)
 		{
 			//X軸方向で当たり判定が発生したブロックは処理をしない
 			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 
-			pPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (pPos.y - pScale.y);
+			pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
 			
 			if (headState != STATE_BITE)
 			{
-				hPos.y += (mapObjects[i]->GetPosition().y + mapObjects[i]->GetScale().y) - (hPos.y - pScale.y);
+				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
 
 			}
 			move.y = 0.0f;
@@ -199,7 +199,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, 0.01f, pScale.z }) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, {pScale.x, 0.01f, pScale.z }) == true)
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
@@ -232,14 +232,14 @@ void Player::CeilingBlockCollisionProcess(std::vector<MapData*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), headPos, headScale) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), headPos, headScale) == true)
 		{
 			if (pPos.y > mapObjects[i]->object->GetPosition().y) continue;
 
 			bodyColState = BODYSTATE_CEILING_COLISION;
 
-			pPos.y -= (pPos.y + pScale.y) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
-			hPos.y -= (hPos.y + pScale.y) - (mapObjects[i]->GetPosition().y - mapObjects[i]->GetScale().y);
+			pPos.y -= (pPos.y + pScale.y) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
+			hPos.y -= (hPos.y + pScale.y) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
 		}
 	}
 }
@@ -437,7 +437,7 @@ bool Player::BodyBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, pScaleXHalf) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
 		{
 			hitbodyMapObjNum = i;
 			return true;
@@ -582,7 +582,7 @@ void Player::CarryBlockProcess(std::vector<MapData*> &mapObjects)
 		return;
 	}
 
-	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->GetPosition(), mapObjects[hitHeadMapObjNum]->GetScale(), pPos, pScale) == true)
+	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->object->GetPosition(), mapObjects[hitHeadMapObjNum]->object->GetScale(), pPos, pScale) == true)
 	{
 		pPos = oldHPos;
 		hPos = oldHPos;
@@ -598,7 +598,7 @@ void Player::CarryBlockProcess(std::vector<MapData*> &mapObjects)
 	//ブロック移動処理
 	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum]->object->GetPosition();
 	mapPos = mapPos - move;
-	mapObjects[hitHeadMapObjNum]->SetPosition(mapPos);
+	mapObjects[hitHeadMapObjNum]->object->SetPosition(mapPos);
 
 }
 
