@@ -197,7 +197,7 @@ void Player::BlockCollisionProcess(std::vector<Object3d*> &mapObjects)
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, 1.0f, 1.0f}) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->GetPosition(), mapObjects[i]->GetScale(), pPos, {pScale.x, pScale.y, 1.0f}) == true)
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
@@ -577,6 +577,15 @@ void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
 		return;
 	}
 
+	if (Collision::CollisionBoxPoint(mapObjects[hitHeadMapObjNum]->GetPosition(), mapObjects[hitHeadMapObjNum]->GetScale(), pPos, pScale) == true)
+	{
+		pPos = oldHPos;
+		hPos = oldHPos;
+		moveTime = timeMax;
+		headState = STATE_NORMAL;
+		return;
+	}
+
 	oldHPos = hPos;
 	hPos = Easing::easeOut(pPosMovePrevious, pPos, timeRate);
 
@@ -585,7 +594,6 @@ void Player::CarryBlockProcess(std::vector<Object3d*> &mapObjects)
 	XMFLOAT3 mapPos = mapObjects[hitHeadMapObjNum]->GetPosition();
 	mapPos = mapPos - move;
 	mapObjects[hitHeadMapObjNum]->SetPosition(mapPos);
-	//headState = STATE_BACK;
 
 }
 
