@@ -157,6 +157,29 @@ const XMFLOAT3 operator*(float s, const XMFLOAT3& v)
 	return w;
 }
 
+const bool operator==(const XMFLOAT3& v1, const XMFLOAT3& v2)
+{
+	if (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+const bool operator!=(const XMFLOAT3& v1, const XMFLOAT3& v2)
+{
+	if (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // XMFLOAT4
 const XMFLOAT4 operator+(const XMFLOAT4& v1, const XMFLOAT4& v2)
 {

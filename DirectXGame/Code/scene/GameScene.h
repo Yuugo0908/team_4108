@@ -116,6 +116,8 @@ private: // メンバ変数
 	std::vector<Object3d*> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<Object3d*>> map{};
+	// 保存用
+	std::vector<std::vector<Object3d*>> mapSave{};
 	float gravity = 0.0f;
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;

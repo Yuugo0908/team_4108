@@ -38,6 +38,14 @@ void Player::Update(std::vector<Object3d*> &mapObjects)
 		hPos = { -100.0f, 120.0f, 0.0f };
 	}
 
+	if (keyboard->TriggerKey(DIK_Z))
+	{
+		// チェックポイントに戻る
+		pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
+		hPos = pPos;
+		CsvFile::now_x = CsvFile::check_x;
+		CsvFile::now_y = CsvFile::check_y;
+	}
 
 	MoveProcess();
 	//移動値加算
@@ -46,10 +54,10 @@ void Player::Update(std::vector<Object3d*> &mapObjects)
 	hPos = hPos + hmove;
 
 	AcidProcess(mapObjects);
-
+	CheckPointProcess(mapObjects);
 	MapChange(mapObjects);
 
-	if (mapChangeFlag == false)
+	if (CsvFile::map_change_flag == false)
 	{
 		BlockCollisionProcess(mapObjects);
 		CeilingBlockCollisionProcess(mapObjects);
@@ -443,19 +451,10 @@ bool Player::BodyBlockCollisionCheck(std::vector<Object3d*> &mapObjects)
 
 void Player::MapChange(std::vector<Object3d*> &mapObjects)
 {
-	for (int i = 0; i < mapObjects.size(); i++)
-	{
-		if (mapObjects[i]->GetType() == "checkPoint")
-		{
-			checkPointPos = { mapObjects[i]->GetPosition().x, 20.0f, mapObjects[i]->GetPosition().z };
-			break;
-		}
-	}
-
 	if (limitPos != NONE)
 	{
+		CsvFile::map_change_flag = false;
 		limitPos = NONE;
-		mapChangeFlag = false;
 		return;
 	}
 	else
@@ -463,22 +462,23 @@ void Player::MapChange(std::vector<Object3d*> &mapObjects)
 		if (pPos.y >= 160.0f)
 		{
 			limitPos = UP_LIMIT;
-			mapChangeFlag = true;
+			CsvFile::map_change_flag = true;
 		}
 		else if (pPos.y <= 0.0f)
 		{
 			limitPos = DOWN_LIMIT;
+			CsvFile::map_change_flag = true;
 		}
 
 		if (pPos.x >= 160.0f)
 		{
 			limitPos = RIGHT_LIMIT;
-			mapChangeFlag = true;
+			CsvFile::map_change_flag = true;
 		}
 		else if (pPos.x <= -160.0f)
 		{
 			limitPos = LEFT_LIMIT;
-			mapChangeFlag = true;
+			CsvFile::map_change_flag = true;
 		}
 	}
 
@@ -516,11 +516,44 @@ void Player::AcidProcess(std::vector<Object3d*> &mapObjects)
 		//当たったブロックが酸ブロックか判定
 		if (mapObjects[hitbodyMapObjNum]->GetType() == "Acid")
 		{
-			pPos = { 0.0f, 10.0f, 0.0f };
-			hPos = { 0.0f, 10.0f, 0.0f };
+			// チェックポイントに戻る
+			pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
+			hPos = pPos;
+			CsvFile::now_x = CsvFile::check_x;
+			CsvFile::now_y = CsvFile::check_y;
 		}
 	}
+}
 
+void Player::CheckPointProcess(std::vector<Object3d*>& mapObjects)
+{
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		//当たったブロックがチェックポイントか判定
+		if (mapObjects[i]->GetType() == "checkPoint")
+		{
+			XMFLOAT3 pos = mapObjects[i]->GetPosition();
+			XMFLOAT3 scale = mapObjects[i]->GetScale();
+
+			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScale))
+			{
+				// 新しいチェックポイントに触れたら
+				if (CsvFile::now_x != CsvFile::check_x || CsvFile::now_y != CsvFile::check_y || CsvFile::check_pos != mapObjects[hitbodyMapObjNum]->GetPosition())
+				{
+					// チェックポイントの座標とマップ番号を保存
+					CsvFile::check_pos = mapObjects[hitbodyMapObjNum]->GetPosition();
+					CsvFile::check_x = CsvFile::now_x;
+					CsvFile::check_y = CsvFile::now_y;
+
+					CsvFile::check_change_flag = true;
+				}
+			}
+			else
+			{
+				CsvFile::check_change_flag = false;
+			}
+		}
+	}
 }
 
 void Player::AttractBiteProcess(std::vector<Object3d*> &mapObjects)
