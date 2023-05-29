@@ -199,6 +199,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		mapObject.push_back(new MapData(newObject, pos));
 	}
 	map.push_back(mapObject);
+	mapSave.push_back(mapObject);
 	mapObject.erase(mapObject.begin(), mapObject.end());
 }
 
@@ -285,7 +286,18 @@ void GameScene::BoxTypeUpdate(int index, Object3d* object, float& gravity)
 
 void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 {
+	XMFLOAT3 pos = object->GetPosition();
+	XMFLOAT3 scale = object->GetScale();
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
 
+	XMFLOAT3 pScaleHalf = { pScale.x / 2, pScale.y, pScale.z };
+
+	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleHalf) && CsvFile::check_change_flag == false)
+	{
+		copy(mapSave.begin(), mapSave.end(), map.begin());
+		CsvFile::check_change_flag = true;
+	}
 }
 
 void GameScene::KeyTypeUpdate(int keyIndex, int index, Object3d* object)
