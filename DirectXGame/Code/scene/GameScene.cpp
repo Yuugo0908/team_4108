@@ -198,15 +198,11 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		// 配列に登録
 		mapObject.push_back(new MapData(newObject, pos));
 	}
-<<<<<<< HEAD
 	// 全マップデータを要素として追加
 	map.push_back(mapObject);
 	// 復元用に保存
 	mapSave.push_back(mapObject);
 	// 1マップデータを削除
-=======
-	map.push_back(mapObject);
->>>>>>> master
 	mapObject.erase(mapObject.begin(), mapObject.end());
 }
 
@@ -231,20 +227,7 @@ void GameScene::jsonObjectUpdate()
 		// 触れるとステージリセット
 		else if (object->object->GetType() == "checkPoint")
 		{
-<<<<<<< HEAD
-			XMFLOAT3 pos = object->GetPosition();
-			XMFLOAT3 scale = object->GetScale();
-			XMFLOAT3 pPos = player->GetBodyPos();
-			XMFLOAT3 pScale = player->GetObj()->GetScale();
-
-			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScale) && CsvFile::check_change_flag == false)
-			{
-				copy(mapSave.begin(), mapSave.end(), map.begin());
-				CsvFile::check_change_flag = true;
-			}
-=======
 			CheckPointTypeUpdate(index, object->object);
->>>>>>> master
 		}
 		// 鍵
 		else if (object->object->GetType() == "key")
@@ -316,7 +299,18 @@ void GameScene::BoxTypeUpdate(int index, Object3d* object)
 
 void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 {
+	XMFLOAT3 pos = object->GetPosition();
+	XMFLOAT3 scale = object->GetScale();
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
 
+	XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
+
+	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf) && CsvFile::check_change_flag == false)
+	{
+		copy(mapSave.begin(), mapSave.end(), map.begin());
+		CsvFile::check_change_flag = true;
+	}
 }
 
 void GameScene::KeyTypeUpdate(int keyIndex, int index, Object3d* object)

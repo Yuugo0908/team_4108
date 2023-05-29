@@ -149,13 +149,12 @@ private:
 	/// チェックポイントとの当たり判定
 	/// </summary>
 	/// <param name="mapObjects"></param>
-	void CheckPointProcess(std::vector<Object3d*>& mapObjects);
+	void CheckPointProcess(std::vector<MapData*>& mapObjects);
 	/// <summary>
 	/// 引き寄せブロック処理
 	/// </summary>
 	/// <param name="mapObjects"></param>
 	void AttractBiteProcess(std::vector<MapData*> &mapObjects);
-
 	/// <summary>
 	/// ブロック運び処理
 	/// </summary>

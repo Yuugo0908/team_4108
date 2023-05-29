@@ -457,18 +457,6 @@ bool Player::BodyBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 
 void Player::MapChange(std::vector<MapData*> &mapObjects)
 {
-<<<<<<< HEAD
-=======
-	for (int i = 0; i < mapObjects.size(); i++)
-	{
-		if (mapObjects[i]->object->GetType() == "checkPoint")
-		{
-			checkPointPos = { mapObjects[i]->object->GetPosition().x, 20.0f, mapObjects[i]->object->GetPosition().z };
-			break;
-		}
-	}
-
->>>>>>> master
 	if (limitPos != NONE)
 	{
 		CsvFile::map_change_flag = false;
@@ -541,26 +529,27 @@ void Player::AcidProcess(std::vector<MapData*> &mapObjects)
 			CsvFile::now_y = CsvFile::check_y;
 		}
 	}
-<<<<<<< HEAD
 }
 
-void Player::CheckPointProcess(std::vector<Object3d*>& mapObjects)
+void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 {
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		//当たったブロックがチェックポイントか判定
-		if (mapObjects[i]->GetType() == "checkPoint")
+		if (mapObjects[i]->object->GetType() == "checkPoint")
 		{
-			XMFLOAT3 pos = mapObjects[i]->GetPosition();
-			XMFLOAT3 scale = mapObjects[i]->GetScale();
+			XMFLOAT3 pos = mapObjects[i]->object->GetPosition();
+			XMFLOAT3 scale = mapObjects[i]->object->GetScale();
 
-			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScale))
+			XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
+
+			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf))
 			{
 				// 新しいチェックポイントに触れたら
-				if (CsvFile::now_x != CsvFile::check_x || CsvFile::now_y != CsvFile::check_y || CsvFile::check_pos != mapObjects[hitbodyMapObjNum]->GetPosition())
+				if (CsvFile::now_x != CsvFile::check_x || CsvFile::now_y != CsvFile::check_y || CsvFile::check_pos != mapObjects[i]->object->GetPosition())
 				{
 					// チェックポイントの座標とマップ番号を保存
-					CsvFile::check_pos = mapObjects[hitbodyMapObjNum]->GetPosition();
+					CsvFile::check_pos = mapObjects[i]->object->GetPosition();
 					CsvFile::check_x = CsvFile::now_x;
 					CsvFile::check_y = CsvFile::now_y;
 
@@ -573,13 +562,10 @@ void Player::CheckPointProcess(std::vector<Object3d*>& mapObjects)
 			}
 		}
 	}
-=======
->>>>>>> master
 }
 
 void Player::AttractBiteProcess(std::vector<MapData*> &mapObjects)
 {
-
 	static XMFLOAT3 oldPPos = {};
 
 	//頭の位置に体が引き寄せられる
