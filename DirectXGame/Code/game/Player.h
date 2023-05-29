@@ -146,11 +146,15 @@ private:
 	/// <param name="mapObjects"></param>
 	void AcidProcess(std::vector<MapData*> &mapObjects);
 	/// <summary>
+	/// チェックポイントとの当たり判定
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void CheckPointProcess(std::vector<MapData*>& mapObjects);
+	/// <summary>
 	/// 引き寄せブロック処理
 	/// </summary>
 	/// <param name="mapObjects"></param>
 	void AttractBiteProcess(std::vector<MapData*> &mapObjects);
-
 	/// <summary>
 	/// ブロック運び処理
 	/// </summary>
@@ -183,7 +187,6 @@ public:
 	{
 		return onGround == true && onGround != oldOnGround;
 	}
-	bool& GetMapChange() { return mapChangeFlag; }
 	bool& GetIsLonger() { return islonger; }
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
@@ -229,10 +232,7 @@ private: // メンバ変数
 	int colisionBlockNum = 0;
 	bool islonger = false;
 	bool isKey = false;
-
 	LimitPos limitPos = NONE;
-	XMFLOAT3 checkPointPos = {};
-	bool mapChangeFlag = false;
 	BiteBlockState biteBlockState = NOTBITE;
 };
 

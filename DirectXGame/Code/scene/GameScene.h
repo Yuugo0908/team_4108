@@ -125,6 +125,8 @@ private: // メンバ変数
 	std::vector<MapData*> mapObject{};
 	// 全マップデータのリスト
 	std::vector<std::vector<MapData*>> map{};
+	// 保存用
+	std::vector<std::vector<MapData*>> mapSave{};
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
 	int mapMoveFrame = 0;

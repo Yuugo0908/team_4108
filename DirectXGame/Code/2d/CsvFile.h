@@ -21,13 +21,20 @@ public:
 	static const std::string Extension;
 	// 現在の縦横
 	static int now_x, now_y;
-	//縦横の最大数
+	// マップ変更フラグ
+	static bool map_change_flag;
+	// チェックポイントの縦横
+	static int check_x, check_y;
+	// チェックポイントの座標
+	static XMFLOAT3 check_pos;
+	// チェックポイント変更フラグ
+	static bool check_change_flag;
+	// 縦横の最大数
 	static const int max_x, max_y;
-
-	static bool nowInitFlag;
+	// 初期マップのフラグ
+	static bool init_flag;
 public:
 	static void CsvToVector(std::vector<std::vector<int>>& csvData, const std::string& fileName);
 
 	static void SetInitNum(std::vector<int>& csv);
 };
-
