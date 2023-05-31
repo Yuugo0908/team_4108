@@ -55,7 +55,12 @@ public: // メンバ関数
 	void CheckPointTypeUpdate(int index, Object3d* object);
 	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
-	void GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos);
+	void GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide);
+
+	/// <summary>
+	/// マップ用フレームの更新
+	/// </summary>
+	void UpdateMapFrame(int divide);
 
 	/// <summary>
 	/// 着地時エフェクト
@@ -129,7 +134,7 @@ private: // メンバ変数
 	std::vector<std::vector<MapData*>> mapSave{};
 	const float addGravity = -0.1f;
 	const float maxGravity = -2.0f;
-	int mapMoveFrame = 0;
+	int mapFrame = 0;
 	bool mapMove = false;
 	// マップ番号管理(csvファイル)
 	std::vector<std::vector<int>> mapNumber;

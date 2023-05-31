@@ -3,6 +3,7 @@
 #include <cassert>
 #include "SceneManager.h"
 #include <Random.h>
+#include "Helper.h"
 
 void GameScene::Initialize()
 {
@@ -85,15 +86,15 @@ void GameScene::Draw()
 {
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("PlayerY: %f", player->GetObj()->GetPosition().y);
+	ImGui::Text("Player: %f, %f, %f", player->GetObj()->GetPosition().x, player->GetObj()->GetPosition().y, player->GetObj()->GetPosition().z);
 	ImGui::Text("moveY: %f", player->GetmoveY());
-	ImGui::Text("bodyPosX: %f", player->GetBodyPos().y);
-	ImGui::Text("headPosX: %f", player->GetHeadPos().y);
-	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
+	ImGui::Text("bodyPos: %f, %f, %f", player->GetBodyPos().x, player->GetBodyPos().y, player->GetBodyPos().z);
+	ImGui::Text("headPos: %f, %f, %f,", player->GetHeadPos().x, player->GetHeadPos().y, player->GetHeadPos().z);
 	ImGui::Text("GetHeadState: %d", player->GetHeadState());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
 	ImGui::Text("mapNum: %d", mapNumber[CsvFile::now_y][CsvFile::now_x] + 1);
 	ImGui::End();
+
 #pragma region 背景画像描画
 	// 背景画像描画前処理
 	Image2d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
@@ -205,6 +206,9 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 
 void GameScene::jsonObjectUpdate()
 {
+	int div = 60;
+	UpdateMapFrame(div);
+
 	int index = 0;
 	int keyIndex = 0;
 	std::vector<int> doorIndex;
@@ -238,7 +242,7 @@ void GameScene::jsonObjectUpdate()
 		// 移動するオブジェクトの更新
 		else if (object->object->GetType() == "Ground_Move")
 		{
-			GroundMoveTypeUpdate(index, object->object, object->originPos);
+			GroundMoveTypeUpdate(index, object->object, object->originPos, div);
 		}
 		object->object->Update();
 
@@ -320,27 +324,40 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	}
 }
 
-void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos)
+void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide)
 {
-	int divide = 60;
-
-	if (mapMove == false)
-	{
-		mapMove = true;
-	}
-
-	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapMoveFrame) / divide);
+	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
 	object->SetPosition(movePos);
 
-	if (mapMove == false)
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
+
+	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y + object->GetScale().y <= pPos.y - pScale.y)
 	{
-		mapMoveFrame--;
-		mapMoveFrame = max(mapMoveFrame, 0);
+		XMFLOAT3 vec = movePos - originPos;
+		XMFLOAT3 pos = player->GetBodyPos() + vec;
+		player->SetBodyPos(pos);
+		player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
+
+		mapMove = true;
 	}
 	else
 	{
-		mapMoveFrame++;
-		mapMoveFrame = min(mapMoveFrame, divide);
+		mapMove = false;
+	}
+}
+
+void GameScene::UpdateMapFrame(int divide)
+{
+	if (mapMove == true)
+	{
+		mapFrame++;
+		mapFrame = min(mapFrame, divide);
+	}
+	else
+	{
+		mapFrame--;
+		mapFrame = max(mapFrame, 0);
 	}
 }
 

@@ -1,8 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
 
-/// <summary>
-/// •Ö—˜‹@”\
 /// </summary>
 class Helper
 {
