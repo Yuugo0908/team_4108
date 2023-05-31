@@ -188,7 +188,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 		newObject->SetType(objectData.objType);
 
 		// タイプごとに移動先の座標を設定するかを決める
-		if (newObject->GetType() == "test")
+		if (newObject->GetType() == "Ground_Move")
 		{
 			XMFLOAT3 movePos;
 			XMStoreFloat3(&movePos, objectData.movePos);
@@ -297,13 +297,10 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 
 	XMFLOAT3 pScaleHalf = { pScale.x / 2, pScale.y, pScale.z };
 
-	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleHalf))
+	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleHalf) && CsvFile::check_change_flag == false)
 	{
-		if (CsvFile::check_change_flag == false)
-		{
-			copy(mapSave.begin(), mapSave.end(), map.begin());
-			CsvFile::check_change_flag = true;
-		}
+		copy(mapSave.begin(), mapSave.end(), map.begin());
+		CsvFile::check_change_flag = true;
 	}
 }
 
@@ -337,8 +334,8 @@ void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3
 
 	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y + object->GetScale().y <= pPos.y - pScale.y)
 	{
-		XMFLOAT3 vec = movePos - originPos;
-		XMFLOAT3 pos = player->GetBodyPos() + vec;
+		XMFLOAT3 pos = player->GetBodyPos();
+		pos.y = movePos.y + pScale.y + object->GetScale().y;
 		player->SetBodyPos(pos);
 		player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
 

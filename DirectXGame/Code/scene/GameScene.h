@@ -101,6 +101,16 @@ public: // メンバ関数
 	/// <returns>成否</returns>
 	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
 
+	/// <summary>
+	/// 移動する床の上にいるか
+	/// </summary>
+	/// <param name="object">移動する床</param>
+	/// <param name="radius">半径</param>
+	/// <param name="pPos"></param>
+	/// <param name="pRadius"></param>
+	/// <returns></returns>
+	bool CheckRidingMoveGroung(const Object3d* object, const XMFLOAT3& radius, const XMFLOAT3& pPos, const XMFLOAT3& pRadius);
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
