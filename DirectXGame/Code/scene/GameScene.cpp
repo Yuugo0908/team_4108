@@ -297,10 +297,13 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 
 	XMFLOAT3 pScaleHalf = { pScale.x / 2, pScale.y, pScale.z };
 
-	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleHalf) && CsvFile::check_change_flag == false)
+	if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleHalf))
 	{
-		copy(mapSave.begin(), mapSave.end(), map.begin());
-		CsvFile::check_change_flag = true;
+		if (CsvFile::check_change_flag == false)
+		{
+			copy(mapSave.begin(), mapSave.end(), map.begin());
+			CsvFile::check_change_flag = true;
+		}
 	}
 }
 
