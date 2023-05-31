@@ -172,6 +172,7 @@ public:
 	bool& GetOnGround() { return onGround; }
 	float& GetmoveY() { return moveY; }
 	XMFLOAT3& GetBodyPos() { return pPos; }
+	void SetBodyPos(const XMFLOAT3& pos) { pPos = pos; }
 	XMFLOAT3& GetHeadPos() { return hPos; }
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
 	float& GetBiteTimer() { return biteTimer; }

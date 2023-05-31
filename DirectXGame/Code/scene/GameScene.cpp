@@ -49,8 +49,8 @@ void GameScene::Initialize()
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
 	jsonObjectInit("map1");
-	jsonObjectInit("map2");
-	jsonObjectInit("map3");
+	//jsonObjectInit("map2");
+	//jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 }
@@ -92,7 +92,7 @@ void GameScene::Draw()
 	ImGui::Text("GetBiteTimer: %f", player->GetBiteTimer());
 	ImGui::Text("GetHeadState: %d", player->GetHeadState());
 	ImGui::Checkbox("onGround", &player->GetOnGround());
-	ImGui::Text("mapNum: %d", mapNumber);
+	ImGui::Text("mapNum: %d", mapNumber[CsvFile::now_y][CsvFile::now_x] + 1);
 	ImGui::End();
 #pragma region 背景画像描画
 	// 背景画像描画前処理
@@ -236,9 +236,9 @@ void GameScene::jsonObjectUpdate()
 			DoorTypeUpdate(doorIndex, index, object->object);
 		}
 		// 移動するオブジェクトの更新
-		else if (object->object->GetType() == "test")
+		else if (object->object->GetType() == "Ground_Move")
 		{
-			TestTypeUpdate(index, object->object, object->originPos);
+			GroundMoveTypeUpdate(index, object->object, object->originPos);
 		}
 		object->object->Update();
 
@@ -320,20 +320,27 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	}
 }
 
-void GameScene::TestTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos)
+void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos)
 {
+	int divide = 60;
+
 	if (mapMove == false)
 	{
 		mapMove = true;
-		mapMoveFrame = 0;
+	}
+
+	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapMoveFrame) / divide);
+	object->SetPosition(movePos);
+
+	if (mapMove == false)
+	{
+		mapMoveFrame--;
+		mapMoveFrame = max(mapMoveFrame, 0);
 	}
 	else
 	{
-		XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapMoveFrame) / 60);
-		object->SetPosition(movePos);
-
 		mapMoveFrame++;
-		mapMoveFrame = min(mapMoveFrame, 60);
+		mapMoveFrame = min(mapMoveFrame, divide);
 	}
 }
 

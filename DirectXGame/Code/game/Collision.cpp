@@ -213,7 +213,7 @@ bool Collision::CollisionRayBox(const XMFLOAT3 startPos, const XMFLOAT3 endPos, 
 	return false;
 }
 
-bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, XMFLOAT3& pos, const XMFLOAT3 radius)
+bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, const XMFLOAT3& pos, const XMFLOAT3 radius)
 {
 	float lengthX = static_cast<float>(fabs(boxPos.x - pos.x));
 	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
@@ -226,7 +226,7 @@ bool Collision::CollisionBoxPoint(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadiu
 	return false;
 }
 
-bool Collision::CollisionBoxToBox(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, XMFLOAT3& pos, const XMFLOAT3 radius)
+bool Collision::CollisionBoxToBox(const XMFLOAT3 boxPos, const XMFLOAT3 boxRadius, const XMFLOAT3& pos, const XMFLOAT3 radius)
 {
 	float lengthX = static_cast<float>(fabs(boxPos.x - pos.x));
 	float lengthY = static_cast<float>(fabs(boxPos.y - pos.y));
