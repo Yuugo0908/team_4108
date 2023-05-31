@@ -540,6 +540,8 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 		{
 			XMFLOAT3 pos = mapObjects[i]->object->GetPosition();
 			XMFLOAT3 scale = mapObjects[i]->object->GetScale();
+			// タイリングを設定
+			mapObjects[i]->object->SetTiring({ 0.5f, 1.0f });
 
 			XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
 
@@ -559,6 +561,16 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 			else
 			{
 				CsvFile::check_change_flag = false;
+			}
+
+			// チェックポイントのオフセットの切り替え(テクスチャ)
+			if (CsvFile::now_x == CsvFile::check_x && CsvFile::now_y == CsvFile::check_y && CsvFile::check_pos == mapObjects[i]->object->GetPosition())
+			{
+				mapObjects[i]->object->SetOffset({ 1.0f, 1.0f });
+			}
+			else
+			{
+				mapObjects[i]->object->SetOffset({ 0.5f, 1.0f });
 			}
 		}
 	}
