@@ -55,12 +55,12 @@ public: // メンバ関数
 	void CheckPointTypeUpdate(int index, Object3d* object);
 	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
-	void GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide);
+	void GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec);
 
 	/// <summary>
 	/// マップ用フレームの更新
 	/// </summary>
-	void UpdateMapFrame(int divide);
+	void UpdateMapFrame(int divide, const XMFLOAT3& moveVec);
 
 	/// <summary>
 	/// 着地時エフェクト
@@ -100,16 +100,6 @@ public: // メンバ関数
 	/// <param name="playerRadius">プレイヤーの横幅</param>
 	/// <returns>成否</returns>
 	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
-
-	/// <summary>
-	/// 移動する床の上にいるか
-	/// </summary>
-	/// <param name="object">移動する床</param>
-	/// <param name="radius">半径</param>
-	/// <param name="pPos"></param>
-	/// <param name="pRadius"></param>
-	/// <returns></returns>
-	bool CheckRidingMoveGroung(const Object3d* object, const XMFLOAT3& radius, const XMFLOAT3& pPos, const XMFLOAT3& pRadius);
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();

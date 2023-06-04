@@ -207,7 +207,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 void GameScene::jsonObjectUpdate()
 {
 	int div = 60;
-	UpdateMapFrame(div);
+	XMFLOAT3 moveVec = { 0, 0, 0 };
 
 	int index = 0;
 	int keyIndex = 0;
@@ -242,13 +242,14 @@ void GameScene::jsonObjectUpdate()
 		// 移動するオブジェクトの更新
 		else if (object->object->GetType() == "Ground_Move")
 		{
-			GroundMoveTypeUpdate(index, object->object, object->originPos, div);
+			GroundMoveTypeUpdate(index, object->object, object->originPos, div, moveVec);
 		}
 		object->object->Update();
 
 		index++;
 	}
 
+	UpdateMapFrame(div, moveVec);
 	if (keyIndex != 0)
 	{
 		map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + keyIndex - 1);
@@ -324,35 +325,38 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	}
 }
 
-void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide)
+void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
 {
-	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-	object->SetPosition(movePos);
-
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
-
+	pScale.x = 0;
 	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y + object->GetScale().y <= pPos.y - pScale.y)
 	{
-		XMFLOAT3 pos = player->GetBodyPos();
-		pos.y = movePos.y + pScale.y + object->GetScale().y;
-		player->SetBodyPos(pos);
-		player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
-
 		mapMove = true;
 	}
 	else
 	{
 		mapMove = false;
 	}
+
+
+	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+	if (mapMove == true)
+	{
+		moveVec = movePos -object->GetPosition();
+	}
+	object->SetPosition(movePos);
 }
 
-void GameScene::UpdateMapFrame(int divide)
+void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
 {
 	if (mapMove == true)
 	{
 		mapFrame++;
 		mapFrame = min(mapFrame, divide);
+
+		XMFLOAT3 pos = player->GetBodyPos() + moveVec;
+		player->SetBodyPos(pos);
 	}
 	else
 	{
