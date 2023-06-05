@@ -57,7 +57,6 @@ void Player::Update(std::vector<MapData*> &mapObjects)
 	CheckPointProcess(mapObjects);
 	MapChange(mapObjects);
 
-	isHit = false;
 	if (CsvFile::map_change_flag == false)
 	{
 		BlockCollisionProcess(mapObjects);
@@ -213,7 +212,6 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 			bodyColState = BODYSTATE_X_COLISION;
 			colisionBlockNum = i;
 
-			isHit = true;
 			if (move.x <= 0.0f)
 			{
 				pPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (pPos.x - pScale.x) + correction;

@@ -191,7 +191,6 @@ public:
 	bool& GetIsLonger() { return islonger; }
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
-	bool& GetIsHit() { return isHit; }
 
 private: // ƒƒ“ƒo•Ï”
 
@@ -234,7 +233,6 @@ private: // ƒƒ“ƒo•Ï”
 	int colisionBlockNum = 0;
 	bool islonger = false;
 	bool isKey = false;
-	bool isHit = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
 };
