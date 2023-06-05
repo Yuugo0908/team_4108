@@ -57,6 +57,7 @@ void Player::Update(std::vector<MapData*> &mapObjects)
 	CheckPointProcess(mapObjects);
 	MapChange(mapObjects);
 
+	isHit = false;
 	if (CsvFile::map_change_flag == false)
 	{
 		BlockCollisionProcess(mapObjects);
@@ -181,7 +182,6 @@ void Player::GroundCollisionProcess(std::vector<MapData*> &mapObjects)
 			if (headState != STATE_BITE)
 			{
 				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
-
 			}
 			move.y = 0.0f;
 			onGround = true;
@@ -213,6 +213,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 			bodyColState = BODYSTATE_X_COLISION;
 			colisionBlockNum = i;
 
+			isHit = true;
 			if (move.x <= 0.0f)
 			{
 				pPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (pPos.x - pScale.x) + correction;
@@ -223,6 +224,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
 				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
 			}
+
 			return;
 		}
 	}

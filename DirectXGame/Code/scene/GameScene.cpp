@@ -329,8 +329,7 @@ void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
-	pScale.x = 0;
-	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y + object->GetScale().y <= pPos.y - pScale.y)
+	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y <= pPos.y)
 	{
 		mapMove = true;
 	}
