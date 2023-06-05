@@ -69,6 +69,8 @@ public: // メンバ関数
 	bool Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale);
 	// 更新処理
 	void Update(std::vector<MapData*> &mapObjects);
+	// 押し戻し
+	void PushBack(std::vector<MapData*>& mapObjects, const XMFLOAT3& move);
 	// オブジェクト
 	Object3d* GetObj() { return playerObj; }
 	Object3d* GetHedObj() { return playerHedObj; }
@@ -166,14 +168,16 @@ private:
 	/// <param name="time"></param>
 	/// <returns></returns>
 	bool TimeCheck(float& time);
-public:
 
+public:
 	//Geter
 	bool& GetOnGround() { return onGround; }
 	float& GetmoveY() { return moveY; }
 	XMFLOAT3& GetBodyPos() { return pPos; }
 	void SetBodyPos(const XMFLOAT3& pos) { pPos = pos; }
 	XMFLOAT3& GetHeadPos() { return hPos; }
+	void SetHeadPos(const XMFLOAT3& pos) { hPos = pos; }
+	void SetBodyMove(const XMFLOAT3& move) { this->move = move; }
 	XMFLOAT3& GetHeadInjectPos() { return headInjectDis; }
 	float& GetBiteTimer() { return biteTimer; }
 	HeadState& GetHeadState() { return headState; }
@@ -191,6 +195,7 @@ public:
 	bool& GetIsLonger() { return islonger; }
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
+	bool& GetIsHit() { return isHit; }
 
 private: // メンバ変数
 
@@ -233,6 +238,7 @@ private: // メンバ変数
 	int colisionBlockNum = 0;
 	bool islonger = false;
 	bool isKey = false;
+	bool isHit = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
 };

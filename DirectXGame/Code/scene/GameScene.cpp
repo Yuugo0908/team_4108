@@ -206,7 +206,7 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 
 void GameScene::jsonObjectUpdate()
 {
-	int div = 60;
+	int div = 120;
 	XMFLOAT3 moveVec = { 0, 0, 0 };
 
 	int index = 0;
@@ -340,10 +340,12 @@ void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3
 	}
 
 	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-	if (mapMove == true)
+	
+	if (mapMove == true && player->GetIsHit() == false)
 	{
-		moveVec = movePos -object->GetPosition();
+		moveVec = movePos - object->GetPosition();
 	}
+
 	object->SetPosition(movePos);
 }
 
@@ -354,8 +356,7 @@ void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
 		mapFrame++;
 		mapFrame = min(mapFrame, divide);
 
-		XMFLOAT3 pos = player->GetBodyPos() + moveVec;
-		player->SetBodyPos(pos);
+		player->PushBack(map[mapNumber[CsvFile::now_y][CsvFile::now_x]], moveVec);
 	}
 	else
 	{
