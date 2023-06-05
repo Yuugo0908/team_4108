@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Helper.h"
 
 bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 {
@@ -224,7 +225,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 			colisionBlockNum = i;
 
 			isHit = true;
-			if (move.x <= 0.0f)
+			if (move.x < 0.0f)
 			{
 				pPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (pPos.x - pScale.x) + correction;
 				hPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (hPos.x - pScale.x) + correction;
@@ -233,6 +234,17 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 			{
 				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
 				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
+			}
+			else
+			{
+				if (pPos.x <= mapObjects[i]->object->GetPosition().x)
+				{
+					pPos.x = mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x - pScale.x;
+				}
+				else
+				{
+					pPos.x = mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x + pScale.x;
+				}
 			}
 
 			return;
