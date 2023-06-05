@@ -280,7 +280,7 @@ void Player::HeadInjectionProcess()
 {
 	XMFLOAT3 hInjectDis = { 80.0f, 0.0f, 0.0f };
 	
-	if (keyboard->PushKey(DIK_RETURN))
+	if (keyboard->TriggerKey(DIK_RETURN))
 	{
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
@@ -353,7 +353,7 @@ void Player::HeadBiteProcess(std::vector<MapData*> &mapObjects)
 	}
 
 	//Šš‚Ý‰ó‚¹‚éƒuƒƒbƒN‚Ìê‡‰ó‚·
-	if (keyboard->PushKey(DIK_RETURN) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
+	if (keyboard->TriggerKey(DIK_RETURN) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;

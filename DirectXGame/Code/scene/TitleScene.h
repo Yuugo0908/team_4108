@@ -39,6 +39,7 @@ private: // ƒƒ“ƒo•Ï”
 
 	// ‰æ‘œ
 	Image2d* fadeTex = nullptr;
+	Image2d* titleName = nullptr;
 	Image2d* backGround = nullptr;
 	std::unique_ptr<Particle> takeOBJ = nullptr;
 

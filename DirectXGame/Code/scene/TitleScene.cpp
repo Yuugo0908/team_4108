@@ -17,9 +17,19 @@ void TitleScene::Initialize() {
 	{
 		assert(0);
 	}
+
 	backGround = Image2d::Create(backNum, { 0.0f,0.0f });
 	backGround->SetSize({ 1280.0f,720.0f });
 	backGround->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	if (!Image2d::LoadTexture(3, L"Resources/titlename.png"))
+	{
+		assert(0);
+	}
+	
+	titleName = Image2d::Create(3, { 640.0f,360.0f }, {1.0f,1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	titleName->SetSize({ 693.0f,117.0f });
+	titleName->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	takeOBJ.reset(Particle::Create(L"Resources/effectCircle.png"));
 }
@@ -41,6 +51,7 @@ void TitleScene::Update()
 	{
 		alpha += 0.02f;
 		fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+		titleName->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 		if (alpha >= 1.0f)
 		{
 			fadeIn = false;
@@ -84,7 +95,7 @@ void TitleScene::Draw()
 	// 前景画像の描画
 	
 	fadeTex->Draw();
-
+	titleName->Draw();
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(DirectXCommon::GetInstance()->GetCommandList());
 	// 画像描画後処理
