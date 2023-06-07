@@ -4088,7 +4088,29 @@
                     1.0,
                     0.25
                 ]
-            }
+            },
+            "file_name": "enter_bite",
+            "collider": {
+                "type": "SPRITE",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "move_pos": {
+                "move_pos": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "obj_type": "sprite"
         },
         {
             "type": "MESH",
@@ -4109,7 +4131,22 @@
                     1.0,
                     0.25
                 ]
-            }
+            },
+            "file_name": "enter_crush",
+            "collider": {
+                "type": "SPRITE",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "obj_type": "sprite"
         }
     ]
 }
