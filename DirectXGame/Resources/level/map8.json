@@ -2029,8 +2029,8 @@
             "name": "平面.057",
             "transform": {
                 "translation": [
-                    65.0,
-                    10.0,
+                    70.0,
+                    15.0,
                     -0.0
                 ],
                 "rotation": [
@@ -2039,8 +2039,8 @@
                     0.0
                 ],
                 "scaling": [
-                    5.0,
-                    5.0,
+                    10.0,
+                    10.0,
                     1.0
                 ]
             },
@@ -4291,114 +4291,6 @@
                 ]
             },
             "obj_type": "box_pull"
-        },
-        {
-            "type": "MESH",
-            "name": "平面.121",
-            "transform": {
-                "translation": [
-                    75.0,
-                    10.0,
-                    -0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    5.0,
-                    5.0,
-                    1.0
-                ]
-            },
-            "file_name": "door",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            },
-            "obj_type": "door"
-        },
-        {
-            "type": "MESH",
-            "name": "平面.122",
-            "transform": {
-                "translation": [
-                    75.0,
-                    20.0,
-                    -0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    5.0,
-                    5.0,
-                    1.0
-                ]
-            },
-            "file_name": "door",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            },
-            "obj_type": "door"
-        },
-        {
-            "type": "MESH",
-            "name": "平面.123",
-            "transform": {
-                "translation": [
-                    65.0,
-                    20.0,
-                    -0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    5.0,
-                    5.0,
-                    1.0
-                ]
-            },
-            "file_name": "door",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            },
-            "obj_type": "door"
         }
     ]
 }
