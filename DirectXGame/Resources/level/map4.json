@@ -795,49 +795,6 @@
         },
         {
             "type": "MESH",
-            "name": "平面.025",
-            "transform": {
-                "translation": [
-                    -75.0,
-                    20.0,
-                    -0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    5.0,
-                    5.0,
-                    1.0
-                ]
-            },
-            "file_name": "movator",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            },
-            "move_pos": {
-                "move_pos": [
-                    0.0,
-                    55.0,
-                    20.0
-                ]
-            },
-            "obj_type": "Ground_Move"
-        },
-        {
-            "type": "MESH",
             "name": "平面.022",
             "transform": {
                 "translation": [
@@ -913,7 +870,7 @@
             "name": "平面.032",
             "transform": {
                 "translation": [
-                    -85.0,
+                    -80.0,
                     20.0,
                     -0.0
                 ],
@@ -923,7 +880,7 @@
                     0.0
                 ],
                 "scaling": [
-                    5.0,
+                    10.0,
                     5.0,
                     1.0
                 ]
@@ -945,7 +902,7 @@
             "move_pos": {
                 "move_pos": [
                     0.0,
-                    45.0,
+                    50.0,
                     20.0
                 ]
             },
