@@ -85,6 +85,13 @@ void Player::PushBack(std::vector<MapData*>& mapObjects, const XMFLOAT3& move)
 	BlockCollisionProcess(mapObjects);
 	CeilingBlockCollisionProcess(mapObjects);
 	GroundCollisionProcess(mapObjects);
+
+	oldpPos = playerObj->GetPosition();
+	playerObj->SetPosition(pPos);
+	playerObj->Update();
+
+	playerHedObj->SetPosition(hPos);
+	playerHedObj->Update();
 }
 
 void Player::MoveProcess()

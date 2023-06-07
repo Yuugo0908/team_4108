@@ -101,6 +101,12 @@ public: // メンバ関数
 	/// <returns>成否</returns>
 	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
 
+	/// <summary>
+	/// 動く床に立っているか
+	/// </summary>
+	/// <returns></returns>
+	bool IsStandingMap(Object3d* object);
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
