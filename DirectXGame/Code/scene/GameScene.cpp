@@ -49,13 +49,13 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	jsonObjectInit("map1");
+	/*jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
-	jsonObjectInit("map7");
+	jsonObjectInit("map7");*/
 	jsonObjectInit("map8");
 }
 
@@ -420,6 +420,7 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	// 一定の距離なら
 	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
 	{
+		SceneManager::GetInstance()->ChangeScene("Title");
 		return true;
 	}
 

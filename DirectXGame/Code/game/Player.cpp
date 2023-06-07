@@ -504,17 +504,6 @@ void Player::MapChange(std::vector<MapData*> &mapObjects)
 	}
 	else
 	{
-		if (pPos.y >= 160.0f)
-		{
-			limitPos = UP_LIMIT;
-			CsvFile::map_change_flag = true;
-		}
-		else if (pPos.y <= 0.0f)
-		{
-			limitPos = DOWN_LIMIT;
-			CsvFile::map_change_flag = true;
-		}
-
 		if (pPos.x >= 160.0f)
 		{
 			limitPos = RIGHT_LIMIT;
@@ -525,19 +514,6 @@ void Player::MapChange(std::vector<MapData*> &mapObjects)
 			limitPos = LEFT_LIMIT;
 			CsvFile::map_change_flag = true;
 		}
-	}
-
-	if (limitPos == UP_LIMIT)
-	{
-		pPos.y = 1.0f;
-		hPos = pPos;
-		CsvFile::now_y--;
-	}
-	else if (limitPos == DOWN_LIMIT)
-	{
-		pPos.y = 159.0f;
-		hPos = pPos;
-		CsvFile::now_y++;
 	}
 
 	if (limitPos == RIGHT_LIMIT)
