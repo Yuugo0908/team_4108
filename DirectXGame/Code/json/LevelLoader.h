@@ -41,6 +41,7 @@ struct LevelData
 	Model* board1 = nullptr;
 	Model* board2 = nullptr;
 	Model* board3 = nullptr;
+	Model* board4 = nullptr;
 
 	std::map<std::string, Model*> models;
 };
