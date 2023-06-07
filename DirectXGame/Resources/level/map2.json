@@ -1856,7 +1856,22 @@
                     1.0,
                     0.5
                 ]
-            }
+            },
+            "file_name": "space_jump",
+            "collider": {
+                "type": "SPRITE",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "obj_type": "sprite"
         }
     ]
 }

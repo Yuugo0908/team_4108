@@ -1785,6 +1785,7 @@
                     1.0
                 ]
             },
+            "file_name": "wasd_move",
             "collider": {
                 "type": "SPRITE",
                 "center": [
