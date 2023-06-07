@@ -53,7 +53,7 @@ public: // メンバ関数
 	void GroundTypeUpdate(int index, Object3d* object);
 	void BoxTypeUpdate(int index, Object3d* object, float& gravity);
 	void CheckPointTypeUpdate(int index, Object3d* object);
-	void KeyTypeUpdate(int keyIndex, int index, Object3d* object);
+	void KeyTypeUpdate(int& keyIndex, int index, Object3d* object);
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
 	void GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec);
 

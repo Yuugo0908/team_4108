@@ -307,7 +307,7 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 	}
 }
 
-void GameScene::KeyTypeUpdate(int keyIndex, int index, Object3d* object)
+void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 {
 	if (player->GetIsKey() == false && IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
