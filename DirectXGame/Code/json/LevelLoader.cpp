@@ -52,6 +52,10 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	levelData->acid = levelData->acid->CreateFromObject("acid");
 	levelData->door = levelData->door->CreateFromObject("door");
 	levelData->key = levelData->key->CreateFromObject("key");
+	levelData->board1 = levelData->board1->CreateFromObject("wasd_move");
+	levelData->board2 = levelData->board2->CreateFromObject("space_jump");
+	levelData->board3 = levelData->board3->CreateFromObject("enter_crush");
+	levelData->board4 = levelData->board4->CreateFromObject("enter_bite");
 	// fileNameを元に、使用するモデルを決める
 	levelData->models.insert(std::make_pair("bite", levelData->biteModel));
 	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
@@ -61,6 +65,10 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	levelData->models.insert(std::make_pair("acid", levelData->acid));
 	levelData->models.insert(std::make_pair("door", levelData->door));
 	levelData->models.insert(std::make_pair("key", levelData->key));
+	levelData->models.insert(std::make_pair("wasd_move", levelData->board1));
+	levelData->models.insert(std::make_pair("space_jump", levelData->board2));
+	levelData->models.insert(std::make_pair("enter_crush", levelData->board3));
+	levelData->models.insert(std::make_pair("enter_bite", levelData->board4));
 	return levelData;
 }
 

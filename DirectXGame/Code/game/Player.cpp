@@ -191,6 +191,8 @@ void Player::GroundCollisionProcess(std::vector<MapData*> &mapObjects)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), groundPos, groundSize) == true)
 		{
+
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
 			//X軸方向で当たり判定が発生したブロックは処理をしない
 			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
@@ -227,6 +229,8 @@ void Player::BlockCollisionProcess(std::vector<MapData*> &mapObjects)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, {pScale.x, 0.01f, pScale.z }) == true)
 		{
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
+
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
 			colisionBlockNum = i;
@@ -273,6 +277,8 @@ void Player::CeilingBlockCollisionProcess(std::vector<MapData*> &mapObjects)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), headPos, headScale) == true)
 		{
+
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
 			if (pPos.y > mapObjects[i]->object->GetPosition().y) continue;
 
 			bodyColState = BODYSTATE_CEILING_COLISION;
@@ -458,6 +464,7 @@ bool Player::HeadBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 	sphereA.radius = 2.5f;
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
+		if (mapObjects[i]->object->GetType() == "sprite") continue;
 		sphereB.center = XMLoadFloat3(&mapObjects[i]->object->GetPosition());
 		sphereB.radius = 2.5f;
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
@@ -478,6 +485,7 @@ bool Player::BodyBlockCollisionCheck(std::vector<MapData*> &mapObjects)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
 		{
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
 			hitbodyMapObjNum = i;
 			return true;
 		}

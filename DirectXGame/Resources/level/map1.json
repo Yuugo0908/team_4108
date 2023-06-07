@@ -978,8 +978,8 @@
             "name": "平面.010",
             "transform": {
                 "translation": [
-                    15.0,
                     0.0,
+                    20.0,
                     -0.0
                 ],
                 "rotation": [
@@ -988,12 +988,12 @@
                     0.0
                 ],
                 "scaling": [
-                    5.0,
-                    5.0,
+                    27.625,
+                    9.5,
                     1.0
                 ]
             },
-            "file_name": "floor",
+            "file_name": "wasd_move",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -1007,7 +1007,7 @@
                     5.0
                 ]
             },
-            "obj_type": "Ground"
+            "obj_type": "sprite"
         },
         {
             "type": "MESH",
@@ -1767,39 +1767,39 @@
         },
         {
             "type": "MESH",
-            "name": "平面",
+            "name": "平面.050",
             "transform": {
                 "translation": [
+                    15.0,
                     0.0,
-                    30.0,
                     -0.0
                 ],
                 "rotation": [
                     0.0,
                     -0.0,
-                    90.00000762939453
+                    0.0
                 ],
                 "scaling": [
-                    0.5,
-                    0.5,
+                    5.0,
+                    5.0,
                     1.0
                 ]
             },
-            "file_name": "wasd_move",
+            "file_name": "floor",
             "collider": {
-                "type": "SPRITE",
+                "type": "BOX",
                 "center": [
                     0.0,
                     0.0,
                     0.0
                 ],
                 "size": [
-                    1.0,
-                    1.0,
-                    1.0
+                    5.0,
+                    5.0,
+                    5.0
                 ]
             },
-            "obj_type": "sprite"
+            "obj_type": "Ground"
         }
     ]
 }
