@@ -50,8 +50,6 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	levelData->checkPointModel = levelData->checkPointModel->CreateFromObject("checkPoint");
 	levelData->movator = levelData->movator->CreateFromObject("movator");
 	levelData->acid = levelData->acid->CreateFromObject("acid");
-	levelData->door = levelData->door->CreateFromObject("door");
-	levelData->key = levelData->key->CreateFromObject("key");
 	// fileNameを元に、使用するモデルを決める
 	levelData->models.insert(std::make_pair("bite", levelData->biteModel));
 	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
@@ -59,8 +57,6 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	levelData->models.insert(std::make_pair("checkPoint", levelData->checkPointModel));
 	levelData->models.insert(std::make_pair("movator", levelData->movator));
 	levelData->models.insert(std::make_pair("acid", levelData->acid));
-	levelData->models.insert(std::make_pair("door", levelData->door));
-	levelData->models.insert(std::make_pair("key", levelData->key));
 	return levelData;
 }
 
