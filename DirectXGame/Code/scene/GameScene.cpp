@@ -330,36 +330,18 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
 {
-	if (mapMove == true)
-	{
-		return;
-	}
-
 	if (IsStandingMap(object) == true)
 	{
 		mapMove = true;
-
-		XMFLOAT3 pPos = player->GetBodyPos();
-		XMFLOAT3 pScale = player->GetObj()->GetScale();
-		XMFLOAT3 oPos = object->GetPosition();
-		XMFLOAT3 oScale = object->GetScale();
-		XMFLOAT3 move = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-		if (player->GetIsHit() == false)
-		{
-			moveVec = move - object->GetPosition();
-		}
 	}
 
-	for (auto& map : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
+	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+	if (player->GetIsHit() == false)
 	{
-		if (map->object->GetType() != "Ground_Move")
-		{
-			continue;
-		}
-
-		XMFLOAT3 mapPos = Easing::lerp(map->originPos, map->object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-		map->object->SetPosition(mapPos);
+		moveVec = movePos - object->GetPosition();
 	}
+
+	object->SetPosition(movePos);
 }
 
 void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
