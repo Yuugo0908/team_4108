@@ -432,7 +432,7 @@ bool GameScene::IsStandingMap(Object3d* object)
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (Collision::CollisionBoxPoint(oPos, oScale, pPos, pScale) == true && oPos.y < pPos.y)
+	if (pPos.x - pScale.x < oPos.x + oScale.x && oPos.x - oScale.x < pPos.x + pScale.x && oPos.y + oScale.y + pScale.y == pPos.y)
 	{
 		return true;
 	}
