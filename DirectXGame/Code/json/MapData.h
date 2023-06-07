@@ -8,6 +8,8 @@ struct MapData
 	Object3d* object = nullptr;
 	XMFLOAT3 originPos = {};
 	float gravity = 0.0f;
+	bool isMove = false;
+	int moveFrame = 0;
 
 	MapData(Object3d* object3d, const XMFLOAT3& position)
 	{

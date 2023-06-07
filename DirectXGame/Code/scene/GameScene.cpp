@@ -51,8 +51,8 @@ void GameScene::Initialize()
 
 	/*jsonObjectInit("map1");
 	jsonObjectInit("map2");
-	jsonObjectInit("map3");*/
-	jsonObjectInit("map4");
+	jsonObjectInit("map3");
+	jsonObjectInit("map4");*/
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
@@ -245,14 +245,13 @@ void GameScene::jsonObjectUpdate()
 		// 移動するオブジェクトの更新
 		else if (object->object->GetType() == "Ground_Move")
 		{
-			GroundMoveTypeUpdate(index, object->object, object->originPos, div, moveVec);
+			GroundMoveTypeUpdate(index, object, object->originPos, div, moveVec);
 		}
-		object->object->Update();
 
+		object->object->Update();
 		index++;
 	}
 
-	UpdateMapFrame(div, moveVec);
 	if (keyIndex != 0)
 	{
 		map[mapNumber[CsvFile::now_y][CsvFile::now_x]].erase(map[mapNumber[CsvFile::now_y][CsvFile::now_x]].begin() + keyIndex - 1);
@@ -328,38 +327,41 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	}
 }
 
-void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
+void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
 {
-	if (IsStandingMap(object) == true)
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 oPos = mapData->object->GetPosition();
+	XMFLOAT3 oScale = mapData->object->GetScale();
+	if (IsStandingMap(mapData->object) == true)
 	{
-		mapMove = true;
+		mapData->isMove = true;
+	}
+	else
+	{
+		mapData->isMove = false;
 	}
 
-	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+	XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
 	if (player->GetIsHit() == false)
 	{
-		moveVec = movePos - object->GetPosition();
+		moveVec = movePos - mapData->object->GetPosition();
 	}
 
-	object->SetPosition(movePos);
-}
+	mapData->object->SetPosition(movePos);
 
-void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
-{
-	if (mapMove == true)
+	if (mapData->isMove == true)
 	{
-		mapFrame++;
-		mapFrame = min(mapFrame, divide);
+		mapData->moveFrame++;
+		mapData->moveFrame = min(mapData->moveFrame, divide);
 
 		player->PushBack(map[mapNumber[CsvFile::now_y][CsvFile::now_x]], moveVec);
 	}
 	else
 	{
-		mapFrame--;
-		mapFrame = max(mapFrame, 0);
+		mapData->moveFrame--;
+		mapData->moveFrame = max(mapData->moveFrame, 0);
 	}
-
-	mapMove = false;
 }
 
 void GameScene::OnLandingEffect(int num, const XMFLOAT3& pPos)
@@ -430,7 +432,7 @@ bool GameScene::IsStandingMap(Object3d* object)
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (oPos.x - oScale.x - pScale.x < pPos.x && pPos.x < oPos.x + oScale.x + pScale.x && oPos.y + oScale.y + pScale.y == pPos.y)
+	if (Collision::CollisionBoxPoint(oPos, oScale, pPos, pScale) == true && oPos.y < pPos.y)
 	{
 		return true;
 	}
