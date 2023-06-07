@@ -191,6 +191,8 @@ void Player::GroundCollisionProcess(std::vector<MapData*> &mapObjects)
 	{
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), groundPos, groundSize) == true)
 		{
+
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
 			//X²•ûŒü‚Å“–‚½‚è”»’è‚ª”­¶‚µ‚½ƒuƒƒbƒN‚Íˆ—‚ğ‚µ‚È‚¢
 			if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 			if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
