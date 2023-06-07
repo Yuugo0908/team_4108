@@ -51,8 +51,8 @@ void GameScene::Initialize()
 
 	jsonObjectInit("map1");
 	/*jsonObjectInit("map2");
-	jsonObjectInit("map3");
-	jsonObjectInit("map4");*/
+	jsonObjectInit("map3");*/
+	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
@@ -444,7 +444,7 @@ bool GameScene::IsStandingMap(Object3d* object)
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (oPos.y + oScale.y >= pPos.y - pScale.y && pPos.x < oPos.x + oScale.x + pScale.x && oPos.x - oScale.x - pScale.x < pPos.x)
+	if (Collision::CollisionBoxPoint(oPos, oScale, pPos, pScale) == true && oPos.y < pPos.y)
 	{
 		return true;
 	}
