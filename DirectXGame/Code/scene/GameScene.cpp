@@ -47,10 +47,10 @@ void GameScene::Initialize()
 	skydomeObj->SetScale({7.0f, 5.0f, 5.0f});
 
 	player = new Player;
-	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
+	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	jsonObjectInit("map1");
-	/*jsonObjectInit("map2");
+	/*jsonObjectInit("map1");
+	jsonObjectInit("map2");
 	jsonObjectInit("map3");*/
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
@@ -338,12 +338,16 @@ void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3
 	if (IsStandingMap(object) == true)
 	{
 		mapMove = true;
-	}
 
-	XMFLOAT3 move = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-	if (player->GetIsHit() == false)
-	{
-		moveVec = move - object->GetPosition();
+		XMFLOAT3 pPos = player->GetBodyPos();
+		XMFLOAT3 pScale = player->GetObj()->GetScale();
+		XMFLOAT3 oPos = object->GetPosition();
+		XMFLOAT3 oScale = object->GetScale();
+		XMFLOAT3 move = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+		if (player->GetIsHit() == false)
+		{
+			moveVec = move - object->GetPosition();
+		}
 	}
 
 	for (auto& map : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
@@ -444,7 +448,7 @@ bool GameScene::IsStandingMap(Object3d* object)
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (Collision::CollisionBoxPoint(oPos, oScale, pPos, pScale) == true && oPos.y < pPos.y)
+	if (oPos.x - oScale.x - pScale.x < pPos.x && pPos.x < oPos.x + oScale.x + pScale.x && oPos.y + oScale.y + pScale.y == pPos.y)
 	{
 		return true;
 	}
