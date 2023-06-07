@@ -50,8 +50,8 @@ void GameScene::Initialize()
 	player->Initialize({ 0.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
 	jsonObjectInit("map1");
-	jsonObjectInit("map2");
-	jsonObjectInit("map3");
+	/*jsonObjectInit("map2");
+	jsonObjectInit("map3");*/
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
@@ -330,25 +330,32 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, Object3d* object, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
 {
-	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
-	if (Collision::CollisionBoxPoint(object->GetPosition(), object->GetScale(), pPos, pScale) == true && object->GetPosition().y <= pPos.y)
+	if (mapMove == true)
+	{
+		return;
+	}
+
+	if (IsStandingMap(object) == true)
 	{
 		mapMove = true;
 	}
-	else
+
+	XMFLOAT3 move = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+	if (player->GetIsHit() == false)
 	{
-		mapMove = false;
+		moveVec = move - object->GetPosition();
 	}
 
-	XMFLOAT3 movePos = Easing::lerp(originPos, object->GetMovePos(), static_cast<float>(mapFrame) / divide);
-	
-	if (mapMove == true && player->GetIsHit() == false)
+	for (auto& map : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
-		moveVec = movePos - object->GetPosition();
-	}
+		if (map->object->GetType() != "Ground_Move")
+		{
+			continue;
+		}
 
-	object->SetPosition(movePos);
+		XMFLOAT3 mapPos = Easing::lerp(map->originPos, map->object->GetMovePos(), static_cast<float>(mapFrame) / divide);
+		map->object->SetPosition(mapPos);
+	}
 }
 
 void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
@@ -365,6 +372,8 @@ void GameScene::UpdateMapFrame(int divide, const XMFLOAT3& moveVec)
 		mapFrame--;
 		mapFrame = max(mapFrame, 0);
 	}
+
+	mapMove = false;
 }
 
 void GameScene::OnLandingEffect(int num, const XMFLOAT3& pPos)
@@ -422,6 +431,20 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 
 	// 一定の距離なら
 	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool GameScene::IsStandingMap(Object3d* object)
+{
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 oPos = object->GetPosition();
+	XMFLOAT3 oScale = object->GetScale();
+	if (Collision::CollisionBoxPoint(oPos, oScale, pPos, pScale) == true && oPos.y < pPos.y)
 	{
 		return true;
 	}
