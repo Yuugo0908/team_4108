@@ -38,6 +38,10 @@ struct LevelData
 	Model* acid = nullptr;
 	Model* door = nullptr;
 	Model* key = nullptr;
+	Model* board1 = nullptr;
+	Model* board2 = nullptr;
+	Model* board3 = nullptr;
+
 	std::map<std::string, Model*> models;
 };
 
