@@ -41,12 +41,7 @@ void Player::Update(std::vector<MapData*> &mapObjects)
 
 	if (keyboard->TriggerKey(DIK_Z))
 	{
-		// チェックポイントに戻る
-		pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-		hPos = pPos;
-		CsvFile::now_x = CsvFile::check_x;
-		CsvFile::now_y = CsvFile::check_y;
-		isKey = false;
+		ReturnCheckpoint();
 	}
 
 	MoveProcess();
@@ -538,13 +533,19 @@ void Player::AcidProcess(std::vector<MapData*> &mapObjects)
 		//当たったブロックが酸ブロックか判定
 		if (mapObjects[hitbodyMapObjNum]->object->GetType() == "Acid")
 		{
-			// チェックポイントに戻る
-			pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-			hPos = pPos;
-			CsvFile::now_x = CsvFile::check_x;
-			CsvFile::now_y = CsvFile::check_y;
+			ReturnCheckpoint();
 		}
 	}
+}
+
+void Player::ReturnCheckpoint()
+{
+	// チェックポイントに戻る
+	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
+	hPos = pPos;
+	CsvFile::now_x = CsvFile::check_x;
+	CsvFile::now_y = CsvFile::check_y;
+	isKey = false;
 }
 
 void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)

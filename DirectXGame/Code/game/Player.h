@@ -148,6 +148,10 @@ private:
 	/// <param name="mapObjects"></param>
 	void AcidProcess(std::vector<MapData*> &mapObjects);
 	/// <summary>
+	/// チェックポイントに戻る
+	/// </summary>
+	void ReturnCheckpoint();
+	/// <summary>
 	/// チェックポイントとの当たり判定
 	/// </summary>
 	/// <param name="mapObjects"></param>
