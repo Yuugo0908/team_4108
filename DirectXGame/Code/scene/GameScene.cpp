@@ -309,7 +309,7 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 
 void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 {
-	if (player->GetIsKey() == false && IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+	if (IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(true);
@@ -347,7 +347,6 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 	{
 		moveVec = movePos - mapData->object->GetPosition();
 	}
-
 	mapData->object->SetPosition(movePos);
 
 	if (mapData->isMove == true)

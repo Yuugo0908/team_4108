@@ -46,6 +46,7 @@ void Player::Update(std::vector<MapData*> &mapObjects)
 		hPos = pPos;
 		CsvFile::now_x = CsvFile::check_x;
 		CsvFile::now_y = CsvFile::check_y;
+		isKey = false;
 	}
 
 	MoveProcess();
