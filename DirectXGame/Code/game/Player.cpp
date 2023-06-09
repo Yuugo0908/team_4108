@@ -33,11 +33,11 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 void Player::Update(std::vector<MapData*> &mapObjects)
 {
 	//デバック用テレポート
-	if (keyboard->PushKey(DIK_R))
+	/*if (keyboard->PushKey(DIK_R))
 	{
 		pPos = { -100.0f, 120.0f, 0.0f };
 		hPos = { -100.0f, 120.0f, 0.0f };
-	}
+	}*/
 
 	if (keyboard->TriggerKey(DIK_Z))
 	{

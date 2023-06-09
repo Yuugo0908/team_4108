@@ -49,13 +49,13 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	/*jsonObjectInit("map1");
+	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
-	jsonObjectInit("map7");*/
+	jsonObjectInit("map7");
 	jsonObjectInit("map8");
 }
 
@@ -87,16 +87,16 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	ImGui::Begin("config1");//ウィンドウの名前
-	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("Player: %f, %f, %f", player->GetObj()->GetPosition().x, player->GetObj()->GetPosition().y, player->GetObj()->GetPosition().z);
-	ImGui::Text("moveY: %f", player->GetmoveY());
-	ImGui::Text("bodyPos: %f, %f, %f", player->GetBodyPos().x, player->GetBodyPos().y, player->GetBodyPos().z);
-	ImGui::Text("headPos: %f, %f, %f,", player->GetHeadPos().x, player->GetHeadPos().y, player->GetHeadPos().z);
-	ImGui::Text("GetHeadState: %d", player->GetHeadState());
-	ImGui::Checkbox("onGround", &player->GetOnGround());
-	ImGui::Text("mapNum: %d", mapNumber[CsvFile::now_y][CsvFile::now_x] + 1);
-	ImGui::End();
+	//ImGui::Begin("config1");//ウィンドウの名前
+	//ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	//ImGui::Text("Player: %f, %f, %f", player->GetObj()->GetPosition().x, player->GetObj()->GetPosition().y, player->GetObj()->GetPosition().z);
+	//ImGui::Text("moveY: %f", player->GetmoveY());
+	//ImGui::Text("bodyPos: %f, %f, %f", player->GetBodyPos().x, player->GetBodyPos().y, player->GetBodyPos().z);
+	//ImGui::Text("headPos: %f, %f, %f,", player->GetHeadPos().x, player->GetHeadPos().y, player->GetHeadPos().z);
+	//ImGui::Text("GetHeadState: %d", player->GetHeadState());
+	//ImGui::Checkbox("onGround", &player->GetOnGround());
+	//ImGui::Text("mapNum: %d", mapNumber[CsvFile::now_y][CsvFile::now_x] + 1);
+	//ImGui::End();
 
 #pragma region 背景画像描画
 	// 背景画像描画前処理
