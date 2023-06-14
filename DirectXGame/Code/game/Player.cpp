@@ -48,7 +48,6 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	//移動値加算
 	GravityProcess();
 	pPos = pPos + move;
-	hPos = hPos + hmove;
 
 	AcidProcess(mapObjects);
 	CheckPointProcess(mapObjects);
@@ -63,6 +62,11 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	}
 
 	HeadUpdateProcess(mapObjects);
+
+	if (headState == STATE_NORMAL)
+	{
+		hPos = pPos;
+	}
 
 	oldpPos = playerObj->GetPosition();
 	//OBJ更新処理
@@ -85,7 +89,6 @@ void Player::MoveProcess()
 {
 	//移動値初期化
 	move = {};
-	hmove = {};
 
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
@@ -114,8 +117,6 @@ void Player::MoveProcess()
 
 	//ジャンプ処理
 	JumpProcess();
-
-	hmove.x = move.x;
 }
 
 void Player::JumpProcess()
@@ -154,16 +155,6 @@ void Player::GravityProcess()
 	{
 		bodyState = STATE_BODY_JUMP_DOWN;
 	}
-
-	if (headState != STATE_BITE)
-	{
-		hmove.y = move.y;
-	}
-	else
-	{
-		hmove.y = 0.0f;
-	}
-
 }
 
 void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
