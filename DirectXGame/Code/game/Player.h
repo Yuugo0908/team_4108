@@ -70,7 +70,7 @@ public: // メンバ関数
 	// 更新処理
 	void Update(std::vector<MapData*> &mapObjects);
 	// 押し戻し
-	void PushBack(std::vector<MapData*>& mapObjects, const XMFLOAT3& move);
+	void AddMove(const XMFLOAT3& move);
 	// オブジェクト
 	Object3d* GetObj() { return playerObj; }
 	Object3d* GetHedObj() { return playerHedObj; }

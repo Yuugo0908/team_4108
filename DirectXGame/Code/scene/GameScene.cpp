@@ -49,10 +49,10 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	jsonObjectInit("map1");
+	/*jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
-	jsonObjectInit("map4");
+	jsonObjectInit("map4");*/
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
@@ -210,7 +210,6 @@ void GameScene::jsonObjectInit(const std::string sceneName)
 void GameScene::jsonObjectUpdate()
 {
 	int div = 120;
-	XMFLOAT3 moveVec = { 0, 0, 0 };
 
 	int index = 0;
 	int keyIndex = 0;
@@ -245,7 +244,7 @@ void GameScene::jsonObjectUpdate()
 		// 移動するオブジェクトの更新
 		else if (object->object->GetType() == "Ground_Move")
 		{
-			GroundMoveTypeUpdate(index, object, object->originPos, div, moveVec);
+			GroundMoveTypeUpdate(index, object, object->originPos, div);
 		}
 
 		object->object->Update();
@@ -327,8 +326,9 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	}
 }
 
-void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide, XMFLOAT3& moveVec)
+void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
+	XMFLOAT3 moveVec = { 0, 0, 0 };
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = mapData->object->GetPosition();
@@ -354,7 +354,7 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 		mapData->moveFrame++;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
-		player->PushBack(map[mapNumber[CsvFile::now_y][CsvFile::now_x]], moveVec);
+		player->AddMove(moveVec);
 	}
 	else
 	{
