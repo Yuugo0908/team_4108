@@ -329,10 +329,6 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
 	XMFLOAT3 moveVec = { 0, 0, 0 };
-	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
-	XMFLOAT3 oPos = mapData->object->GetPosition();
-	XMFLOAT3 oScale = mapData->object->GetScale();
 	if (IsStandingMap(mapData->object) == true)
 	{
 		mapData->isMove = true;
