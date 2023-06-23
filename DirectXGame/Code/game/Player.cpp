@@ -80,9 +80,15 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 void Player::AddMove(const XMFLOAT3& move)
 {
 	pPos = pPos + move;
-
 	playerObj->SetPosition(pPos);
 	playerObj->Update();
+
+	if (headState == STATE_NORMAL)
+	{
+		hPos = pPos;
+		playerHedObj->SetPosition(hPos);
+		playerHedObj->Update();
+	}
 }
 
 void Player::MoveProcess()
