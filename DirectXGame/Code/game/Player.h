@@ -188,13 +188,14 @@ public:
 
 	bool GetNotGravityFlag();
 	int GetHeadHitMapNum() { return hitHeadMapObjNum; }
-	/// <summary>
-	/// ínñ Ç…ê⁄ÇµÇΩèuä‘Ç©
-	/// </summary>
-	/// <returns>ê¨î€</returns>
 	bool GetOnGrounding()
 	{
-		return onGround == true && onGround != oldOnGround;
+		return onGround == true && oldOnGround == false;
+	}
+	void OnGrounding()
+	{
+		this->onGround = true;
+		this->oldOnGround = true;
 	}
 	bool& GetIsLonger() { return islonger; }
 	bool& GetIsKey() { return isKey; }

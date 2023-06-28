@@ -351,6 +351,7 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
 		player->AddMove(moveVec);
+		player->OnGrounding();
 	}
 	else
 	{
