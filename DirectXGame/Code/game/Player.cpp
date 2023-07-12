@@ -199,7 +199,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 {
 	if (headState == STATE_BITE) return;
 
-	//少数補正値
+	// 少数補正値
 	float correction = 0.1f;
 
 	for (int i = 0; i < mapObjects.size(); i++)
@@ -208,7 +208,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, { pScale.x, 0.01f, pScale.z }) == true)
 		{
-			//Y軸用当たり判定ブロック保持
+			// Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
 			colisionBlockNum = i;
 
