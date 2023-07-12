@@ -335,7 +335,7 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 	}
 	else
 	{
-		mapData->isMove = false;
+		mapData->isMove = false;	
 	}
 
 	XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
