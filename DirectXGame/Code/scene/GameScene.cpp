@@ -342,21 +342,21 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 	{
 		XMFLOAT3 moveVec = { 0, 0, 0 };
 		mapData->isMove = true;
+		float oPos = mapData->object->GetPosition().y;
 
 		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
 		if (player->GetIsHit() == false)
 		{
-			moveVec = movePos - mapData->object->GetPosition();
+			moveVec = movePos - oPos;
 		}
-
-		mapData->object->SetPosition(movePos);
+		float pos = pPos.y - pScale.y - mapData->object->GetScale().y;
+ 		mapData->object->SetPosition(movePos);
 
 		mapData->moveFrame++;
 		mapData->gravity = 0.0f;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
 		player->AddMove(moveVec);
-		//player->OnGrounding();
 	}
 	else
 	{
@@ -430,70 +430,4 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	}
 
 	return false;
-}
-
-bool GameScene::IsStandingMap(Object3d* object)
-{
-	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
-	XMFLOAT3 oldPos = player->GetBodyOldPos();
-	XMFLOAT3 oPos = object->GetPosition();
-	XMFLOAT3 oScale = object->GetScale();
-
-	//フラグ
-	bool hitFlag = false;
-
-	// 判定
-	float maxMapX = oPos.x + oScale.x;
-	float minMapX = oPos.x - oScale.x;
-	float maxMapY = oPos.y + oScale.y;
-	float minMapY = oPos.y - oScale.y;
-	float maxMapZ = oPos.z + oScale.z;
-	float minMapZ = oPos.z - oScale.z;
-
-	if ((pPos.x <= maxMapX && pPos.x >= minMapX) &&
-		(pPos.y <= maxMapY && pPos.y >= minMapY))
-	{
-		if (maxMapZ + pScale.z > pPos.z && oPos.z < oldPos.z)
-		{
-			pPos.z = maxMapZ + pScale.z;
-			hitFlag = true;
-		}
-		else if (minMapZ - pScale.z < pPos.z && oPos.z > oldPos.z)
-		{
-			pPos.z = minMapZ - pScale.z;
-			hitFlag = true;
-		}
-	}
-
-	if ((pPos.z <= maxMapZ && pPos.z >= minMapZ) &&
-		(pPos.y <= maxMapY && pPos.y >= minMapY))
-	{
-		if (maxMapX + pScale.x > pPos.x && oPos.x < oldPos.x)
-		{
-			pPos.x = maxMapX + pScale.x;
-			hitFlag = true;
-		}
-		else if (minMapX - pScale.x < pPos.x && oPos.x > oldPos.x)
-		{
-			pPos.x = minMapX - pScale.x;
-			hitFlag = true;
-		}
-	}
-
-	if ((pPos.x <= maxMapX && pPos.x >= minMapX) &&
-		(pPos.z <= maxMapZ && pPos.z >= minMapZ))
-	{
-		if (maxMapY + pScale.y > pPos.y && oPos.y < oldPos.y)
-		{
-			pPos.y = maxMapY + pScale.y;
-			hitFlag = true;
-		}
-		else if (minMapY - pScale.y < pPos.y && oPos.y > oldPos.y)
-		{
-			pPos.y = minMapY - pScale.y;
-			hitFlag = true;
-		}
-	}
-	return hitFlag;
 }
