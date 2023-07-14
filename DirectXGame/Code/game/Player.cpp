@@ -78,7 +78,6 @@ void Player::AddMove(const XMFLOAT3& move)
 
 	if (headState == STATE_NORMAL)
 	{
-		hPos = pPos;
 		playerHedObj->SetPosition(hPos);
 		playerHedObj->Update();
 	}
@@ -312,7 +311,7 @@ void Player::HeadBackMoveProcess()
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 	
-	if (TimeCheck(moveTime) == true || pPos == hPos)
+	if (TimeCheck(moveTime) == true)
 	{
 		moveTime = timeMax;
 		headState = STATE_INJECTIONLOCK;
@@ -525,13 +524,9 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 
 void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
-	if (BodyBlockCollisionCheck(mapObjects) == true)
+	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
-		//当たったブロックが酸ブロックか判定
-		if (mapObjects[hitbodyMapObjNum]->object->GetType() == "Acid")
-		{
-			ReturnCheckpoint();
-		}
+		ReturnCheckpoint();
 	}
 }
 
@@ -671,6 +666,32 @@ bool Player::TimeCheck(float& time)
 
 	if (time <= 0.0f) return true;
 	return false;
+}
+
+bool Player::AcidBlockOnlyCollisionCheck(std::vector<MapData*>& mapObjects)
+{
+	XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
+
+	bool AcidFlag = false;
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
+		{
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
+			if (mapObjects[i]->object->GetType() == "Acid")
+			{
+				AcidFlag = true;
+				hitbodyMapObjNum = i;
+			}
+			else if (mapObjects[i]->object->GetType() == "floor")
+			{
+				AcidFlag = false;
+			}
+		}
+	}
+
+	return AcidFlag;
 }
 
 bool Player::GetNotGravityFlag()
