@@ -176,8 +176,9 @@ private:
 public:
 	//Geter
 	bool& GetOnGround() { return onGround; }
-	float& GetmoveY() { return moveY; }
+	float& GetmoveY() { return jumpParameter; }
 	XMFLOAT3& GetBodyPos() { return pPos; }
+	XMFLOAT3& GetBodyOldPos() { return oldpPos; }
 	void SetBodyPos(const XMFLOAT3& pos) { pPos = pos; }
 	XMFLOAT3& GetHeadPos() { return hPos; }
 	void SetHeadPos(const XMFLOAT3& pos) { hPos = pos; }
@@ -229,7 +230,7 @@ private: // メンバ変数
 	XMFLOAT3 move = {};							//移動量
 	XMFLOAT3 hmove = {};						//頭の移動量
 	XMFLOAT3 direction = {};					//向いている方向
-	float moveY = 0.0f;							//ジャンプ及び重力
+	float jumpParameter = 0.0f;							//ジャンプ及び重力
 	bool onGround = false;
 	bool oldOnGround = false;
 	HeadState headState = STATE_NORMAL;
