@@ -63,7 +63,7 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 
 	HeadUpdateProcess(mapObjects);
 
-	if (headState == STATE_NORMAL)
+	if (headState == STATE_NORMAL || headState == STATE_INJECTIONLOCK)
 	{
 		hPos = pPos;
 	}
@@ -101,6 +101,7 @@ void Player::MoveProcess()
 
 	if (headState == STATE_INJECTION) return;
 	if (headState == STATE_BITE) return;
+	//if (headState == STATE_BACK) return;
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
@@ -212,7 +213,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
 
-		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, {pScale.x, 0.01f, pScale.z }) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{
 			//Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
@@ -307,7 +308,7 @@ void Player::HeadBackMoveProcess()
 	float time = timeMax - moveTime;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
 	
-	if (TimeCheck(moveTime) == true)
+	if (TimeCheck(moveTime) == true || pPos == hPos)
 	{
 		moveTime = timeMax;
 		headState = STATE_INJECTIONLOCK;
@@ -539,6 +540,7 @@ void Player::ReturnCheckpoint()
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
+	headState = STATE_NORMAL;
 }
 
 void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
