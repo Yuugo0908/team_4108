@@ -173,6 +173,8 @@ private:
 	/// <returns></returns>
 	bool TimeCheck(float& time);
 
+	bool AcidBlockOnlyCollisionCheck(std::vector<MapData*>& mapObjects);
+
 public:
 	//Geter
 	bool& GetOnGround() { return onGround; }

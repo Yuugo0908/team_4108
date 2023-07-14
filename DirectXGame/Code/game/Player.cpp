@@ -522,13 +522,9 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 
 void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
-	if (BodyBlockCollisionCheck(mapObjects) == true)
+	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
-		//当たったブロックが酸ブロックか判定
-		if (mapObjects[hitbodyMapObjNum]->object->GetType() == "Acid")
-		{
-			ReturnCheckpoint();
-		}
+		ReturnCheckpoint();
 	}
 }
 
@@ -667,6 +663,24 @@ bool Player::TimeCheck(float& time)
 	time -= 1.0f / flame;
 
 	if (time <= 0.0f) return true;
+	return false;
+}
+
+bool Player::AcidBlockOnlyCollisionCheck(std::vector<MapData*>& mapObjects)
+{
+	XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
+
+	for (int i = 0; i < mapObjects.size(); i++)
+	{
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
+		{
+			if (mapObjects[i]->object->GetType() == "sprite") continue;
+			if (mapObjects[i]->object->GetType() != "Acid") continue;
+			hitbodyMapObjNum = i;
+			return true;
+		}
+	}
+
 	return false;
 }
 
