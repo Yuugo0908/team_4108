@@ -133,7 +133,7 @@ void Player::JumpProcess()
 	{
 		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
-		moveY = 2.75f;
+		jumpParameter = 2.75f;
 	}
 }
 
@@ -147,13 +147,13 @@ void Player::GravityProcess()
 	const float fallVYMin = -2.0f;
 
 	// â¡ë¨
-	moveY = max(moveY + fallAcc, fallVYMin);
+	jumpParameter = max(jumpParameter + fallAcc, fallVYMin);
 	
 	if (onGround != false) return;
 	
-	move.y = moveY;
+	move.y = jumpParameter;
 
-	if (moveY >= 0.0f)
+	if (jumpParameter >= 0.0f)
 	{
 		bodyState = STATE_BODY_JUMP_UP;
 	}
@@ -168,8 +168,8 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 	oldOnGround = onGround;
 
 	if (bodyState == STATE_BODY_JUMP_UP) return;
-	XMFLOAT3 groundPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
-	XMFLOAT3 groundSize = { pScale.x, (pScale.y / 2), pScale.z };
+	XMFLOAT3 playerPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
+	XMFLOAT3 playerSize = { pScale.x, (pScale.y / 2), pScale.z };
 
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
@@ -178,23 +178,33 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 		if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 		if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 
-		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), groundPos, groundSize) == true)
+		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), playerPos, playerSize) == true)
 		{
-			pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
-			
-			if (headState != STATE_BITE)
+			if (mapObjects[i]->object->GetType() == "Ground_Move")
 			{
-				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
+				move.y = 0.0f;
+				onGround = true;
+				jumpParameter = 0.0f;
+				return;
 			}
-			move.y = 0.0f;
-			onGround = true;
-			moveY = 0.0f;
+			else
+			{
+				pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
 
- 			if (headState == STATE_INJECTIONLOCK)
-			{
-				headState = STATE_NORMAL;
+				if (headState != STATE_BITE)
+				{
+					hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
+				}
+				move.y = 0.0f;
+				onGround = true;
+				jumpParameter = 0.0f;
+
+				if (headState == STATE_INJECTIONLOCK)
+				{
+					headState = STATE_NORMAL;
+				}
+				return;
 			}
-			return;
 		}
 	}
 
@@ -393,7 +403,7 @@ void Player::HeadUpdateProcess(std::vector<MapData*>& mapObjects)
 		{
 			headBackDis = hPos;
 			headState = STATE_BACK;
-			moveY = 2.0f;
+			jumpParameter = 2.0f;
 			moveTime = timeMax;
 		}
 	}
@@ -599,7 +609,7 @@ void Player::AttractBiteProcess(std::vector<MapData*>& mapObjects)
 		//êLÇŒÇµÇ´Ç¡ÇΩéû
 		pPos = oldPPos;
 		hPos = oldPPos;
-		moveY = 2.4f;
+		jumpParameter = 2.4f;
 		moveTime = timeMax;
 		headState = STATE_NORMAL;
 		return;
@@ -609,7 +619,7 @@ void Player::AttractBiteProcess(std::vector<MapData*>& mapObjects)
 	{
 		pPos = oldPPos;
 		hPos = oldPPos;
-		moveY = 2.4f;
+		jumpParameter = 2.4f;
 		moveTime = timeMax;
 		headState = STATE_NORMAL;
 		return;

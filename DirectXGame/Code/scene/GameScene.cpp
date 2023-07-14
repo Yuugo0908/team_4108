@@ -271,6 +271,7 @@ void GameScene::GroundTypeUpdate(int index, Object3d* object)
 
 void GameScene::BoxTypeUpdate(int index, Object3d* object, float& gravity)
 {
+	// 落下するブロックの更新処理
 	XMFLOAT3 pos = object->GetPosition();
 	pos.y += gravity;
 	gravity += addGravity;
@@ -292,6 +293,7 @@ void GameScene::BoxTypeUpdate(int index, Object3d* object, float& gravity)
 
 void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 {
+	// チェックポイントの処理(当たり判定)
 	XMFLOAT3 pos = object->GetPosition();
 	XMFLOAT3 scale = object->GetScale();
 	XMFLOAT3 pPos = player->GetBodyPos();
@@ -308,6 +310,7 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 
 void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 {
+	// 鍵の当たり判定
 	if (IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
 		OnPickingEffect(object->GetPosition());
@@ -318,6 +321,7 @@ void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 
 void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object)
 {
+	// ドアの当たり判定
 	if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
 		OnPickingEffect(object->GetPosition());
@@ -328,33 +332,38 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
-	XMFLOAT3 moveVec = { 0, 0, 0 };
-	if (IsStandingMap(mapData->object) == true)
+	mapData->object->Update();
+	XMFLOAT3 pPos = player->GetObj()->GetPosition();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 playerPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
+	XMFLOAT3 playerSize = { pScale.x, (pScale.y / 2), pScale.z };
+
+	if (Collision::CollisionBoxPoint(mapData->object->GetPosition(), mapData->object->GetScale(), playerPos, playerSize) == true)
 	{
+		XMFLOAT3 moveVec = { 0, 0, 0 };
 		mapData->isMove = true;
-	}
-	else
-	{
-		mapData->isMove = false;
-	}
 
-	XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
-	if (player->GetIsHit() == false)
-	{
-		moveVec = movePos - mapData->object->GetPosition();
-	}
-	mapData->object->SetPosition(movePos);
+		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
+		if (player->GetIsHit() == false)
+		{
+			moveVec = movePos - mapData->object->GetPosition();
+		}
 
-	if (mapData->isMove == true)
-	{
+		mapData->object->SetPosition(movePos);
+
 		mapData->moveFrame++;
+		mapData->gravity = 0.0f;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
 		player->AddMove(moveVec);
-		player->OnGrounding();
+		//player->OnGrounding();
 	}
 	else
 	{
+		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
+		mapData->object->SetPosition(movePos);
+
+		mapData->isMove = false;
 		mapData->moveFrame--;
 		mapData->moveFrame = max(mapData->moveFrame, 0);
 	}
@@ -427,12 +436,64 @@ bool GameScene::IsStandingMap(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 oldPos = player->GetBodyOldPos();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (pPos.x - pScale.x < oPos.x + oScale.x && oPos.x - oScale.x < pPos.x + pScale.x && oPos.y + oScale.y + pScale.y == pPos.y)
+
+	//フラグ
+	bool hitFlag = false;
+
+	// 判定
+	float maxMapX = oPos.x + oScale.x;
+	float minMapX = oPos.x - oScale.x;
+	float maxMapY = oPos.y + oScale.y;
+	float minMapY = oPos.y - oScale.y;
+	float maxMapZ = oPos.z + oScale.z;
+	float minMapZ = oPos.z - oScale.z;
+
+	if ((pPos.x <= maxMapX && pPos.x >= minMapX) &&
+		(pPos.y <= maxMapY && pPos.y >= minMapY))
 	{
-		return true;
+		if (maxMapZ + pScale.z > pPos.z && oPos.z < oldPos.z)
+		{
+			pPos.z = maxMapZ + pScale.z;
+			hitFlag = true;
+		}
+		else if (minMapZ - pScale.z < pPos.z && oPos.z > oldPos.z)
+		{
+			pPos.z = minMapZ - pScale.z;
+			hitFlag = true;
+		}
 	}
 
-	return false;
+	if ((pPos.z <= maxMapZ && pPos.z >= minMapZ) &&
+		(pPos.y <= maxMapY && pPos.y >= minMapY))
+	{
+		if (maxMapX + pScale.x > pPos.x && oPos.x < oldPos.x)
+		{
+			pPos.x = maxMapX + pScale.x;
+			hitFlag = true;
+		}
+		else if (minMapX - pScale.x < pPos.x && oPos.x > oldPos.x)
+		{
+			pPos.x = minMapX - pScale.x;
+			hitFlag = true;
+		}
+	}
+
+	if ((pPos.x <= maxMapX && pPos.x >= minMapX) &&
+		(pPos.z <= maxMapZ && pPos.z >= minMapZ))
+	{
+		if (maxMapY + pScale.y > pPos.y && oPos.y < oldPos.y)
+		{
+			pPos.y = maxMapY + pScale.y;
+			hitFlag = true;
+		}
+		else if (minMapY - pScale.y < pPos.y && oPos.y > oldPos.y)
+		{
+			pPos.y = minMapY - pScale.y;
+			hitFlag = true;
+		}
+	}
+	return hitFlag;
 }
