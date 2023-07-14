@@ -32,13 +32,6 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 
 void Player::Update(std::vector<MapData*>& mapObjects)
 {
-	//デバック用テレポート
-	/*if (keyboard->PushKey(DIK_R))
-	{
-		pPos = { -100.0f, 120.0f, 0.0f };
-		hPos = { -100.0f, 120.0f, 0.0f };
-	}*/
-
 	if (keyboard->TriggerKey(DIK_Z))
 	{
 		ReturnCheckpoint();
@@ -172,12 +165,13 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 	XMFLOAT3 groundPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
 	XMFLOAT3 groundSize = { pScale.x, (pScale.y / 2), pScale.z };
 
+	// X軸方向で当たり判定が発生したブロックは処理をしない
+	if (bodyColState == BODYSTATE_CEILING_COLISION) return;
+
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
-		if (mapObjects[i]->object->GetType() == "sprite") continue;
-		//X軸方向で当たり判定が発生したブロックは処理をしない
-		if (bodyColState == BODYSTATE_CEILING_COLISION) return;
 		if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
+		if (mapObjects[i]->object->GetType() == "sprite") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), groundPos, groundSize) == true)
 		{
@@ -206,7 +200,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 {
 	if (headState == STATE_BITE) return;
 
-	//少数補正値
+	// 少数補正値
 	float correction = 0.1f;
 
 	for (int i = 0; i < mapObjects.size(); i++)
@@ -215,7 +209,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{
-			//Y軸用当たり判定ブロック保持
+			// Y軸用当たり判定ブロック保持
 			bodyColState = BODYSTATE_X_COLISION;
 			colisionBlockNum = i;
 
@@ -225,7 +219,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 				pPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (pPos.x - pScale.x) + correction;
 				hPos.x += (mapObjects[i]->object->GetPosition().x + mapObjects[i]->object->GetScale().x) - (hPos.x - pScale.x) + correction;
 			}
-			else if(move.x > 0.0f)
+			else if (move.x > 0.0f)
 			{
 				pPos.x -= (pPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
 				hPos.x -= (hPos.x + pScale.x) - (mapObjects[i]->object->GetPosition().x - mapObjects[i]->object->GetScale().x) + correction;
@@ -319,7 +313,7 @@ void Player::HeadBackMoveProcess()
 
 void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 {
-	//引き寄せられるブロックにかみついた場合
+	// 引き寄せられるブロックにかみついた場合
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")
 	{
 		AttractBiteProcess(mapObjects);
@@ -333,23 +327,22 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	}
 	islonger = false;
 
-
-	////タイマー起動
+	// タイマー起動
 	if (TimeCheck(biteTimer) == true)
 	{
 		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
-
-	//噛み離す
+	 
+	// 噛み離す
 	if (keyboard->PushKey(DIK_P))
 	{
 		headBackDis = hPos;
 		headState = STATE_BACK;
 	}
 
-	//噛み壊せるブロックの場合壊す
-	if (keyboard->TriggerKey(DIK_RETURN) && mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
+	// 噛み壊せるブロックの場合壊す
+	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
