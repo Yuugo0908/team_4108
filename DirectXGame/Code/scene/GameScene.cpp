@@ -332,28 +332,21 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
-	mapData->object->Update();
 	XMFLOAT3 pPos = player->GetObj()->GetPosition();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
-	XMFLOAT3 playerPos = { pPos.x, pPos.y - (pScale.y / 2), pPos.z };
-	XMFLOAT3 playerSize = { pScale.x, (pScale.y / 2), pScale.z };
 
-	if (Collision::CollisionBoxPoint(mapData->object->GetPosition(), mapData->object->GetScale(), playerPos, playerSize) == true)
+	if (Collision::CollisionBoxPoint(mapData->object->GetPosition(), mapData->object->GetScale(), pPos, pScale) == true)
 	{
 		XMFLOAT3 moveVec = { 0, 0, 0 };
-		mapData->isMove = true;
-		float oPos = mapData->object->GetPosition().y;
-
 		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
 		if (player->GetIsHit() == false)
 		{
-			moveVec = movePos - oPos;
+			moveVec = movePos - mapData->object->GetPosition();
 		}
-		float pos = pPos.y - pScale.y - mapData->object->GetScale().y;
  		mapData->object->SetPosition(movePos);
 
+		mapData->isMove = true;
 		mapData->moveFrame++;
-		mapData->gravity = 0.0f;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
 		player->AddMove(moveVec);

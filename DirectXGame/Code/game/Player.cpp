@@ -78,7 +78,7 @@ void Player::AddMove(const XMFLOAT3& move)
 
 	if (headState == STATE_NORMAL)
 	{
-		playerHedObj->SetPosition(hPos);
+		playerHedObj->SetPosition(pPos);
 		playerHedObj->Update();
 	}
 }
@@ -174,31 +174,21 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), playerPos, playerSize) == true)
 		{
-			if (mapObjects[i]->object->GetType() == "Ground_Move")
-			{
-				move.y = 0.0f;
-				onGround = true;
-				jumpParameter = 0.0f;
-				return;
-			}
-			else
-			{
-				pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
+			pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
 
-				if (headState != STATE_BITE)
-				{
-					hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
-				}
-				move.y = 0.0f;
-				onGround = true;
-				jumpParameter = 0.0f;
-
-				if (headState == STATE_INJECTIONLOCK)
-				{
-					headState = STATE_NORMAL;
-				}
-				return;
+			if (headState != STATE_BITE)
+			{
+				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
 			}
+			move.y = 0.0f;
+			onGround = true;
+			jumpParameter = 0.0f;
+
+			if (headState == STATE_INJECTIONLOCK)
+			{
+				headState = STATE_NORMAL;
+			}
+			return;
 		}
 	}
 
