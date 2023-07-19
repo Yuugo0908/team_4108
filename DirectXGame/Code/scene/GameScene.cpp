@@ -19,7 +19,6 @@ void GameScene::Initialize()
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 
 	// パーティクル生成
-	effectBox = Particle::Create(L"Resources/effectBox.png");
 	// 着地時のパーティクル
 	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
 	// 取得時のパーティクル

@@ -279,6 +279,7 @@ void Player::HeadInjectionProcess()
 	
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
+		hPos = pPos;
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
@@ -532,7 +533,8 @@ void Player::ReturnCheckpoint()
 {
 	// チェックポイントに戻る
 	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-	hPos = pPos;
+	playerHedObj->SetPosition(pPos);
+	playerHedObj->Update();
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;

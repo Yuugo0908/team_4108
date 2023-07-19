@@ -1389,7 +1389,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_pull",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -1821,7 +1821,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_pull",
             "collider": {
                 "type": "BOX",
                 "center": [

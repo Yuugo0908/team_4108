@@ -1,0 +1,14 @@
+diff a/DirectXGame/Code/3d/Model.cpp b/DirectXGame/Code/3d/Model.cpp	(rejected hunks)
+@@ -251,9 +251,9 @@
+ 
+ 				// ���_�f�[�^�̒ǉ�
+ 				VertexPosNormalUv vertex{};
+-				vertex.pos = positions[indexPosition - 1];
+-				vertex.normal = normals[indexNormal - 1];
+-				vertex.uv = texcoords[indexTexcoord - 1];
++				vertex.pos = positions[(size_t)indexPosition - 1];
++				vertex.normal = normals[(size_t)indexNormal - 1];
++				vertex.uv = texcoords[(size_t)indexTexcoord - 1];
+ 				vertices.emplace_back(vertex);
+ 				// �C���f�b�N�X�f�[�^�̒ǉ�
+ 				indices.emplace_back((unsigned short)indices.size());
