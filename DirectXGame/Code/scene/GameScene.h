@@ -100,7 +100,7 @@ public: // メンバ関数
 	/// 動く床に立っているか
 	/// </summary>
 	/// <returns></returns>
-	bool IsStandingMap(Object3d* object);
+	bool CheckHitGroundMoveType(Object3d* object);
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
@@ -165,4 +165,7 @@ private: // メンバ変数
 	//skydome
 	Object3d* skydomeObj = nullptr;
 	Model* skydomeModel = nullptr;
+
+	// プレイヤーが床に乗って動いているか
+	bool isMovePlayer = false;
 };

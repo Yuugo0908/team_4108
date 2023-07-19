@@ -70,7 +70,9 @@ public: // メンバ関数
 	// 更新処理
 	void Update(std::vector<MapData*> &mapObjects);
 	// 押し戻し
-	void AddMove(const XMFLOAT3& move);
+	void SetPositionPlayer(const XMFLOAT3& pos, const XMFLOAT3& move = { 0, 0, 0 });
+	// 着地時処理
+	void OnGrounding();
 	// オブジェクト
 	Object3d* GetObj() { return playerObj; }
 	Object3d* GetHedObj() { return playerHedObj; }
@@ -194,11 +196,6 @@ public:
 	bool GetOnGrounding()
 	{
 		return onGround == true && oldOnGround == false;
-	}
-	void OnGrounding()
-	{
-		this->onGround = true;
-		this->oldOnGround = true;
 	}
 	bool& GetIsLonger() { return islonger; }
 	bool& GetIsKey() { return isKey; }

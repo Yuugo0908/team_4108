@@ -70,9 +70,9 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	playerHedObj->Update();
 }
 
-void Player::AddMove(const XMFLOAT3& move)
+void Player::SetPositionPlayer(const XMFLOAT3& pos, const XMFLOAT3& move)
 {
-	pPos = pPos + move;
+	pPos = pos + move;
 	playerObj->SetPosition(pPos);
 	playerObj->Update();
 
@@ -81,6 +81,13 @@ void Player::AddMove(const XMFLOAT3& move)
 		playerHedObj->SetPosition(pPos);
 		playerHedObj->Update();
 	}
+}
+
+void Player::OnGrounding()
+{
+	move.y = 0.0f;
+	onGround = true;
+	jumpParameter = 0.0f;
 }
 
 void Player::MoveProcess()
@@ -171,6 +178,7 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), playerPos, playerSize) == true)
 		{
@@ -180,9 +188,7 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 			{
 				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
 			}
-			move.y = 0.0f;
-			onGround = true;
-			jumpParameter = 0.0f;
+			OnGrounding();
 
 			if (headState == STATE_INJECTIONLOCK)
 			{
@@ -205,6 +211,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{
@@ -254,6 +261,7 @@ void Player::CeilingBlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
 		if (pPos.y > mapObjects[i]->object->GetPosition().y) continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), headPos, headScale) == true)
 		{

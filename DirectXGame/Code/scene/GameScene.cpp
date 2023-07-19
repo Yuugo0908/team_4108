@@ -332,10 +332,7 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
-	XMFLOAT3 pPos = player->GetObj()->GetPosition();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
-
-	if (Collision::CollisionBoxPoint(mapData->object->GetPosition(), mapData->object->GetScale(), pPos, pScale) == true)
+	if (CheckHitGroundMoveType(mapData->object) == true)
 	{
 		XMFLOAT3 moveVec = { 0, 0, 0 };
 		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
@@ -345,11 +342,18 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 		}
  		mapData->object->SetPosition(movePos);
 
+		if (mapData->isMove == false && player->GetOnGround() == false)
+		{
+			XMFLOAT3 pPos = player->GetObj()->GetPosition();
+			pPos.y -= 1.0f * player->GetObj()->GetScale().y;
+			OnLandingEffect(6, pPos);
+		}
 		mapData->isMove = true;
 		mapData->moveFrame++;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
-		player->AddMove(moveVec);
+		player->OnGrounding();
+		player->SetPositionPlayer(player->GetBodyPos(), moveVec);
 	}
 	else
 	{
@@ -419,6 +423,26 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
 	{
 		SceneManager::GetInstance()->ChangeScene("Title");
+		return true;
+	}
+
+	return false;
+}
+
+bool GameScene::CheckHitGroundMoveType(Object3d* object)
+{
+	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 oPos = object->GetPosition();
+	XMFLOAT3 oScale = object->GetScale();
+	float lenX = Helper::LengthFloat2({pPos.x, 0}, {oPos.x, 0});
+	float lenY = Helper::LengthFloat2({0, pPos.y}, {0, oPos.y});
+
+	if (lenX <= pScale.x + oScale.x && pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y)
+	{
+		pPos.y = oPos.y + oScale.y + pScale.y;
+		player->SetPositionPlayer(pPos);
+
 		return true;
 	}
 
