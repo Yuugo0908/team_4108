@@ -431,7 +431,6 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 oldPPos = player->GetBodyOldPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
@@ -469,8 +468,9 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 
 	if (lenX < pScale.x + oScale.x)
 	{
-		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y && !(0 <= player->GetmoveY()))
+		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y && player->GetmoveY() <= 0)
 		{
+			player->OnGrounding();
 			hit = true;
 			pPos.y = oPos.y + oScale.y + pScale.y;
 			player->SetPositionPlayer(pPos);
