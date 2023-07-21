@@ -178,7 +178,14 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
-		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move")
+		{
+			if (headState == STATE_INJECTIONLOCK)
+			{
+				headState = STATE_NORMAL;
+			}
+			continue;
+		}
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), playerPos, playerSize) == true)
 		{
