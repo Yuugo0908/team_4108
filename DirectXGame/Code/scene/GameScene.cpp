@@ -431,19 +431,54 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
+	XMFLOAT3 oldPPos = player->GetBodyOldPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	float lenX = Helper::LengthFloat2({pPos.x, 0}, {oPos.x, 0});
-	float lenY = Helper::LengthFloat2({0, pPos.y}, {0, oPos.y});
+	bool hit = false;
 
-	if (lenX <= pScale.x + oScale.x && pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y)
+	PushBackX(pPos, pScale, oPos, oScale);
+	PushBackY(pPos, pScale, oPos, oScale, hit);
+
+	return hit;
+}
+
+void GameScene::PushBackX(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale)
+{
+	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });
+	float lenY = Helper::LengthFloat2({ 0, pPos.y }, { 0, oPos.y });
+
+	if (lenY < pScale.y + oScale.y && pScale.x + oScale.x < lenX)
 	{
-		pPos.y = oPos.y + oScale.y + pScale.y;
-		player->SetPositionPlayer(pPos);
-
-		return true;
+		if (pPos.x - pScale.x <= oPos.x + oScale.x && oPos.x <= pPos.x)
+		{
+			pPos.x = oPos.x + oScale.x + pScale.x;
+			player->SetPositionPlayer(pPos);
+		}
+		else if (oPos.x - oScale.x <= pPos.x + pScale.x && pPos.x <= oPos.x)
+		{
+			pPos.x = oPos.x - oScale.x - pScale.x;
+			player->SetPositionPlayer(pPos);
+		}
 	}
+}
 
-	return false;
+void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale, bool& hit)
+{
+	float lenX = Helper::LengthFloat2({pPos.x, 0}, {oPos.x, 0});
+
+	if (lenX < pScale.x + oScale.x)
+	{
+		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y)
+		{
+			hit = true;
+			pPos.y = oPos.y + oScale.y + pScale.y;
+			player->SetPositionPlayer(pPos);
+		}
+		else if (oPos.y - oScale.y <= pPos.y + pScale.y && pPos.y <= oPos.y)
+		{
+			pPos.y = oPos.y - oScale.y - pScale.y;
+			player->SetPositionPlayer(pPos);
+		}
+	}
 }
