@@ -469,7 +469,7 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 
 	if (lenX < pScale.x + oScale.x)
 	{
-		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y)
+		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y && !(0 <= player->GetmoveY()))
 		{
 			hit = true;
 			pPos.y = oPos.y + oScale.y + pScale.y;
