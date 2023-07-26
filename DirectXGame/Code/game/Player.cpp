@@ -463,6 +463,7 @@ bool Player::HeadBlockCollisionCheck(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 		sphereB.center = XMLoadFloat3(&mapObjects[i]->object->GetPosition());
 		sphereB.radius = 2.5f;
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
@@ -484,6 +485,7 @@ bool Player::BodyBlockCollisionCheck(std::vector<MapData*>& mapObjects)
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
 		{
 			if (mapObjects[i]->object->GetType() == "sprite") continue;
+			if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 			hitbodyMapObjNum = i;
 			return true;
 		}

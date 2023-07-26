@@ -53,8 +53,8 @@ void GameScene::Initialize()
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");*/
 	jsonObjectInit("map5");
-	jsonObjectInit("map6");
-	jsonObjectInit("map7");
+	/*jsonObjectInit("map6");
+	jsonObjectInit("map7");*/
 	jsonObjectInit("map8");
 }
 
@@ -434,51 +434,48 @@ bool GameScene::CheckHitGroundMoveType(Object3d* object)
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
+	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });
+	float lenY = Helper::LengthFloat2({ 0, pPos.y }, { 0, oPos.y });
 	bool hit = false;
 
-	PushBackX(pPos, pScale, oPos, oScale);
-	PushBackY(pPos, pScale, oPos, oScale, hit);
+	if (lenY < pScale.y + oScale.y)
+	{
+		PushBackX(pPos, pScale, oPos, oScale);
+	}
+	if (lenX < pScale.x + oScale.x)
+	{
+		PushBackY(pPos, pScale, oPos, oScale, hit);
+	}
 
 	return hit;
 }
 
 void GameScene::PushBackX(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale)
 {
-	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });
-	float lenY = Helper::LengthFloat2({ 0, pPos.y }, { 0, oPos.y });
-
-	if (lenY < pScale.y + oScale.y && pScale.x + oScale.x < lenX)
+	if (pPos.x - pScale.x < oPos.x + oScale.x && oPos.x < pPos.x)
 	{
-		if (pPos.x - pScale.x <= oPos.x + oScale.x && oPos.x <= pPos.x)
-		{
-			pPos.x = oPos.x + oScale.x + pScale.x;
-			player->SetPositionPlayer(pPos);
-		}
-		else if (oPos.x - oScale.x <= pPos.x + pScale.x && pPos.x <= oPos.x)
-		{
-			pPos.x = oPos.x - oScale.x - pScale.x;
-			player->SetPositionPlayer(pPos);
-		}
+		pPos.x = oPos.x + oScale.x + pScale.x;
+		player->SetPositionPlayer(pPos);
+	}
+	else if (oPos.x - oScale.x < pPos.x + pScale.x && pPos.x < oPos.x)
+	{
+		pPos.x = oPos.x - oScale.x - pScale.x;
+		player->SetPositionPlayer(pPos);
 	}
 }
 
 void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale, bool& hit)
 {
-	float lenX = Helper::LengthFloat2({pPos.x, 0}, {oPos.x, 0});
-
-	if (lenX < pScale.x + oScale.x)
+	if (pPos.y - pScale.y - 2.5f < oPos.y + oScale.y && oPos.y < pPos.y && player->GetmoveY() <= 0)
 	{
-		if (pPos.y - pScale.y - 2.5f <= oPos.y + oScale.y && oPos.y <= pPos.y && player->GetmoveY() <= 0)
-		{
-			player->OnGrounding();
-			hit = true;
-			pPos.y = oPos.y + oScale.y + pScale.y;
-			player->SetPositionPlayer(pPos);
-		}
-		else if (oPos.y - oScale.y <= pPos.y + pScale.y && pPos.y <= oPos.y)
-		{
-			pPos.y = oPos.y - oScale.y - pScale.y;
-			player->SetPositionPlayer(pPos);
-		}
+		player->OnGrounding();
+		hit = true;
+		pPos.y = oPos.y + oScale.y + pScale.y;
+		player->SetPositionPlayer(pPos);
+	}
+	else if (oPos.y - oScale.y < pPos.y + pScale.y && pPos.y < oPos.y)
+	{
+		pPos.y = oPos.y - oScale.y - pScale.y;
+		player->SetPositionPlayer(pPos);
 	}
 }
