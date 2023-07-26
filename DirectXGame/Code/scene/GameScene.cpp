@@ -440,7 +440,10 @@ bool GameScene::CheckHitGroundMoveType(Object3d* object)
 
 	if (lenY < pScale.y + oScale.y)
 	{
-		PushBackX(pPos, pScale, oPos, oScale);
+		if (!(lenX < pScale.x + oScale.x) || player->GetOnGround() == true)
+		{
+			PushBackX(pPos, pScale, oPos, oScale);
+		}
 	}
 	if (lenX < pScale.x + oScale.x)
 	{
@@ -469,9 +472,12 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 	if (pPos.y - pScale.y - 2.5f < oPos.y + oScale.y && oPos.y < pPos.y && player->GetmoveY() <= 0)
 	{
 		player->OnGrounding();
-		hit = true;
 		pPos.y = oPos.y + oScale.y + pScale.y;
 		player->SetPositionPlayer(pPos);
+		if (true)
+		{
+			hit = true;
+		}
 	}
 	else if (oPos.y - oScale.y < pPos.y + pScale.y && pPos.y < oPos.y)
 	{
