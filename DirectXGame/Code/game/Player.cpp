@@ -547,6 +547,7 @@ void Player::ReturnCheckpoint()
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
+	isReturn = true;
 	headState = STATE_NORMAL;
 }
 

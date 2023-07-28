@@ -52,7 +52,7 @@ void GameScene::Initialize()
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");*/
-	jsonObjectInit("map5");
+	//jsonObjectInit("map5");
 	/*jsonObjectInit("map6");
 	jsonObjectInit("map7");*/
 	jsonObjectInit("map8");
@@ -62,7 +62,7 @@ void GameScene::Finalize()
 {
 	// マウスカーソルを表示
 	//ShowCursor(true);
-}
+} 
 
 void GameScene::Update()
 {
@@ -331,6 +331,13 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
+	if (player->GetIsReturn() == true)
+	{
+		mapData->isMove = false;
+		mapData->moveFrame = 0;
+		mapData->object->SetPosition(mapData->originPos);
+	}
+
 	if (CheckHitGroundMoveType(mapData->object) == true)
 	{
 		XMFLOAT3 moveVec = { 0, 0, 0 };
@@ -474,9 +481,16 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 		player->OnGrounding();
 		pPos.y = oPos.y + oScale.y + pScale.y;
 		player->SetPositionPlayer(pPos);
-		if (true)
+		for (auto& box : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 		{
-			hit = true;
+			if (box->object->GetType() != "box")
+			{
+				continue;
+			}
+			if (Collision::CollisionBoxPoint(oPos, oScale, box->object->GetPosition(), box->object->GetScale()) == false)
+			{
+				hit = true;
+			}
 		}
 	}
 	else if (oPos.y - oScale.y < pPos.y + pScale.y && pPos.y < oPos.y)

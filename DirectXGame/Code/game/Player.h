@@ -201,6 +201,17 @@ public:
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
 	bool& GetIsHit() { return isHit; }
+	bool GetIsReturn()
+	{
+		bool result = false;
+		if (isReturn == true)
+		{
+			result = isReturn;
+			isReturn = false;
+		}
+
+		return result;
+	}
 
 private: // ƒƒ“ƒo•Ï”
 
@@ -244,6 +255,7 @@ private: // ƒƒ“ƒo•Ï”
 	bool islonger = false;
 	bool isKey = false;
 	bool isHit = false;
+	bool isReturn = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
 };
