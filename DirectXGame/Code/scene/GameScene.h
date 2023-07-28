@@ -57,6 +57,8 @@ public: // メンバ関数
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
 	void GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide);
 
+
+
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>
@@ -100,7 +102,26 @@ public: // メンバ関数
 	/// 動く床に立っているか
 	/// </summary>
 	/// <returns></returns>
-	bool IsStandingMap(Object3d* object);
+	bool CheckHitGroundMoveType(Object3d* object);
+
+	/// <summary>
+	/// X軸の押し戻し
+	/// </summary>
+	/// <param name="pPos">プレイヤーの座標</param>
+	/// <param name="pR">プレイヤーの半径</param>
+	/// <param name="oPos">オブジェクトの座標</param>
+	/// <param name="oR">オブジェクトの半径</param>
+	void PushBackX(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale);
+
+	/// <summary>
+	/// Y軸の押し戻し
+	/// </summary>
+	/// <param name="pPos">プレイヤーの座標</param>
+	/// <param name="pR">プレイヤーの半径</param>
+	/// <param name="oPos">オブジェクトの座標</param>
+	/// <param name="oR">オブジェクトの半径</param>
+	/// <param name="hit">当たったか</param>
+	void PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale, bool& hit);
 
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
@@ -165,4 +186,7 @@ private: // メンバ変数
 	//skydome
 	Object3d* skydomeObj = nullptr;
 	Model* skydomeModel = nullptr;
+
+	// プレイヤーが床に乗って動いているか
+	bool isMovePlayer = false;
 };

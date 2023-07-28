@@ -19,7 +19,6 @@ void GameScene::Initialize()
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 
 	// パーティクル生成
-	effectBox = Particle::Create(L"Resources/effectBox.png");
 	// 着地時のパーティクル
 	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
 	// 取得時のパーティクル
@@ -54,8 +53,8 @@ void GameScene::Initialize()
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");*/
 	jsonObjectInit("map5");
-	jsonObjectInit("map6");
-	jsonObjectInit("map7");
+	/*jsonObjectInit("map6");
+	jsonObjectInit("map7");*/
 	jsonObjectInit("map8");
 }
 
@@ -328,30 +327,28 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
-	XMFLOAT3 moveVec = { 0, 0, 0 };
-	if (IsStandingMap(mapData->object) == true)
+	if (CheckHitGroundMoveType(mapData->object) == true)
 	{
+		XMFLOAT3 moveVec = { 0, 0, 0 };
+		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
+		if (player->GetIsHit() == false)
+		{
+			moveVec = movePos - mapData->object->GetPosition();
+		}
+ 		mapData->object->SetPosition(movePos);
+
+		if (mapData->isMove == false && player->GetOnGround() == false)
+		{
+			XMFLOAT3 pPos = player->GetObj()->GetPosition();
+			pPos.y -= 1.0f * player->GetObj()->GetScale().y;
+			OnLandingEffect(6, pPos);
+		}
 		mapData->isMove = true;
-	}
-	else
-	{
-		mapData->isMove = false;
-	}
-
-	XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
-	if (player->GetIsHit() == false)
-	{
-		moveVec = movePos - mapData->object->GetPosition();
-	}
-	mapData->object->SetPosition(movePos);
-
-	if (mapData->isMove == true)
-	{
 		mapData->moveFrame++;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
-		player->AddMove(moveVec);
 		player->OnGrounding();
+		player->SetPositionPlayer(player->GetBodyPos(), moveVec);
 	}
 	else
 	{
@@ -423,16 +420,60 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	return false;
 }
 
-bool GameScene::IsStandingMap(Object3d* object)
+bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
-	if (pPos.x - pScale.x < oPos.x + oScale.x && oPos.x - oScale.x < pPos.x + pScale.x && oPos.y + oScale.y + pScale.y == pPos.y)
+	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });
+	float lenY = Helper::LengthFloat2({ 0, pPos.y }, { 0, oPos.y });
+	bool hit = false;
+
+	if (lenY < pScale.y + oScale.y)
 	{
-		return true;
+		if (!(lenX < pScale.x + oScale.x) || player->GetOnGround() == true)
+		{
+			PushBackX(pPos, pScale, oPos, oScale);
+		}
+	}
+	if (lenX < pScale.x + oScale.x)
+	{
+		PushBackY(pPos, pScale, oPos, oScale, hit);
 	}
 
-	return false;
+	return hit;
+}
+
+void GameScene::PushBackX(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale)
+{
+	if (pPos.x - pScale.x < oPos.x + oScale.x && oPos.x < pPos.x)
+	{
+		pPos.x = oPos.x + oScale.x + pScale.x;
+		player->SetPositionPlayer(pPos);
+	}
+	else if (oPos.x - oScale.x < pPos.x + pScale.x && pPos.x < oPos.x)
+	{
+		pPos.x = oPos.x - oScale.x - pScale.x;
+		player->SetPositionPlayer(pPos);
+	}
+}
+
+void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale, bool& hit)
+{
+	if (pPos.y - pScale.y - 2.5f < oPos.y + oScale.y && oPos.y < pPos.y && player->GetmoveY() <= 0)
+	{
+		player->OnGrounding();
+		pPos.y = oPos.y + oScale.y + pScale.y;
+		player->SetPositionPlayer(pPos);
+		if (true)
+		{
+			hit = true;
+		}
+	}
+	else if (oPos.y - oScale.y < pPos.y + pScale.y && pPos.y < oPos.y)
+	{
+		pPos.y = oPos.y - oScale.y - pScale.y;
+		player->SetPositionPlayer(pPos);
+	}
 }

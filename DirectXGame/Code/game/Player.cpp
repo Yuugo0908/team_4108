@@ -70,17 +70,24 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	playerHedObj->Update();
 }
 
-void Player::AddMove(const XMFLOAT3& move)
+void Player::SetPositionPlayer(const XMFLOAT3& pos, const XMFLOAT3& move)
 {
-	pPos = pPos + move;
+	pPos = pos + move;
 	playerObj->SetPosition(pPos);
 	playerObj->Update();
 
 	if (headState == STATE_NORMAL)
 	{
-		playerHedObj->SetPosition(hPos);
+		playerHedObj->SetPosition(pPos);
 		playerHedObj->Update();
 	}
+}
+
+void Player::OnGrounding()
+{
+	move.y = 0.0f;
+	onGround = true;
+	jumpParameter = 0.0f;
 }
 
 void Player::MoveProcess()
@@ -171,34 +178,30 @@ void Player::GroundCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (bodyColState == BODYSTATE_X_COLISION && colisionBlockNum == i) continue;
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move")
+		{
+			if (headState == STATE_INJECTIONLOCK)
+			{
+				headState = STATE_NORMAL;
+			}
+			continue;
+		}
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), playerPos, playerSize) == true)
 		{
-			if (mapObjects[i]->object->GetType() == "Ground_Move")
-			{
-				move.y = 0.0f;
-				onGround = true;
-				jumpParameter = 0.0f;
-				return;
-			}
-			else
-			{
-				pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
+			pPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (pPos.y - pScale.y);
 
-				if (headState != STATE_BITE)
-				{
-					hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
-				}
-				move.y = 0.0f;
-				onGround = true;
-				jumpParameter = 0.0f;
-
-				if (headState == STATE_INJECTIONLOCK)
-				{
-					headState = STATE_NORMAL;
-				}
-				return;
+			if (headState != STATE_BITE)
+			{
+				hPos.y += (mapObjects[i]->object->GetPosition().y + mapObjects[i]->object->GetScale().y) - (hPos.y - pScale.y);
 			}
+			OnGrounding();
+
+			if (headState == STATE_INJECTIONLOCK)
+			{
+				headState = STATE_NORMAL;
+			}
+			return;
 		}
 	}
 
@@ -215,6 +218,7 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{
@@ -264,6 +268,7 @@ void Player::CeilingBlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
 		if (pPos.y > mapObjects[i]->object->GetPosition().y) continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), headPos, headScale) == true)
 		{
@@ -281,6 +286,7 @@ void Player::HeadInjectionProcess()
 	
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
+		hPos = pPos;
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
@@ -457,6 +463,7 @@ bool Player::HeadBlockCollisionCheck(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
+		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 		sphereB.center = XMLoadFloat3(&mapObjects[i]->object->GetPosition());
 		sphereB.radius = 2.5f;
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), hPos, {pScale.x - 0.3f, pScale.y - 0.3f, pScale.z - 0.3f}) == true)
@@ -478,6 +485,7 @@ bool Player::BodyBlockCollisionCheck(std::vector<MapData*>& mapObjects)
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), pPos, pScaleXHalf) == true)
 		{
 			if (mapObjects[i]->object->GetType() == "sprite") continue;
+			if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 			hitbodyMapObjNum = i;
 			return true;
 		}
@@ -534,7 +542,8 @@ void Player::ReturnCheckpoint()
 {
 	// チェックポイントに戻る
 	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-	hPos = pPos;
+	playerHedObj->SetPosition(pPos);
+	playerHedObj->Update();
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
