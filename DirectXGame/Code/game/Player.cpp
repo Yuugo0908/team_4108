@@ -334,7 +334,7 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 		AttractBiteProcess(mapObjects);
 		return;
 	}
-	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Ground_Move")
+	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Box_Move")
 	{
 		biteBlockState = NOTGRAVIT;
 		CarryBlockProcess(mapObjects);
@@ -431,7 +431,7 @@ Player::HeadInjectionState Player::HeadCollision(std::vector<MapData*>& mapObjec
 			pPosMovePrevious = pPos;
 			return STATE_BITEHIT;
 		}
-		else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Ground_Move")	//引っ張れるブロック
+		else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Box_Move")	//引っ張れるブロック
 		{
 			if (mapObjects[hitHeadMapObjNum]->isMove == false)
 			{
