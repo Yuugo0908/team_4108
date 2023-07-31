@@ -189,6 +189,9 @@
     <ClCompile Include="Code\2d\CsvFile.cpp">
       <Filter>ソースファイル\2d</Filter>
     </ClCompile>
+    <ClCompile Include="Code\game\Rope.cpp">
+      <Filter>ソースファイル\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\win\SafeDelete.h">
@@ -310,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="Code\json\MapData.h">
       <Filter>ヘッダーファイル\json</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\game\Rope.h">
+      <Filter>ヘッダーファイル\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

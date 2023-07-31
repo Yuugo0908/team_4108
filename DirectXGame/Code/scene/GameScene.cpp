@@ -26,7 +26,7 @@ void GameScene::Initialize()
 	// かみつき時のパーティクル
 	biteEffect.reset(Particle::Create(L"Resources/biteEffectAll.png"));
 
-	CsvFile::CsvToVector(mapNumber, "test");
+	CsvFile::CsvToVector(mapNumber, "mapNumber");
 
 	// ライトの生成
 	light = Light::Create();
@@ -48,14 +48,15 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	/*jsonObjectInit("map1");
+	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
-	jsonObjectInit("map4");*/
+	jsonObjectInit("map4");
 	jsonObjectInit("map5");
-	/*jsonObjectInit("map6");
-	jsonObjectInit("map7");*/
+	jsonObjectInit("map6");
+	jsonObjectInit("map7");
 	jsonObjectInit("map8");
+	jsonObjectInit("map9");
 }
 
 void GameScene::Finalize()
@@ -117,6 +118,7 @@ void GameScene::Draw()
 	player->GetObj()->Draw();
 	player->GetHedObj()->Draw();
 
+
 	// マップオブジェクト描画
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
 	{
@@ -132,6 +134,7 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
 #pragma endregion 3Dオブジェクト描画
+
 
 #pragma region 前景画像描画
 	// 前景画像描画前処理

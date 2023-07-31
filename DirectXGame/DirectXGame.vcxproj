@@ -110,6 +110,7 @@
     <ClCompile Include="Code\game\Easing.cpp" />
     <ClCompile Include="Code\game\Light.cpp" />
     <ClCompile Include="Code\game\Player.cpp" />
+    <ClCompile Include="Code\game\Rope.cpp" />
     <ClCompile Include="Code\input\Controller.cpp" />
     <ClCompile Include="Code\input\Keyboard.cpp" />
     <ClCompile Include="Code\input\Mouse.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Code\game\Easing.h" />
     <ClInclude Include="Code\game\Light.h" />
     <ClInclude Include="Code\game\Player.h" />
+    <ClInclude Include="Code\game\Rope.h" />
     <ClInclude Include="Code\input\Controller.h" />
     <ClInclude Include="Code\input\Keyboard.h" />
     <ClInclude Include="Code\input\Mouse.h" />
