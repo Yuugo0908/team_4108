@@ -27,6 +27,14 @@ void GameScene::Initialize()
 	backGround->SetSize({ 1280.0f,720.0f });
 	backGround->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
+	if (!Image2d::LoadTexture(clearNum, L"Resources/clear.png"))
+	{
+		assert(0);
+	}
+	clearImg = Image2d::Create(clearNum, { 480.0f,0.0f });
+	clearImg->SetSize({ 320.0f,180.0f });
+	clearImg->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
 	// パーティクル生成
 	// 着地時のパーティクル
 	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
@@ -145,6 +153,11 @@ void GameScene::Draw()
 #pragma region 前景画像描画
 	// 前景画像描画前処理
 	Image2d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
+
+	if (doorOpen)
+	{
+		clearImg->Draw();
+	}
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(DirectXCommon::GetInstance()->GetCommandList());
@@ -354,7 +367,7 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	{
 		object->SetOffset({ 1.0f, 1.0f });
 		openCount++;
-		if (openCount >= 60)
+		if (openCount >= 120)
 		{
 			SceneManager::GetInstance()->ChangeScene("Title");
 		}

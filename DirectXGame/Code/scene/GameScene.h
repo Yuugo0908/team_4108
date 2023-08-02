@@ -147,7 +147,7 @@ private: // メンバ変数
 
 	enum Image2dNum
 	{
-		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum, backNum
+		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum, backNum, clearNum
 	};
 
 	// jsonオブジェクト
@@ -164,6 +164,7 @@ private: // メンバ変数
 	// 画像
 	Image2d* fadeTex = nullptr;
 	Image2d* backGround = nullptr;
+	Image2d* clearImg = nullptr;
 	float alpha = 1.0f;
 
 	// 音声
