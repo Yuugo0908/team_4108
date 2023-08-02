@@ -218,7 +218,6 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
-		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{

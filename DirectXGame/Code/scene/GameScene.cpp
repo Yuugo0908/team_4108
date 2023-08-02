@@ -56,6 +56,8 @@ void GameScene::Initialize()
 	//jsonObjectInit("map6");
 	//jsonObjectInit("map7");
 	jsonObjectInit("map8");
+
+
 }
 
 void GameScene::Finalize()
@@ -326,6 +328,7 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(false);
 		doorIndex.emplace_back(index + 1);
+		SceneManager::GetInstance()->ChangeScene("Title");
 	}
 }
 
@@ -428,7 +431,6 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	// 一定の距離なら
 	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
 	{
-		SceneManager::GetInstance()->ChangeScene("Title");
 		return true;
 	}
 
