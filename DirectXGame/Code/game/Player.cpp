@@ -103,31 +103,35 @@ void Player::MoveProcess()
 
 	// 現在のプレイヤーのオフセットを取得
 	XMFLOAT2 nowOffset = playerBodyObj->GetOffset();
-	if (headState == STATE_INJECTION || headState == STATE_BITE)
-	{
-		if (nowOffset.x == rightOffsetBody.x)
-		{
-			playerBodyObj->SetOffset(rightOffsetBodyInjection);
-		}
-		else if (nowOffset.x == leftOffsetBody.x)
-		{
-			playerBodyObj->SetOffset(leftOffsetBodyInjection);
-		}
-		return;
-	}
 
-	if (pPos == hPos)
+	if (Collision::GetLength(pPos, hPos) <= 1.5f)
 	{
-		if (nowOffset.x == rightOffsetBodyInjection.x)
+		if (direction.x == 1.0f)
 		{
 			playerHeadObj->SetOffset(rightOffsetHead);
 			playerBodyObj->SetOffset(rightOffsetBody);
 		}
-		else if (nowOffset.x == leftOffsetBodyInjection.x)
+		else
 		{
 			playerHeadObj->SetOffset(leftOffsetHead);
 			playerBodyObj->SetOffset(leftOffsetBody);
 		}
+	}
+	else
+	{
+		if (direction.x == 1.0f)
+		{
+			playerBodyObj->SetOffset(rightOffsetBodyInjection);
+		}
+		else
+		{
+			playerBodyObj->SetOffset(leftOffsetBodyInjection);
+		}
+	}
+
+	if (headState == STATE_INJECTION || headState == STATE_BITE)
+	{
+		return;
 	}
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
@@ -136,11 +140,6 @@ void Player::MoveProcess()
 		move.x += 0.7f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
 		direction.x = 1.0f;
-		if (headState != STATE_BACK)
-		{
-			playerHeadObj->SetOffset(rightOffsetHead);
-			playerBodyObj->SetOffset(rightOffsetBody);
-		}
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
@@ -148,11 +147,6 @@ void Player::MoveProcess()
 		move.x -= 0.7f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
 		direction.x = -1.0f;
-		if (headState != STATE_BACK)
-		{
-			playerHeadObj->SetOffset(leftOffsetHead);
-			playerBodyObj->SetOffset(leftOffsetBody);
-		}
 	}
 	else
 	{

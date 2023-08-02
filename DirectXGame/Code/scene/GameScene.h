@@ -58,8 +58,6 @@ public: // メンバ関数
 	void DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object);
 	void GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide);
 
-
-
 	/// <summary>
 	/// 着地時エフェクト
 	/// </summary>
@@ -188,6 +186,7 @@ private: // メンバ変数
 
 	// ドア
 	bool doorOpen = false;
+	int openCount = 0;
 
 	// プレイヤーが床に乗って動いているか
 	bool isMovePlayer = false;

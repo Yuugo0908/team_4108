@@ -352,10 +352,16 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	if (doorOpen)
 	{
 		object->SetOffset({ 1.0f, 1.0f });
+		openCount++;
+		if (openCount >= 60)
+		{
+			SceneManager::GetInstance()->ChangeScene("Title");
+		}
 	}
 	else
 	{
 		object->SetOffset({ 0.5f, 1.0f });
+		openCount = 0;
 	}
 }
 
