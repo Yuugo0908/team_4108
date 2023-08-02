@@ -628,8 +628,9 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 
 			XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
 
-			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf))
+			if (CsvFile::check_change_flag == false && Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf))
 			{
+				CsvFile::check_change_flag = true;
 				// 新しいチェックポイントに触れたら
 				if (CsvFile::now_x != CsvFile::check_x || CsvFile::now_y != CsvFile::check_y || CsvFile::check_pos != mapObjects[i]->object->GetPosition())
 				{
@@ -637,9 +638,8 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 					CsvFile::check_pos = mapObjects[i]->object->GetPosition();
 					CsvFile::check_x = CsvFile::now_x;
 					CsvFile::check_y = CsvFile::now_y;
-
-					CsvFile::check_change_flag = true;
 				}
+				Audio::GetInstance()->PlayWave("Resources/SE/se9.wav", 0, 0.1f);
 				ReturnCheckpoint();
 			}
 			else
