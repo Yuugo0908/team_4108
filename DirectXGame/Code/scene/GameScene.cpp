@@ -46,13 +46,13 @@ void GameScene::Initialize()
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
 
-	jsonObjectInit("map1");
+	/*jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
-	jsonObjectInit("map7");
+	jsonObjectInit("map7");*/
 	jsonObjectInit("map8");
 	jsonObjectInit("map9");
 
@@ -248,6 +248,13 @@ void GameScene::jsonObjectUpdate()
 		else if (object->object->GetType() == "Ground_Move")
 		{
 			GroundMoveTypeUpdate(index, object, object->originPos, div);
+		}
+		else if (object->object->GetType() == "Box_Move")
+		{
+			if (player->GetIsReturn() == true)
+			{
+				object->object->SetPosition(object->originPos);
+			}
 		}
 
 		object->object->Update();

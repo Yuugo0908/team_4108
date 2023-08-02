@@ -32,6 +32,8 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 
 void Player::Update(std::vector<MapData*>& mapObjects)
 {
+	isReturn = false;
+
 	if (keyboard->TriggerKey(DIK_Z))
 	{
 		ReturnCheckpoint();
@@ -293,6 +295,7 @@ void Player::HeadInjectionProcess()
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
+		moveTime = timeMax;
 	}
 }
 
@@ -639,7 +642,6 @@ void Player::AttractBiteProcess(std::vector<MapData*>& mapObjects)
 	oldPPos = pPos;
 	pPos = Easing::easeOut(pPosMovePrevious, hPos, timeRate);
 	//ì™ÇÃà íuÇ‹Ç≈çsÇ¡ÇΩÇÁí èÌèÛë‘Ç…ñﬂÇÈ
-
 }
 
 void Player::CarryBlockProcess(std::vector<MapData*>& mapObjects)

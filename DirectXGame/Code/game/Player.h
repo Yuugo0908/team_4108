@@ -201,17 +201,7 @@ public:
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
 	bool& GetIsHit() { return isHit; }
-	bool GetIsReturn()
-	{
-		bool result = false;
-		if (isReturn == true)
-		{
-			result = isReturn;
-			isReturn = false;
-		}
-
-		return result;
-	}
+	bool GetIsReturn() { return isReturn; }
 
 private: // ƒƒ“ƒo•Ï”
 
