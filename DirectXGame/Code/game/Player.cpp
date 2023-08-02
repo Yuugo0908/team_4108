@@ -40,11 +40,6 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 {
 	isReturn = false;
 
-	if (keyboard->TriggerKey(DIK_Z))
-	{
-		ReturnCheckpoint();
-	}
-
 	MoveProcess();
 	//移動値加算
 	GravityProcess();
@@ -593,15 +588,15 @@ void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 		// TODO 死亡
 		//Audio::GetInstance()->PlayWave("Resources/SE/se4.wav");
 		ReturnCheckpoint();
+		pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
+		playerHeadObj->SetPosition(pPos);
+		playerHeadObj->Update();
 	}
 }
 
 void Player::ReturnCheckpoint()
 {
 	// チェックポイントに戻る
-	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-	playerHeadObj->SetPosition(pPos);
-	playerHeadObj->Update();
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
@@ -636,6 +631,7 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 
 					CsvFile::check_change_flag = true;
 				}
+				ReturnCheckpoint();
 			}
 			else
 			{
