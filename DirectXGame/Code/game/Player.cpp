@@ -4,39 +4,41 @@
 bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 {
 	// モデルの生成
-	playerModel = playerModel->CreateFromObject("box");
-	playerObj = Object3d::Create();
-	playerObj->SetModel(playerModel);
-	playerHedObj = Object3d::Create();
-	playerHedObj->SetModel(playerModel);
+	playerBodyModel = playerBodyModel->CreateFromObject("playerBody");
+	playerBodyObj = Object3d::Create();
+	playerBodyObj->SetModel(playerBodyModel);
+
+	playerHeadModel = playerHeadModel->CreateFromObject("playerHead");
+	playerHeadObj = Object3d::Create();
+	playerHeadObj->SetModel(playerHeadModel);
 
 	pPos = pos;
 	pScale = scale;
 	reSpawnPos = pos;
 	hPos = pPos;
 
-	playerObj->SetPosition(pPos);
-	playerObj->SetScale(pScale);
-	playerObj->SetRotation({ 0.0f, 0.0f, 0.0f });
-	playerObj->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->SetScale(pScale);
+	playerBodyObj->SetRotation({ 0.0f, 0.0f, 0.0f });
+	playerBodyObj->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	playerBodyObj->SetTiring({ 0.25f, 1.0f });
+	playerBodyObj->SetOffset({ 0.25f, 1.0f });
+	playerBodyObj->Update();
 
-	playerHedObj->SetPosition(hPos);
-	playerHedObj->SetScale(pScale);
-	playerHedObj->SetRotation({ 0.0f, 0.0f, 0.0f });
-	playerHedObj->SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-	playerHedObj->Update();
+	playerHeadObj->SetPosition(hPos);
+	playerHeadObj->SetScale({ 4.0f, 4.0f, 1.0f });
+	playerHeadObj->SetRotation({ 0.0f, 0.0f, 0.0f });
+	playerHeadObj->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	playerHeadObj->SetTiring({ 0.5f, 1.0f });
+	playerHeadObj->SetOffset({ 1.0f, 1.0f });
+	playerHeadObj->Update();
 
 	return true;
 }
 
 void Player::Update(std::vector<MapData*>& mapObjects)
 {
-	ReStartFlag = false;
-	if (keyboard->TriggerKey(DIK_Z))
-	{
-		ReturnCheckpoint();
-	}
+	isReturn = false;
 
 	MoveProcess();
 	//移動値加算
@@ -65,25 +67,25 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 		hPos = pPos;
 	}
 
-	oldpPos = playerObj->GetPosition();
+	oldpPos = playerBodyObj->GetPosition();
 	//OBJ更新処理
-	playerObj->SetPosition(pPos);
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->Update();
 	
-	playerHedObj->SetPosition(hPos);
-	playerHedObj->Update();
+	playerHeadObj->SetPosition(hPos);
+	playerHeadObj->Update();
 }
 
 void Player::SetPositionPlayer(const XMFLOAT3& pos, const XMFLOAT3& move)
 {
 	pPos = pos + move;
-	playerObj->SetPosition(pPos);
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->Update();
 
 	if (headState == STATE_NORMAL)
 	{
-		playerHedObj->SetPosition(pPos);
-		playerHedObj->Update();
+		playerHeadObj->SetPosition(pPos);
+		playerHeadObj->Update();
 	}
 }
 
@@ -104,8 +106,34 @@ void Player::MoveProcess()
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
 
-	if (headState == STATE_INJECTION) return;
-	if (headState == STATE_BITE) return;
+	// 現在のプレイヤーのオフセットを取得
+	XMFLOAT2 nowOffset = playerBodyObj->GetOffset();
+	if (headState == STATE_INJECTION || headState == STATE_BITE)
+	{
+		if (nowOffset.x == rightOffsetBody.x)
+		{
+			playerBodyObj->SetOffset(rightOffsetBodyInjection);
+		}
+		else if (nowOffset.x == leftOffsetBody.x)
+		{
+			playerBodyObj->SetOffset(leftOffsetBodyInjection);
+		}
+		return;
+	}
+
+	if (pPos == hPos)
+	{
+		if (nowOffset.x == rightOffsetBodyInjection.x)
+		{
+			playerHeadObj->SetOffset(rightOffsetHead);
+			playerBodyObj->SetOffset(rightOffsetBody);
+		}
+		else if (nowOffset.x == leftOffsetBodyInjection.x)
+		{
+			playerHeadObj->SetOffset(leftOffsetHead);
+			playerBodyObj->SetOffset(leftOffsetBody);
+		}
+	}
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
@@ -113,6 +141,11 @@ void Player::MoveProcess()
 		move.x += 0.7f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
 		direction.x = 1.0f;
+		if (headState != STATE_BACK)
+		{
+			playerHeadObj->SetOffset(rightOffsetHead);
+			playerBodyObj->SetOffset(rightOffsetBody);
+		}
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
@@ -120,6 +153,11 @@ void Player::MoveProcess()
 		move.x -= 0.7f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
 		direction.x = -1.0f;
+		if (headState != STATE_BACK)
+		{
+			playerHeadObj->SetOffset(leftOffsetHead);
+			playerBodyObj->SetOffset(leftOffsetBody);
+		}
 	}
 	else
 	{
@@ -136,6 +174,8 @@ void Player::JumpProcess()
 
 	if (controller->GetPadState(Controller::State::A, Controller::Type::NONE) || keyboard->TriggerKey(DIK_SPACE))
 	{
+		// ジャンプ
+		Audio::GetInstance()->PlayWave("Resources/SE/se2.wav", 0, 0.1f);
 		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
 		jumpParameter = 2.75f;
@@ -223,7 +263,6 @@ void Player::BlockCollisionProcess(std::vector<MapData*>& mapObjects)
 	for (int i = 0; i < mapObjects.size(); i++)
 	{
 		if (mapObjects[i]->object->GetType() == "sprite") continue;
-		if (mapObjects[i]->object->GetType() == "Ground_Move") continue;
 
 		if (Collision::CollisionBoxPoint(mapObjects[i]->object->GetPosition(), mapObjects[i]->object->GetScale(), { pPos.x, pPos.y - (pScale.y/2), pPos.z }, { pScale.x, 0.01f, pScale.z }) == true)
 		{
@@ -291,10 +330,15 @@ void Player::HeadInjectionProcess()
 	
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
+		// 首を飛ばす
+		Audio::GetInstance()->PlayWave("Resources/SE/se3.wav", 0, 0.1f);
 		hPos = pPos;
+		playerHeadObj->SetPosition(hPos);
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
+		moveTime = timeMax;
+		biteProcessSE = false;
 	}
 }
 
@@ -336,11 +380,23 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 引き寄せられるブロックにかみついた場合
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")
 	{
+		// 引き寄せられる
+		if (!biteProcessSE)
+		{
+			biteProcessSE = true;
+			Audio::GetInstance()->PlayWave("Resources/SE/se6.wav", 2, 0.1f);
+		}
 		AttractBiteProcess(mapObjects);
 		return;
 	}
 	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Box_Move")
 	{
+		// ブロックを引っ張る
+		if (!biteProcessSE)
+		{
+			biteProcessSE = true;
+			Audio::GetInstance()->PlayWave("Resources/SE/se6.wav", 2, 0.1f);
+		}
 		biteBlockState = NOTGRAVIT;
 		CarryBlockProcess(mapObjects);
 		return;
@@ -364,6 +420,8 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 噛み壊せるブロックの場合壊す
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
+		// かみ砕く
+		Audio::GetInstance()->PlayWave("Resources/SE/se5.wav", 0, 0.1f);
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
@@ -525,12 +583,14 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 	{
 		pPos.x = -159.0f;
 		hPos = pPos;
+		headInjectDis = {};
 		CsvFile::now_x++;
 	}
 	else if (limitPos == LEFT_LIMIT)
 	{
 		pPos.x = 159.0f;
 		hPos = pPos;
+		headInjectDis = {};
 		CsvFile::now_x--;
 	}
 }
@@ -539,23 +599,24 @@ void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
 	if (AcidSinkFlag == true || AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
-		AcidSinkFlag = true;
-		AcidSinkProcess(mapObjects);
+		// 死亡
+		Audio::GetInstance()->PlayWave("Resources/SE/se4.wav", 0, 0.1f);
+		ReturnCheckpoint();
+		pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
+		playerHeadObj->SetPosition(pPos);
+		playerHeadObj->Update();
 	}
 }
 
 void Player::ReturnCheckpoint()
 {
 	// チェックポイントに戻る
-	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-	playerHedObj->SetPosition(pPos);
-	playerHedObj->Update();
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
-	AcidSinkFlag = false;
-	ReStartFlag = true;
+	isReturn = true;
 	headState = STATE_NORMAL;
+	headInjectDis = {};
 }
 
 void Player::AcidSinkProcess(std::vector<MapData*>& mapObjects)
@@ -582,8 +643,9 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 
 			XMFLOAT3 pScaleXHalf = { pScale.x / 2, pScale.y, pScale.z };
 
-			if (Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf))
+			if (CsvFile::check_change_flag == false && Collision::CollisionBoxPoint(pos, scale, pPos, pScaleXHalf))
 			{
+				CsvFile::check_change_flag = true;
 				// 新しいチェックポイントに触れたら
 				if (CsvFile::now_x != CsvFile::check_x || CsvFile::now_y != CsvFile::check_y || CsvFile::check_pos != mapObjects[i]->object->GetPosition())
 				{
@@ -591,9 +653,9 @@ void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)
 					CsvFile::check_pos = mapObjects[i]->object->GetPosition();
 					CsvFile::check_x = CsvFile::now_x;
 					CsvFile::check_y = CsvFile::now_y;
-
-					CsvFile::check_change_flag = true;
 				}
+				Audio::GetInstance()->PlayWave("Resources/SE/se9.wav", 0, 0.1f);
+				ReturnCheckpoint();
 			}
 			else
 			{
@@ -645,7 +707,6 @@ void Player::AttractBiteProcess(std::vector<MapData*>& mapObjects)
 	oldPPos = pPos;
 	pPos = Easing::easeOut(pPosMovePrevious, hPos, timeRate);
 	//頭の位置まで行ったら通常状態に戻る
-
 }
 
 void Player::CarryBlockProcess(std::vector<MapData*>& mapObjects)

@@ -2289,7 +2289,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -2973,7 +2973,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -3513,7 +3513,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -4089,7 +4089,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -4557,7 +4557,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -4882,6 +4882,150 @@
                 ]
             },
             "file_name": "floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Ground"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.132",
+            "transform": {
+                "translation": [
+                    145.0,
+                    55.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "acid",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Acid"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.133",
+            "transform": {
+                "translation": [
+                    135.0,
+                    55.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "acid",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Acid"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.136",
+            "transform": {
+                "translation": [
+                    145.0,
+                    45.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "wall",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "obj_type": "Ground"
+        },
+        {
+            "type": "MESH",
+            "name": "平面.137",
+            "transform": {
+                "translation": [
+                    135.0,
+                    45.0,
+                    -0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    5.0,
+                    1.0
+                ]
+            },
+            "file_name": "wall",
             "collider": {
                 "type": "BOX",
                 "center": [

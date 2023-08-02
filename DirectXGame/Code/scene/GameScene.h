@@ -21,6 +21,7 @@
 #include "CsvFile.h"
 #include "SafeDelete.h"
 #include "MapData.h"
+#include "Rope.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -96,7 +97,7 @@ public: // メンバ関数
 	/// <param name="doorRadius">ドアの横幅</param>
 	/// <param name="playerRadius">プレイヤーの横幅</param>
 	/// <returns>成否</returns>
-	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius);
+	bool IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, const XMFLOAT3& doorRadius, const XMFLOAT3& playerRadius);
 
 	/// <summary>
 	/// 動く床に立っているか
@@ -130,6 +131,7 @@ private: // メンバ変数
 	Controller* controller = Controller::GetInstance();
 	Mouse* mouse = Mouse::GetInstance();
 	Camera* camera = Camera::GetInstance();
+	Rope* rope = Rope::GetInstance();
 	Light* light = nullptr;
 
 	// 複数生成用リスト
@@ -147,7 +149,7 @@ private: // メンバ変数
 
 	enum Image2dNum
 	{
-		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum,
+		HPTextNum = 1, HPBarNum, HPGaugeNum, fadeNum, backNum
 	};
 
 	// jsonオブジェクト
@@ -163,6 +165,7 @@ private: // メンバ変数
 
 	// 画像
 	Image2d* fadeTex = nullptr;
+	Image2d* backGround = nullptr;
 	float alpha = 1.0f;
 	Image2d* fadeSpanaTex = nullptr;
 	XMFLOAT2 SpanaTexSize = { 133830.0f, 66995.0f };
@@ -187,9 +190,8 @@ private: // メンバ変数
 	//player
 	Player* player = nullptr;
 
-	//skydome
-	Object3d* skydomeObj = nullptr;
-	Model* skydomeModel = nullptr;
+	// ドア
+	bool doorOpen = false;
 
 	// プレイヤーが床に乗って動いているか
 	bool isMovePlayer = false;

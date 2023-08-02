@@ -32,6 +32,7 @@ struct LevelData
 	// ƒ‚ƒfƒ‹ƒŠƒXƒg
 	Model* biteModel = nullptr;
 	Model* bitePullModel = nullptr;
+	Model* biteCarryModel = nullptr;
 	Model* wallModel = nullptr;
 	Model* floorModel = nullptr;
 	Model* checkPointModel = nullptr;
