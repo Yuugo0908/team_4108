@@ -104,7 +104,19 @@ void Player::MoveProcess()
 	// 現在のプレイヤーのオフセットを取得
 	XMFLOAT2 nowOffset = playerBodyObj->GetOffset();
 
-	if (Collision::GetLength(pPos, hPos) <= 1.5f)
+
+	if (headState == STATE_INJECTION || headState == STATE_BITE || headState == STATE_BACK)
+	{
+		if (direction.x == 1.0f && headState != STATE_BACK)
+		{
+			playerBodyObj->SetOffset(rightOffsetBodyInjection);
+		}
+		else if(headState != STATE_BACK)
+		{
+			playerBodyObj->SetOffset(leftOffsetBodyInjection);
+		}
+	}
+	else
 	{
 		if (direction.x == 1.0f)
 		{
@@ -115,17 +127,6 @@ void Player::MoveProcess()
 		{
 			playerHeadObj->SetOffset(leftOffsetHead);
 			playerBodyObj->SetOffset(leftOffsetBody);
-		}
-	}
-	else
-	{
-		if (direction.x == 1.0f)
-		{
-			playerBodyObj->SetOffset(rightOffsetBodyInjection);
-		}
-		else
-		{
-			playerBodyObj->SetOffset(leftOffsetBodyInjection);
 		}
 	}
 
