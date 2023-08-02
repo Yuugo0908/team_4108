@@ -61,7 +61,7 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	// fileNameを元に、使用するモデルを決める
 	levelData->models.insert(std::make_pair("bite", levelData->biteModel));
 	levelData->models.insert(std::make_pair("bite_pull", levelData->bitePullModel));
-	levelData->models.insert(std::make_pair("bite_carry", levelData->biteModel));
+	levelData->models.insert(std::make_pair("bite_carry", levelData->biteCarryModel));
 	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
 	levelData->models.insert(std::make_pair("floor", levelData->floorModel));
 	levelData->models.insert(std::make_pair("checkPoint", levelData->checkPointModel));

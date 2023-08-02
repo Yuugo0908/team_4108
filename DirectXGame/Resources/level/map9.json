@@ -5831,7 +5831,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -5867,7 +5867,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -5903,7 +5903,7 @@
                     1.0
                 ]
             },
-            "file_name": "bite",
+            "file_name": "bite_carry",
             "collider": {
                 "type": "BOX",
                 "center": [
