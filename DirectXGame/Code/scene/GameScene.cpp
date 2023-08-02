@@ -52,14 +52,14 @@ void GameScene::Initialize()
 
 	rope->Initialize();
 
-	jsonObjectInit("map1");
+	/*jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
-	jsonObjectInit("map8");
+	jsonObjectInit("map8");*/
 	jsonObjectInit("map9");
 
 	// BGM
@@ -353,10 +353,16 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	if (doorOpen)
 	{
 		object->SetOffset({ 1.0f, 1.0f });
+		openCount++;
+		if (openCount >= 60)
+		{
+			SceneManager::GetInstance()->ChangeScene("Title");
+		}
 	}
 	else
 	{
 		object->SetOffset({ 0.5f, 1.0f });
+		openCount = 0;
 	}
 }
 
@@ -389,17 +395,26 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 		mapData->moveFrame++;
 		mapData->moveFrame = min(mapData->moveFrame, divide);
 
+		waitTimer = maxWait;
+
 		player->OnGrounding();
 		player->SetPositionPlayer(player->GetBodyPos(), moveVec);
 	}
 	else
 	{
-		XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
-		mapData->object->SetPosition(movePos);
+		if (waitTimer == 0)
+		{
+			XMFLOAT3 movePos = Easing::lerp(originPos, mapData->object->GetMovePos(), static_cast<float>(mapData->moveFrame) / divide);
+			mapData->object->SetPosition(movePos);
 
-		mapData->isMove = false;
-		mapData->moveFrame--;
-		mapData->moveFrame = max(mapData->moveFrame, 0);
+			mapData->isMove = false;
+			mapData->moveFrame--;
+			mapData->moveFrame = max(mapData->moveFrame, 0);
+		}
+		else
+		{
+			waitTimer--;
+		}
 	}
 }
 
@@ -440,10 +455,10 @@ void GameScene::OnBitingEffect(const XMFLOAT3& pPos)
 bool GameScene::IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, float keyRadius, float playerRadius)
 {
 	// 誤差
-	float error = 0.1f;
+	float error = 0.75f;
 
 	// 一定の距離なら
-	if (GetLength(keyPos, playerPos) <= keyRadius + playerRadius + error)
+	if (Helper::LengthFloat3(keyPos, playerPos) <= keyRadius + playerRadius + error)
 	{
 		return true;
 	}
