@@ -35,8 +35,6 @@ void GameScene::Initialize()
 	// 3Dオブジェクトにライトをセット
 	Object3d::SetLight(light);
 
-	//Bgm->PlayWave("Resources/BGM/bgm.wav", 255, 0.08f);
-
 	// マウスカーソルを非表示
 	//ShowCursor(false);
 
@@ -56,8 +54,6 @@ void GameScene::Initialize()
 	//jsonObjectInit("map6");
 	//jsonObjectInit("map7");
 	jsonObjectInit("map8");
-
-
 }
 
 void GameScene::Finalize()
