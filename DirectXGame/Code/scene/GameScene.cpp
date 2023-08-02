@@ -55,6 +55,9 @@ void GameScene::Initialize()
 	jsonObjectInit("map7");
 	jsonObjectInit("map8");
 	jsonObjectInit("map9");
+
+	// TODO BGM
+	//Audio::GetInstance()->PlayWave("Resources/BGM/bgm.wav");
 }
 
 void GameScene::Finalize()
@@ -313,6 +316,8 @@ void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 	// 鍵の当たり判定
 	if (IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
+		// TODO 鍵取得
+		//Audio::GetInstance()->PlayWave("Resources/SE/se7.wav");
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(true);
 		keyIndex = index + 1;
@@ -324,6 +329,8 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 	// ドアの当たり判定
 	if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
 	{
+		// TODO ドアに入る
+		//Audio::GetInstance()->PlayWave("Resources/SE/se8.wav");
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(false);
 		doorIndex.emplace_back(index + 1);

@@ -131,6 +131,8 @@ void Player::JumpProcess()
 
 	if (controller->GetPadState(Controller::State::A, Controller::Type::NONE) || keyboard->TriggerKey(DIK_SPACE))
 	{
+		// TODO ジャンプ
+		//Audio::GetInstance()->PlayWave("Resources/SE/se2.wav");
 		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
 		jumpParameter = 2.75f;
@@ -285,6 +287,8 @@ void Player::HeadInjectionProcess()
 	
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
+		// TODO 首を飛ばす
+		//Audio::GetInstance()->PlayWave("Resources/SE/se3.wav");
 		hPos = pPos;
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
@@ -330,11 +334,15 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 引き寄せられるブロックにかみついた場合
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")
 	{
+		// TODO ブロックを引っ張る
+		//Audio::GetInstance()->PlayWave("Resources/SE/se6.wav");
 		AttractBiteProcess(mapObjects);
 		return;
 	}
 	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Box_Move")
 	{
+		// TODO ブロックを引っ張る
+		//Audio::GetInstance()->PlayWave("Resources/SE/se6.wav");
 		biteBlockState = NOTGRAVIT;
 		CarryBlockProcess(mapObjects);
 		return;
@@ -358,6 +366,8 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 噛み壊せるブロックの場合壊す
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
+		// TODO かみ砕く
+		//Audio::GetInstance()->PlayWave("Resources/SE/se5.wav");
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
@@ -533,6 +543,8 @@ void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
 	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
+		// TODO 死亡
+		//Audio::GetInstance()->PlayWave("Resources/SE/se4.wav");
 		ReturnCheckpoint();
 	}
 }
