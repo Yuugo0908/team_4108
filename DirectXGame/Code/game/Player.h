@@ -155,11 +155,6 @@ private:
 	/// </summary>
 	void ReturnCheckpoint();
 	/// <summary>
-	/// 酸ブロックに沈む処理
-	/// </summary>
-	/// <param name="mapObjects"></param>
-	void AcidSinkProcess(std::vector<MapData*>& mapObjects);
-	/// <summary>
 	/// チェックポイントとの当たり判定
 	/// </summary>
 	/// <param name="mapObjects"></param>

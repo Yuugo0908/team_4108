@@ -52,12 +52,9 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	isHit = false;
 	if (CsvFile::map_change_flag == false)
 	{
-		if (AcidSinkFlag == false)
-		{
-			BlockCollisionProcess(mapObjects);
-			CeilingBlockCollisionProcess(mapObjects);
-			GroundCollisionProcess(mapObjects);
-		}
+		BlockCollisionProcess(mapObjects);
+		CeilingBlockCollisionProcess(mapObjects);
+		GroundCollisionProcess(mapObjects);
 	}
 
 	HeadUpdateProcess(mapObjects);
@@ -100,8 +97,6 @@ void Player::MoveProcess()
 {
 	//移動値初期化
 	move = {};
-
-	if (AcidSinkFlag == true) return;
 
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
@@ -186,7 +181,6 @@ void Player::GravityProcess()
 {
 	if (headState == STATE_INJECTION) return;
 	if (headState == STATE_BITE && biteBlockState == NOTGRAVIT) return;
-	if (AcidSinkFlag == true) return;
 	//下向き加速度
 	const float fallAcc = -0.1f;
 	const float fallVYMin = -2.0f;
@@ -320,6 +314,8 @@ void Player::CeilingBlockCollisionProcess(std::vector<MapData*>& mapObjects)
 
 			pPos.y -= (pPos.y + pScale.y) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
 			hPos.y -= (hPos.y + pScale.y) - (mapObjects[i]->object->GetPosition().y - mapObjects[i]->object->GetScale().y);
+			jumpParameter = 0.0f;
+
 		}
 	}
 }
@@ -597,7 +593,7 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 
 void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
-	if (AcidSinkFlag == true || AcidBlockOnlyCollisionCheck(mapObjects) == true)
+	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
 		// 死亡
 		Audio::GetInstance()->PlayWave("Resources/SE/se4.wav", 0, 0.1f);
@@ -617,16 +613,6 @@ void Player::ReturnCheckpoint()
 	isReturn = true;
 	headState = STATE_NORMAL;
 	headInjectDis = {};
-}
-
-void Player::AcidSinkProcess(std::vector<MapData*>& mapObjects)
-{
-	pPos.y -= sinkVal;
-	sinkCount += sinkVal;
-	if (sinkCount <= sinkMaxVal) return;
-	//リスタートさせる
-	ReturnCheckpoint();
-	sinkCount = 0.0f;
 }
 
 void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)

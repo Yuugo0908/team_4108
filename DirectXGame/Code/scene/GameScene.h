@@ -167,8 +167,6 @@ private: // メンバ変数
 	Image2d* fadeTex = nullptr;
 	Image2d* backGround = nullptr;
 	float alpha = 1.0f;
-	Image2d* fadeSpanaTex = nullptr;
-	XMFLOAT2 SpanaTexSize = { 133830.0f, 66995.0f };
 
 	// 音声
 	Audio* Bgm = Audio::GetInstance();
