@@ -51,14 +51,14 @@ void GameScene::Initialize()
 
 	rope->Initialize();
 
-	jsonObjectInit("map1");
-	jsonObjectInit("map2");
-	jsonObjectInit("map3");
-	jsonObjectInit("map4");
+	//jsonObjectInit("map1");
+	//jsonObjectInit("map2");
+	//jsonObjectInit("map3");
+	//jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
-	jsonObjectInit("map8");*/
+	jsonObjectInit("map8");
 	jsonObjectInit("map9");
 
 	// TODO BGM
@@ -467,7 +467,7 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 pScale = player->GetBodyObj()->GetScale();
 	XMFLOAT3 oldPPos = player->GetBodyOldPos();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
