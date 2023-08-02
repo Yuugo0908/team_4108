@@ -44,8 +44,8 @@ void TitleScene::Update()
 {
 	if (!fadeIn && keyboard->TriggerKey(DIK_SPACE) || controller->GetPadState(Controller::State::A, Controller::Type::TRIGGER))
 	{
-		// TODO タイトル遷移
-		//Audio::GetInstance()->PlayWave("Resources/SE/se1.wav", 255, 1.0f);
+		// タイトル遷移
+		Audio::GetInstance()->PlayWave("Resources/SE/se1.wav", 0, 0.1f);
 		fadeIn = true;
 	}
 

@@ -174,8 +174,8 @@ void Player::JumpProcess()
 
 	if (controller->GetPadState(Controller::State::A, Controller::Type::NONE) || keyboard->TriggerKey(DIK_SPACE))
 	{
-		// TODO ジャンプ
-		//Audio::GetInstance()->PlayWave("Resources/SE/se2.wav");
+		// ジャンプ
+		Audio::GetInstance()->PlayWave("Resources/SE/se2.wav", 0, 0.1f);
 		bodyState = STATE_BODY_JUMP_UP;
 		onGround = false;
 		jumpParameter = 2.75f;
@@ -330,14 +330,15 @@ void Player::HeadInjectionProcess()
 	
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
-		// TODO 首を飛ばす
-		//Audio::GetInstance()->PlayWave("Resources/SE/se3.wav");
+		// 首を飛ばす
+		Audio::GetInstance()->PlayWave("Resources/SE/se3.wav", 0, 0.1f);
 		hPos = pPos;
 		playerHeadObj->SetPosition(hPos);
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
 		moveTime = timeMax;
+		biteProcessSE = false;
 	}
 }
 
@@ -379,15 +380,23 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 引き寄せられるブロックにかみついた場合
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box_pull")
 	{
-		// TODO ブロックを引っ張る
-		//Audio::GetInstance()->PlayWave("Resources/SE/se6.wav");
+		// 引き寄せられる
+		if (!biteProcessSE)
+		{
+			biteProcessSE = true;
+			Audio::GetInstance()->PlayWave("Resources/SE/se6.wav", 2, 0.1f);
+		}
 		AttractBiteProcess(mapObjects);
 		return;
 	}
 	else if (mapObjects[hitHeadMapObjNum]->object->GetType() == "Box_Move")
 	{
-		// TODO ブロックを引っ張る
-		//Audio::GetInstance()->PlayWave("Resources/SE/se6.wav");
+		// ブロックを引っ張る
+		if (!biteProcessSE)
+		{
+			biteProcessSE = true;
+			Audio::GetInstance()->PlayWave("Resources/SE/se6.wav", 2, 0.1f);
+		}
 		biteBlockState = NOTGRAVIT;
 		CarryBlockProcess(mapObjects);
 		return;
@@ -411,8 +420,8 @@ void Player::HeadBiteProcess(std::vector<MapData*>& mapObjects)
 	// 噛み壊せるブロックの場合壊す
 	if (mapObjects[hitHeadMapObjNum]->object->GetType() == "box")
 	{
-		// TODO かみ砕く
-		//Audio::GetInstance()->PlayWave("Resources/SE/se5.wav");
+		// かみ砕く
+		Audio::GetInstance()->PlayWave("Resources/SE/se5.wav", 0, 0.1f);
 		mapObjects.erase(mapObjects.begin() + hitHeadMapObjNum);
 		headBackDis = hPos;
 		headState = STATE_BACK;
@@ -590,8 +599,8 @@ void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
 	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
-		// TODO 死亡
-		//Audio::GetInstance()->PlayWave("Resources/SE/se4.wav");
+		// 死亡
+		Audio::GetInstance()->PlayWave("Resources/SE/se4.wav", 0, 0.1f);
 		ReturnCheckpoint();
 	}
 }

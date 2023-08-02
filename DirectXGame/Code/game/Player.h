@@ -10,6 +10,7 @@
 #include "DirectXCommon.h"
 #include "CsvFile.h"
 #include "MapData.h"
+#include "Audio.h"
 
 class Player
 {
@@ -249,6 +250,7 @@ private: // メンバ変数
 	bool isReturn = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
+	bool biteProcessSE = false;
 
 	// オフセット
 	XMFLOAT2 rightOffsetHead = { 1.0f, 1.0f };
