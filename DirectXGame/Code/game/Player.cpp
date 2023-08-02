@@ -4,28 +4,34 @@
 bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 {
 	// モデルの生成
-	playerModel = playerModel->CreateFromObject("box");
-	playerObj = Object3d::Create();
-	playerObj->SetModel(playerModel);
-	playerHedObj = Object3d::Create();
-	playerHedObj->SetModel(playerModel);
+	playerBodyModel = playerBodyModel->CreateFromObject("playerBody");
+	playerBodyObj = Object3d::Create();
+	playerBodyObj->SetModel(playerBodyModel);
+
+	playerHeadModel = playerHeadModel->CreateFromObject("playerHead");
+	playerHeadObj = Object3d::Create();
+	playerHeadObj->SetModel(playerHeadModel);
 
 	pPos = pos;
 	pScale = scale;
 	reSpawnPos = pos;
 	hPos = pPos;
 
-	playerObj->SetPosition(pPos);
-	playerObj->SetScale(pScale);
-	playerObj->SetRotation({ 0.0f, 0.0f, 0.0f });
-	playerObj->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->SetScale(pScale);
+	playerBodyObj->SetRotation({ 0.0f, 0.0f, 0.0f });
+	playerBodyObj->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	playerBodyObj->SetTiring({ 0.25f, 1.0f });
+	playerBodyObj->SetOffset({ 0.25f, 1.0f });
+	playerBodyObj->Update();
 
-	playerHedObj->SetPosition(hPos);
-	playerHedObj->SetScale(pScale);
-	playerHedObj->SetRotation({ 0.0f, 0.0f, 0.0f });
-	playerHedObj->SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-	playerHedObj->Update();
+	playerHeadObj->SetPosition(hPos);
+	playerHeadObj->SetScale({ 4.0f, 4.0f, 1.0f });
+	playerHeadObj->SetRotation({ 0.0f, 0.0f, 0.0f });
+	playerHeadObj->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	playerHeadObj->SetTiring({ 0.5f, 1.0f });
+	playerHeadObj->SetOffset({ 1.0f, 1.0f });
+	playerHeadObj->Update();
 
 	return true;
 }
@@ -61,25 +67,25 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 		hPos = pPos;
 	}
 
-	oldpPos = playerObj->GetPosition();
+	oldpPos = playerBodyObj->GetPosition();
 	//OBJ更新処理
-	playerObj->SetPosition(pPos);
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->Update();
 	
-	playerHedObj->SetPosition(hPos);
-	playerHedObj->Update();
+	playerHeadObj->SetPosition(hPos);
+	playerHeadObj->Update();
 }
 
 void Player::SetPositionPlayer(const XMFLOAT3& pos, const XMFLOAT3& move)
 {
 	pPos = pos + move;
-	playerObj->SetPosition(pPos);
-	playerObj->Update();
+	playerBodyObj->SetPosition(pPos);
+	playerBodyObj->Update();
 
 	if (headState == STATE_NORMAL)
 	{
-		playerHedObj->SetPosition(pPos);
-		playerHedObj->Update();
+		playerHeadObj->SetPosition(pPos);
+		playerHeadObj->Update();
 	}
 }
 
@@ -98,9 +104,34 @@ void Player::MoveProcess()
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
 
-	if (headState == STATE_INJECTION) return;
-	if (headState == STATE_BITE) return;
-	//if (headState == STATE_BACK) return;
+	// 現在のプレイヤーのオフセットを取得
+	XMFLOAT2 nowOffset = playerBodyObj->GetOffset();
+	if (headState == STATE_INJECTION || headState == STATE_BITE)
+	{
+		if (nowOffset.x == rightOffsetBody.x)
+		{
+			playerBodyObj->SetOffset(rightOffsetBodyInjection);
+		}
+		else if (nowOffset.x == leftOffsetBody.x)
+		{
+			playerBodyObj->SetOffset(leftOffsetBodyInjection);
+		}
+		return;
+	}
+
+	if (pPos == hPos)
+	{
+		if (nowOffset.x == rightOffsetBodyInjection.x)
+		{
+			playerHeadObj->SetOffset(rightOffsetHead);
+			playerBodyObj->SetOffset(rightOffsetBody);
+		}
+		else if (nowOffset.x == leftOffsetBodyInjection.x)
+		{
+			playerHeadObj->SetOffset(leftOffsetHead);
+			playerBodyObj->SetOffset(leftOffsetBody);
+		}
+	}
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
@@ -108,6 +139,11 @@ void Player::MoveProcess()
 		move.x += 0.7f;
 		pDirection = { 1.0f, 0.0f, 0.0f };
 		direction.x = 1.0f;
+		if (headState != STATE_BACK)
+		{
+			playerHeadObj->SetOffset(rightOffsetHead);
+			playerBodyObj->SetOffset(rightOffsetBody);
+		}
 	}
 	else if (controller->GetPadState(Controller::State::LEFT_L_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_A))
 	{
@@ -115,6 +151,11 @@ void Player::MoveProcess()
 		move.x -= 0.7f;
 		pDirection = { -1.0f, 0.0f, 0.0f };
 		direction.x = -1.0f;
+		if (headState != STATE_BACK)
+		{
+			playerHeadObj->SetOffset(leftOffsetHead);
+			playerBodyObj->SetOffset(leftOffsetBody);
+		}
 	}
 	else
 	{
@@ -287,6 +328,7 @@ void Player::HeadInjectionProcess()
 	if (keyboard->TriggerKey(DIK_RETURN))
 	{
 		hPos = pPos;
+		playerHeadObj->SetPosition(hPos);
 		hInjectDis.x *= direction.x;
 		headInjectDis = hInjectDis + hPos;
 		headState = STATE_INJECTION;
@@ -520,12 +562,14 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 	{
 		pPos.x = -159.0f;
 		hPos = pPos;
+		headInjectDis = {};
 		CsvFile::now_x++;
 	}
 	else if (limitPos == LEFT_LIMIT)
 	{
 		pPos.x = 159.0f;
 		hPos = pPos;
+		headInjectDis = {};
 		CsvFile::now_x--;
 	}
 }
@@ -542,12 +586,13 @@ void Player::ReturnCheckpoint()
 {
 	// チェックポイントに戻る
 	pPos = { CsvFile::check_pos.x, CsvFile::check_pos.y + 20.0f, CsvFile::check_pos.z };
-	playerHedObj->SetPosition(pPos);
-	playerHedObj->Update();
+	playerHeadObj->SetPosition(pPos);
+	playerHeadObj->Update();
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
 	headState = STATE_NORMAL;
+	headInjectDis = {};
 }
 
 void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)

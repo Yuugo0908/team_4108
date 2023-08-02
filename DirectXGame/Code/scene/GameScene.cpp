@@ -18,6 +18,14 @@ void GameScene::Initialize()
 	fadeTex->SetSize({ 1280.0f, 720.0f });
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 
+	if (!Image2d::LoadTexture(backNum, L"Resources/backGround.png"))
+	{
+		assert(0);
+	}
+	backGround = Image2d::Create(backNum, { 0.0f,0.0f });
+	backGround->SetSize({ 1280.0f,720.0f });
+	backGround->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
 	// パーティクル生成
 	// 着地時のパーティクル
 	landingEffect.reset(Particle::Create(L"Resources/effectCircle.png"));
@@ -35,18 +43,15 @@ void GameScene::Initialize()
 	// 3Dオブジェクトにライトをセット
 	Object3d::SetLight(light);
 
-	//Bgm->PlayWave("Resources/BGM/bgm.wav", 255, 0.08f);
+	Bgm->PlayWave("Resources/BGM/bgm.wav", 255, 0.08f);
 
 	// マウスカーソルを非表示
 	//ShowCursor(false);
 
-	skydomeModel = skydomeModel->CreateFromObject("skydome");
-	skydomeObj = Object3d::Create();
-	skydomeObj->SetModel(skydomeModel);
-	skydomeObj->SetScale({7.0f, 5.0f, 5.0f});
-
 	player = new Player;
 	player->Initialize({ -130.0f, 9.0f, 0.0f }, {5.0f, 5.0f, 1.0f});
+
+	rope->Initialize();
 
 	jsonObjectInit("map1");
 	jsonObjectInit("map2");
@@ -67,15 +72,14 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
-	skydomeObj->Update();
 	player->Update(map[mapNumber[CsvFile::now_y][CsvFile::now_x]]);
-
+	rope->Update(player->GetHeadPos(), player->GetBodyPos());
 	jsonObjectUpdate();
 
 	if (player->GetOnGrounding() == true)
 	{
 		XMFLOAT3 pos = player->GetBodyPos();
-		pos.y -= 1.0f * player->GetObj()->GetScale().y;
+		pos.y -= 1.0f * player->GetBodyObj()->GetScale().y;
 		OnLandingEffect(6, pos);
 	}
 
@@ -102,6 +106,7 @@ void GameScene::Draw()
 	// 背景画像描画前処理
 	Image2d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
+	backGround->Draw();
 
 	// 画像描画後処理
 	Image2d::PostDraw();
@@ -114,10 +119,9 @@ void GameScene::Draw()
 	Object3d::PreDraw(DirectXCommon::GetInstance()->GetCommandList());
 
 	// 3Dオブジェクト描画
-	skydomeObj->Draw();
-	player->GetObj()->Draw();
-	player->GetHedObj()->Draw();
-
+	rope->Draw();
+	player->GetBodyObj()->Draw();
+	player->GetHeadObj()->Draw();
 
 	// マップオブジェクト描画
 	for (auto& object : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
@@ -299,7 +303,7 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 	XMFLOAT3 pos = object->GetPosition();
 	XMFLOAT3 scale = object->GetScale();
 	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 pScale = player->GetBodyObj()->GetScale();
 
 	XMFLOAT3 pScaleHalf = { pScale.x / 2, pScale.y, pScale.z };
 
@@ -313,7 +317,7 @@ void GameScene::CheckPointTypeUpdate(int index, Object3d* object)
 void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 {
 	// 鍵の当たり判定
-	if (IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+	if (IsCanGetKey(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetBodyObj()->GetScale().x))
 	{
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(true);
@@ -324,11 +328,22 @@ void GameScene::KeyTypeUpdate(int& keyIndex, int index, Object3d* object)
 void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d* object)
 {
 	// ドアの当たり判定
-	if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale().x, player->GetObj()->GetScale().x))
+	if (player->GetIsKey() == true && IsCanOpenDoor(object->GetPosition(), player->GetBodyPos(), object->GetScale(), player->GetBodyObj()->GetScale()))
 	{
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(false);
-		doorIndex.emplace_back(index + 1);
+		doorOpen = true;
+	}
+
+	object->SetTiring({ 0.5f, 1.0f });
+
+	if (doorOpen)
+	{
+		object->SetOffset({ 1.0f, 1.0f });
+	}
+	else
+	{
+		object->SetOffset({ 0.5f, 1.0f });
 	}
 }
 
@@ -346,8 +361,8 @@ void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3
 
 		if (mapData->isMove == false && player->GetOnGround() == false)
 		{
-			XMFLOAT3 pPos = player->GetObj()->GetPosition();
-			pPos.y -= 1.0f * player->GetObj()->GetScale().y;
+			XMFLOAT3 pPos = player->GetBodyObj()->GetPosition();
+			pPos.y -= 1.0f * player->GetBodyObj()->GetScale().y;
 			OnLandingEffect(6, pPos);
 		}
 		mapData->isMove = true;
@@ -416,13 +431,13 @@ bool GameScene::IsCanGetKey(const XMFLOAT3& keyPos, const XMFLOAT3& playerPos, f
 	return false;
 }
 
-bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, float doorRadius, float playerRadius)
+bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos, const XMFLOAT3& doorRadius, const XMFLOAT3& playerRadius)
 {
 	// 誤差
 	float error = 0.1f;
 
 	// 一定の距離なら
-	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
+	if (Collision::CollisionBoxToBox(doorPos, doorRadius * 1.5f, playerPos, playerRadius))
 	{
 		SceneManager::GetInstance()->ChangeScene("Title");
 		return true;
@@ -434,7 +449,7 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
-	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 pScale = player->GetBodyObj()->GetScale();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
 	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });

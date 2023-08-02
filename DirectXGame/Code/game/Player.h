@@ -74,8 +74,8 @@ public: // メンバ関数
 	// 着地時処理
 	void OnGrounding();
 	// オブジェクト
-	Object3d* GetObj() { return playerObj; }
-	Object3d* GetHedObj() { return playerHedObj; }
+	Object3d* GetBodyObj() { return playerBodyObj; }
+	Object3d* GetHeadObj() { return playerHeadObj; }
 
 private:
 	/// <summary>
@@ -210,9 +210,10 @@ private: // メンバ変数
 	Camera* camera = Camera::GetInstance();
 
 	// モデル
-	Model* playerModel = nullptr;
-	Object3d* playerObj = nullptr;
-	Object3d* playerHedObj = nullptr;
+	Model* playerBodyModel = nullptr;
+	Model* playerHeadModel = nullptr;
+	Object3d* playerBodyObj = nullptr;
+	Object3d* playerHeadObj = nullptr;
 
 	// プレイヤー
 	XMFLOAT3 pDirection = {1.0f, 0.0f, 0.0f};	//向き
@@ -246,5 +247,13 @@ private: // メンバ変数
 	bool isHit = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
+
+	// オフセット
+	XMFLOAT2 rightOffsetHead = { 1.0f, 1.0f };
+	XMFLOAT2 leftOffsetHead = { 0.5f, 1.0f };
+	XMFLOAT2 rightOffsetBody = { 0.25f, 1.0f };
+	XMFLOAT2 leftOffsetBody = { 0.5f, 1.0f };
+	XMFLOAT2 rightOffsetBodyInjection = { 0.0f, 1.0f };
+	XMFLOAT2 leftOffsetBodyInjection = { 0.75f, 1.0f };
 };
 

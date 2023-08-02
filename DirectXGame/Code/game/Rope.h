@@ -1,6 +1,7 @@
 #pragma once
 #include "Object3d.h"
 #include "Controller.h"
+#include "Keyboard.h"
 #include "Easing.h"
 #include "Collision.h"
 #include "Operator.h"
@@ -24,11 +25,9 @@ public: // メンバ関数
 
 	bool Initialize();
 
-	void Update(XMFLOAT3& pPos);
+	void Update(const XMFLOAT3& startPos, const XMFLOAT3& endPos);
 
-	void Throw(XMFLOAT3& pPos, const XMFLOAT3 ePos, const float length);
-
-	void Reset();
+	void Draw();
 
 	float GetLength(XMFLOAT3 posA, XMFLOAT3 posB)
 	{
@@ -36,23 +35,7 @@ public: // メンバ関数
 		return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 	}
 
-	// 円運動
-	void CircularMotion(XMFLOAT3& pos, const XMFLOAT3 centerPos, const float r, int& angle, const int add);
-
-	// ロープがつながっているか
-	const bool GetrFlag() { return rFlag; }
-	void SetrFlag(bool rFlag) { this->rFlag = rFlag; }
-	// ロープを飛ばしているか
-	const bool GetThrowFlag() { return rThrowFlag; }
-	void SetThrowFlag(bool throwFlag) { rThrowFlag = throwFlag; }
-	
-	const Object3d* GetObj() { return ropeObj; }
-
 private: // メンバ変数
-
-	Controller* controller = Controller::GetInstance();
-	Mouse* mouse = Mouse::GetInstance();
-
 	//ロープモデル
 	Model* ropeModel = nullptr;
 	Object3d* ropeObj = nullptr;
