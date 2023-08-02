@@ -154,6 +154,11 @@ private:
 	/// </summary>
 	void ReturnCheckpoint();
 	/// <summary>
+	/// 酸ブロックに沈む処理
+	/// </summary>
+	/// <param name="mapObjects"></param>
+	void AcidSinkProcess(std::vector<MapData*>& mapObjects);
+	/// <summary>
 	/// チェックポイントとの当たり判定
 	/// </summary>
 	/// <param name="mapObjects"></param>
@@ -201,7 +206,8 @@ public:
 	bool& GetIsKey() { return isKey; }
 	void SetIKey(bool iskey) { this->isKey = iskey; }
 	bool& GetIsHit() { return isHit; }
-
+	bool GetAcidSinkFlag() { return AcidSinkFlag; }
+	bool GetRestartCheckFlag()  { return ReStartFlag; }
 private: // メンバ変数
 
 	Keyboard* keyboard = Keyboard::GetInstance();
@@ -246,5 +252,11 @@ private: // メンバ変数
 	bool isHit = false;
 	LimitPos limitPos = NONE;
 	BiteBlockState biteBlockState = NOTBITE;
+
+	const float sinkMaxVal = 5.0f;
+	float sinkCount = 0.0f;
+	float sinkVal = 0.1f;
+	bool AcidSinkFlag = false;
+	bool ReStartFlag = false;
 };
 

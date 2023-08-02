@@ -123,6 +123,8 @@ public: // メンバ関数
 	/// <param name="hit">当たったか</param>
 	void PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3& oPos, const XMFLOAT3& oScale, bool& hit);
 
+	void FadeSpanaProcess();
+
 private: // メンバ変数
 	Keyboard* keyboard = Keyboard::GetInstance();
 	Controller* controller = Controller::GetInstance();
@@ -162,6 +164,8 @@ private: // メンバ変数
 	// 画像
 	Image2d* fadeTex = nullptr;
 	float alpha = 1.0f;
+	Image2d* fadeSpanaTex = nullptr;
+	XMFLOAT2 SpanaTexSize = { 133830.0f, 66995.0f };
 
 	// 音声
 	Audio* Bgm = Audio::GetInstance();

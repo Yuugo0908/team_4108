@@ -14,9 +14,19 @@ void GameScene::Initialize()
 	{
 		assert(0);
 	}
+	if (!Image2d::LoadTexture(99, L"Resources/wrench.png"))
+	{
+		assert(0);
+	}
+
 	fadeTex = Image2d::Create(fadeNum, { 0.0f, 0.0f });
 	fadeTex->SetSize({ 1280.0f, 720.0f });
 	fadeTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+
+	fadeSpanaTex = Image2d::Create(99, { 1280.0f / 2, 720.0f / 2 });
+	fadeSpanaTex->SetSize(SpanaTexSize);
+	fadeSpanaTex->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	fadeSpanaTex->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// パーティクル生成
 	// 着地時のパーティクル
@@ -83,6 +93,8 @@ void GameScene::Update()
 	{
 		OnBitingEffect(player->GetHeadPos());
 	}
+
+	FadeSpanaProcess();
 }
 
 void GameScene::Draw()
@@ -142,6 +154,8 @@ void GameScene::Draw()
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(DirectXCommon::GetInstance()->GetCommandList());
+
+	fadeSpanaTex->Draw();
 
 	// 画像描画後処理
 	Image2d::PostDraw();
@@ -487,4 +501,56 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 		pPos.y = oPos.y - oScale.y - pScale.y;
 		player->SetPositionPlayer(pPos);
 	}
+}
+
+void GameScene::FadeSpanaProcess()
+{
+	//体の位置に頭が引き寄せられる
+	const float end = 1000.0f;
+	const float start = 100.0f;
+	const float timeMax = 4.0f;
+	static float nowTime = 0.0f;
+	float timeRate = min(nowTime / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+	static bool flagA = false;
+	static bool flagB = false;
+	
+	//if (flagA == false && player->GetAcidSinkFlag() == false || player->GetRestartCheckFlag() == false)
+	//{
+	//	return;
+	//}
+
+	if (player->GetAcidSinkFlag() == true || flagA == true)
+	{
+		flagA = true;
+		float num = Easing::lerp(start, end, timeRate);
+		if (num >= end)
+		{
+			fadeSpanaTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+			nowTime = 0.0f;
+			flagA = false;
+			return;
+		}
+
+
+		SpanaTexSize = { SpanaTexSize.x + num, SpanaTexSize.y + (num / 2) };
+		float flame = 60.0f;
+		nowTime += 1.0f / flame;
+	}
+	else if(player->GetRestartCheckFlag() == true || flagB == true)
+	{
+		flagB = true;
+		float num = Easing::lerp(start, end, timeRate);
+		if (num >= end)
+		{
+			fadeSpanaTex->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+			nowTime = 0.0f;
+			flagB = false;
+			return;
+		}
+
+		SpanaTexSize = { SpanaTexSize.x - num, SpanaTexSize.y - (num / 2) };
+		float flame = 60.0f;
+		nowTime += 1.0f / flame;
+	}
+	fadeSpanaTex->SetSize(SpanaTexSize);
 }

@@ -32,6 +32,7 @@ bool Player::Initialize(const XMFLOAT3 pos, const XMFLOAT3 scale)
 
 void Player::Update(std::vector<MapData*>& mapObjects)
 {
+	ReStartFlag = false;
 	if (keyboard->TriggerKey(DIK_Z))
 	{
 		ReturnCheckpoint();
@@ -49,9 +50,12 @@ void Player::Update(std::vector<MapData*>& mapObjects)
 	isHit = false;
 	if (CsvFile::map_change_flag == false)
 	{
-		BlockCollisionProcess(mapObjects);
-		CeilingBlockCollisionProcess(mapObjects);
-		GroundCollisionProcess(mapObjects);
+		if (AcidSinkFlag == false)
+		{
+			BlockCollisionProcess(mapObjects);
+			CeilingBlockCollisionProcess(mapObjects);
+			GroundCollisionProcess(mapObjects);
+		}
 	}
 
 	HeadUpdateProcess(mapObjects);
@@ -95,12 +99,13 @@ void Player::MoveProcess()
 	//移動値初期化
 	move = {};
 
+	if (AcidSinkFlag == true) return;
+
 	//体当たり判定状態初期化
 	bodyColState = BODYSTATE_NULL;
 
 	if (headState == STATE_INJECTION) return;
 	if (headState == STATE_BITE) return;
-	//if (headState == STATE_BACK) return;
 
 	if (controller->GetPadState(Controller::State::LEFT_R_STICK, Controller::Type::NONE) || keyboard->PushKey(DIK_D))
 	{
@@ -141,7 +146,7 @@ void Player::GravityProcess()
 {
 	if (headState == STATE_INJECTION) return;
 	if (headState == STATE_BITE && biteBlockState == NOTGRAVIT) return;
-	
+	if (AcidSinkFlag == true) return;
 	//下向き加速度
 	const float fallAcc = -0.1f;
 	const float fallVYMin = -2.0f;
@@ -320,7 +325,7 @@ void Player::HeadBackMoveProcess()
 	if (TimeCheck(moveTime) == true)
 	{
 		moveTime = timeMax;
-		headState = STATE_INJECTIONLOCK;
+		headState = STATE_NORMAL;
 	}
 
 	hPos = Easing::easeIn( headBackDis, pPos, timeRate);
@@ -532,9 +537,10 @@ void Player::MapChange(std::vector<MapData*>& mapObjects)
 
 void Player::AcidProcess(std::vector<MapData*>& mapObjects)
 {
-	if (AcidBlockOnlyCollisionCheck(mapObjects) == true)
+	if (AcidSinkFlag == true || AcidBlockOnlyCollisionCheck(mapObjects) == true)
 	{
-		ReturnCheckpoint();
+		AcidSinkFlag = true;
+		AcidSinkProcess(mapObjects);
 	}
 }
 
@@ -547,7 +553,19 @@ void Player::ReturnCheckpoint()
 	CsvFile::now_x = CsvFile::check_x;
 	CsvFile::now_y = CsvFile::check_y;
 	isKey = false;
+	AcidSinkFlag = false;
+	ReStartFlag = true;
 	headState = STATE_NORMAL;
+}
+
+void Player::AcidSinkProcess(std::vector<MapData*>& mapObjects)
+{
+	pPos.y -= sinkVal;
+	sinkCount += sinkVal;
+	if (sinkCount <= sinkMaxVal) return;
+	//リスタートさせる
+	ReturnCheckpoint();
+	sinkCount = 0.0f;
 }
 
 void Player::CheckPointProcess(std::vector<MapData*>& mapObjects)

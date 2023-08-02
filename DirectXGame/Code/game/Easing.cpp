@@ -5,6 +5,11 @@ XMFLOAT3 Easing::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float ti
 	return start * (1.0f - time) + end * time;
 }
 
+float Easing::lerp(const float start, const float end, const float time)
+{
+	return start * (1.0f - time) + end * time;
+}
+
 XMFLOAT3 Easing::easeIn(const XMFLOAT3& start, const XMFLOAT3& end, const float time)
 {
 	float t = time * time * time * time * time;
