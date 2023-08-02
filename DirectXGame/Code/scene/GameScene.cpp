@@ -52,14 +52,14 @@ void GameScene::Initialize()
 
 	rope->Initialize();
 
-	/*jsonObjectInit("map1");
+	jsonObjectInit("map1");
 	jsonObjectInit("map2");
 	jsonObjectInit("map3");
 	jsonObjectInit("map4");
 	jsonObjectInit("map5");
 	jsonObjectInit("map6");
 	jsonObjectInit("map7");
-	jsonObjectInit("map8");*/
+	jsonObjectInit("map8");
 	jsonObjectInit("map9");
 
 	// BGM
