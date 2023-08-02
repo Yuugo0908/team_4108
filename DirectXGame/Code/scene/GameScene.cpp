@@ -35,8 +35,6 @@ void GameScene::Initialize()
 	// 3Dオブジェクトにライトをセット
 	Object3d::SetLight(light);
 
-	//Bgm->PlayWave("Resources/BGM/bgm.wav", 255, 0.08f);
-
 	// マウスカーソルを非表示
 	//ShowCursor(false);
 
@@ -63,7 +61,7 @@ void GameScene::Finalize()
 {
 	// マウスカーソルを表示
 	//ShowCursor(true);
-}
+} 
 
 void GameScene::Update()
 {
@@ -329,11 +327,19 @@ void GameScene::DoorTypeUpdate(std::vector<int>& doorIndex, int index, Object3d*
 		OnPickingEffect(object->GetPosition());
 		player->SetIKey(false);
 		doorIndex.emplace_back(index + 1);
+		SceneManager::GetInstance()->ChangeScene("Title");
 	}
 }
 
 void GameScene::GroundMoveTypeUpdate(int index, MapData* mapData, const XMFLOAT3& originPos, int divide)
 {
+	if (player->GetIsReturn() == true)
+	{
+		mapData->isMove = false;
+		mapData->moveFrame = 0;
+		mapData->object->SetPosition(mapData->originPos);
+	}
+
 	if (CheckHitGroundMoveType(mapData->object) == true)
 	{
 		XMFLOAT3 moveVec = { 0, 0, 0 };
@@ -424,7 +430,6 @@ bool GameScene::IsCanOpenDoor(const XMFLOAT3& doorPos, const XMFLOAT3& playerPos
 	// 一定の距離なら
 	if (GetLength(doorPos, playerPos) <= doorRadius + playerRadius + error)
 	{
-		SceneManager::GetInstance()->ChangeScene("Title");
 		return true;
 	}
 
@@ -435,6 +440,7 @@ bool GameScene::CheckHitGroundMoveType(Object3d* object)
 {
 	XMFLOAT3 pPos = player->GetBodyPos();
 	XMFLOAT3 pScale = player->GetObj()->GetScale();
+	XMFLOAT3 oldPPos = player->GetBodyOldPos();
 	XMFLOAT3 oPos = object->GetPosition();
 	XMFLOAT3 oScale = object->GetScale();
 	float lenX = Helper::LengthFloat2({ pPos.x, 0 }, { oPos.x, 0 });
@@ -443,9 +449,9 @@ bool GameScene::CheckHitGroundMoveType(Object3d* object)
 
 	if (lenY < pScale.y + oScale.y)
 	{
-		if (!(lenX < pScale.x + oScale.x) || player->GetOnGround() == true)
+		if (pScale.x + oScale.x <= Helper::LengthFloat2({ oldPPos.x, 0 }, { oPos.x, 0 }))
 		{
-			PushBackX(pPos, pScale, oPos, oScale);
+ 			PushBackX(pPos, pScale, oPos, oScale);
 		}
 	}
 	if (lenX < pScale.x + oScale.x)
@@ -477,7 +483,21 @@ void GameScene::PushBackY(XMFLOAT3& pPos, const XMFLOAT3& pScale, const XMFLOAT3
 		player->OnGrounding();
 		pPos.y = oPos.y + oScale.y + pScale.y;
 		player->SetPositionPlayer(pPos);
-		if (true)
+		bool isNearBox = false;
+		for (auto& box : map[mapNumber[CsvFile::now_y][CsvFile::now_x]])
+		{
+			if (box->object->GetType() != "box")
+			{
+				continue;
+			}
+			if (Collision::CollisionBoxPoint(oPos, oScale, box->object->GetPosition(), box->object->GetScale()) == false)
+			{
+				continue;
+			}
+			isNearBox = true;
+			break;
+		}
+		if (isNearBox == false)
 		{
 			hit = true;
 		}
