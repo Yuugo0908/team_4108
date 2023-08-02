@@ -188,6 +188,6 @@ private: // メンバ変数
 	bool doorOpen = false;
 	int openCount = 0;
 
-	// プレイヤーが床に乗って動いているか
-	bool isMovePlayer = false;
+	int waitTimer = 0;
+	const int maxWait = 30;
 };
