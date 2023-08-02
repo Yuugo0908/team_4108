@@ -59,7 +59,7 @@ LevelData* LevelLoader::LoadFile(const std::string& fileName)
 	levelData->board3 = levelData->board3->CreateFromObject("enter_crush");
 	levelData->board4 = levelData->board4->CreateFromObject("enter_bite");
 	// fileNameを元に、使用するモデルを決める
-	levelData->models.insert(std::make_pair("bite", levelData->biteCarryModel));
+	levelData->models.insert(std::make_pair("bite", levelData->biteModel));
 	levelData->models.insert(std::make_pair("bite_pull", levelData->bitePullModel));
 	levelData->models.insert(std::make_pair("bite_carry", levelData->biteModel));
 	levelData->models.insert(std::make_pair("wall", levelData->wallModel));
